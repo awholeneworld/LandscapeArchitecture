@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/select_users" >
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="JOKER"
+            android:textSize="25dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="당신을 위한 조경 커뮤니티"
+            android:textSize="20dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="일반 고객이신지, 전문가이신지\n선택해주세요"
+            android:textSize="25dp"
+            android:textColor="@color/white"/>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="160dp"
+            >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                tools:ignore="UselessParent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.widget.Button
+                        android:id="@+id/signup00_button01"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:layout_marginHorizontal="20dp"
+                        android:background="@drawable/radius_15_whiteborder"
+                        android:text="일반인으로\n가입하기"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <android.widget.Button
+                        android:id="@+id/signup00_button02"
+                        android:layout_width="match_parent"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_height="130dp"
+                        android:text=" 전문가로 \n가입하기"
+                        android:textColor="@color/white"
+                        android:textSize="20dp"
+                        android:background="@drawable/all_button_bg_ripple_round_15_whiteborder" />
+
+                </LinearLayout>
+
+            </TableRow>
+
+        </TableLayout>
+
+
+        <TextView
+            android:id="@+id/signup00_textView_goLogIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="로그인하기" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

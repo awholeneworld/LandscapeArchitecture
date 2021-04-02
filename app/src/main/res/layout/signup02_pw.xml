@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--toolbar-->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/signup02_toolbar_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="회원가입"
+                android:textColor="@color/mainGreen"
+                android:textSize="20sp">
+            </TextView>
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="55dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/signup02_text01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="비밀번호를 입력해주세요"
+                android:textColor="@color/black"
+                android:textSize="28sp" />
+
+
+            <EditText
+                android:id="@+id/signup02_edittext01"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:backgroundTint="@color/mainGreen"
+                android:hint="비밀번호를 입력하세요" />
+
+            <TextView
+                android:id="@+id/signup02_text02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="비밀번호를 확인해주세요"
+                android:textColor="@color/black"
+                android:textSize="28sp" />
+
+
+            <EditText
+                android:id="@+id/signup02_edittext02"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                android:backgroundTint="@color/mainGreen"
+                android:hint="다시 비밀번호를 입력하세요" />
+
+
+
+            <!--                background : 버튼 누르면 물결 효과-->
+            <Button
+                android:id="@+id/signup02_button01"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right"
+                android:background="@drawable/all_button_bg_ripple_round_15"
+                android:text="다음"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                tools:ignore="RtlHardcoded" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
