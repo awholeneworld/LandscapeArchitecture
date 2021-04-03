@@ -1,5 +1,6 @@
 package gachon.termproject.joker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,12 +10,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Signup00Activity extends AppCompatActivity {
-
+    public static Context context_00;
+    public boolean publicMan = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup00_selecttype);
-
+        context_00 = this;
 
         Button publicbutton = findViewById(R.id.signup00_button01);
         Button expertbutton = findViewById(R.id.signup00_button02);
@@ -23,7 +25,7 @@ public class Signup00Activity extends AppCompatActivity {
         //다시 로그인으로 회귀
         toLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                //로그인 페이지로 돌아갑니다
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
         });
@@ -46,6 +48,7 @@ public class Signup00Activity extends AppCompatActivity {
         expertbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                publicMan = false;
                 Intent intent = new Intent(getApplicationContext(), Signup01Activity.class);
                 startActivity(intent);
             }

@@ -1,5 +1,6 @@
 package gachon.termproject.joker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,22 +8,33 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Signup04Activity extends AppCompatActivity {
-
+    public static Context context_04;
+    public List<String> location;
     CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup04_location);
-
+        context_04 = this;
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -75,31 +87,62 @@ public class Signup04Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //어떤 버튼이 눌렸는지 체크!
-                List<String> location = checklocation();
+                List<String> locationSelected = checklocation();
 
 
-                if(!location.isEmpty()){ //하나라도 체크가 되었다면
+                if (!locationSelected.isEmpty()) { //하나라도 체크가 되었다면
                     //지역 데이터 잘 처리하시고
-
+                    location = locationSelected;
 
                     //로그인 완료 페이지로 이동~ 하기 전에!!!
                     //회원가입 맨 처음 창에서 입력한 일반인/전문가 정보에 따라서
                     //전문가인지 일반인인지 구별하세요!!!!!!!!!! DB에 저장될때로 일반인과 전문가를 구별해야함
-                    boolean publicMan = false; //일반인인지 체크하는 데이터 어떻게 넘겨야할지는 잘 모르겟음.
+                    boolean isPublic = ((Signup00Activity)Signup00Activity.context_00).publicMan; //일반인인지 체크하는 데이터 어떻게 넘겨야할지는 잘 모르겟음.
 
-                    if(publicMan){ //일반인이라면 회원가입 완료 페이지로
-                        Intent intent = new Intent(getApplicationContext(), Signup05Activity.class);
-                        startActivity(intent);
+                    if (isPublic) { //일반인이라면 회원가입 완료 페이지로
+                        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+                        FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+
+                        String ID = ((Signup01Activity)Signup01Activity.context_01).identifier;
+                        String PW = ((Signup02Activity)Signup02Activity.context_02).password;
+                        String name = ((Signup03Activity)Signup03Activity.context_03).name;
+                        List<String> locations = ((Signup04Activity)Signup04Activity.context_04).location;
+
+                        fAuth.createUserWithEmailAndPassword(ID, PW).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    String userID = fAuth.getCurrentUser().getUid();
+                                    DocumentReference documentReference = fStore.collection("users").document(userID);
+
+                                    Map<String,Object> user = new HashMap<>();
+                                    user.put("ID", ID);
+                                    user.put("name", name);
+                                    user.put("location", locations);
+                                    user.put("isPublic", true);
+
+                                    documentReference.set(user);
+
+                                    //처리할 데이터 없음. 로그인 페이지로 이동합니다
+                                    Intent intent = new Intent(getApplicationContext(), Signup05Activity.class);
+                                    intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP); //이전 액티비티들을 모두 kill
+                                    startActivity(intent);
+
+                                } else {
+                                    Toast.makeText(Signup04Activity.this, "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
-                    else{ //전문가라면 전문가 인증 페이지로 슝
+                    else { //전문가라면 전문가 인증 페이지로 슝
                         Intent intent = new Intent(getApplicationContext(), Signup06Activity.class);
                         startActivity(intent);
                     }
 
 
                 }
-                else{//체크가 하나도 안되어있다면
-                    Toast.makeText(getApplicationContext(), "하나 이상의 지역을 선택해 주세요", Toast.LENGTH_LONG).show();
+                else {//체크가 하나도 안되어있다면
+                    Toast.makeText(getApplicationContext(), "하나 이상의 지역을 선택해주세요.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -107,7 +150,7 @@ public class Signup04Activity extends AppCompatActivity {
 
     }
 
-    public List<String>  checklocation(){
+    public List<String> checklocation() {
         //선택된 지역 약어를 저장할 리스트 location
         List<String> location = new ArrayList<>();
 

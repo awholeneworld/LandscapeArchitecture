@@ -8,10 +8,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
+    FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +27,15 @@ public class LoginActivity extends AppCompatActivity {
         EditText id = findViewById(R.id.login_editText_ID);
         EditText pw = findViewById(R.id.login_editText_PW);
 
+        fAuth = FirebaseAuth.getInstance();
+
         //login버튼을 눌럿을때
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //editText에서 아이디 비번 받아오기
-                String ID = id.getText().toString();
-                String PW = pw.getText().toString();
+                String ID = id.getText().toString().trim();
+                String PW = pw.getText().toString().trim();
 
                 //뭐 아이디랑 비밀번호가지고 여차져차 햇습니다
 

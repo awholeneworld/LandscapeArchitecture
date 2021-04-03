@@ -1,5 +1,6 @@
 package gachon.termproject.joker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 public class Signup03Activity extends AppCompatActivity {
+    public static Context context_03;
+    public String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup03_nickname);
-
+        context_03 = this;
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -37,21 +40,20 @@ public class Signup03Activity extends AppCompatActivity {
                 String nickname = nickName.getText().toString();
 
                 //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
-
-                boolean used = false; //true면 이미 사용되고 있는것 (데이터에 따라 바꿔주세요)
-
+                boolean isDuplicate = false; // true 면 사용되고 있는것 (데이터에 따라 바꿔주세요)
 
 
-                if(!used){ //사용가능한 닉네임이라면
+
+                if (!isDuplicate){ //사용가능한 닉네임이라면
                     //닉네임 데이터 여차저차 처리하고
 
 
-
+                    name = nickname;
                     //주 활동 지역 페이지로 이동
                     Intent intent = new Intent(getApplicationContext(), Signup04Activity.class);
                     startActivity(intent);
                 }
-                else{//불일치한다면
+                else {//불일치한다면
                     Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_LONG).show();
                 }
             }
