@@ -43,7 +43,7 @@ public class Signup02Activity extends AppCompatActivity {
                 String pw = firstPw.getText().toString().trim();
                 String checkpw = secondPw.getText().toString().trim();
 
-                if (TextUtils.isEmpty(pw)){
+                if (TextUtils.isEmpty(pw)) {
                     Toast.makeText(getApplicationContext(), "비밀번호를 입력해주세요.", Toast.LENGTH_LONG).show();
                 }
                 else if (TextUtils.isEmpty(checkpw)) {
@@ -58,7 +58,7 @@ public class Signup02Activity extends AppCompatActivity {
                 }
                 else { //비밀번호가 일치한다면
                     //pw 로 여차저차 데이터 처리
-                    password = pw;
+                    password = pw; // PW 전역변수 설정
 
                     //닉네임 페이지로 이동
                     Intent intent = new Intent(getApplicationContext(), Signup03Activity.class);

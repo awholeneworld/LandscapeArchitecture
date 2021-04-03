@@ -99,33 +99,34 @@ public class Signup04Activity extends AppCompatActivity {
                     //전문가인지 일반인인지 구별하세요!!!!!!!!!! DB에 저장될때로 일반인과 전문가를 구별해야함
                     boolean isPublic = ((Signup00Activity)Signup00Activity.context_00).publicMan; //일반인인지 체크하는 데이터 어떻게 넘겨야할지는 잘 모르겟음.
 
-                    if (isPublic) { //일반인이라면 회원가입 완료 페이지로
+                    if (isPublic) { //일반인이라면 회원가입 프로세스 거친 후 가입완료 페이지로
+                        // 데이터베이스 설정
                         FirebaseAuth fAuth = FirebaseAuth.getInstance();
                         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-
+                        // 회원가입을 위한 전역 변수 가져오기
                         String ID = ((Signup01Activity)Signup01Activity.context_01).identifier;
                         String PW = ((Signup02Activity)Signup02Activity.context_02).password;
                         String name = ((Signup03Activity)Signup03Activity.context_03).name;
-                        List<String> locations = ((Signup04Activity)Signup04Activity.context_04).location;
-
+                        List<String> locations = location;
+                        // 회원가입 프로세스
                         fAuth.createUserWithEmailAndPassword(ID, PW).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     String userID = fAuth.getCurrentUser().getUid();
-                                    DocumentReference documentReference = fStore.collection("users").document(userID);
-
+                                    DocumentReference documentReference = fStore.collection("users").document(userID); // 데이터베이스 schema 생성 후 참조
+                                    // 유저 정보 만들기
                                     Map<String,Object> user = new HashMap<>();
                                     user.put("ID", ID);
                                     user.put("name", name);
                                     user.put("location", locations);
                                     user.put("isPublic", true);
 
-                                    documentReference.set(user);
+                                    documentReference.set(user); // 명시된 경로에 데이터 저장
 
-                                    //처리할 데이터 없음. 로그인 페이지로 이동합니다
+                                    // 가입완료 페이지로 이동
                                     Intent intent = new Intent(getApplicationContext(), Signup05Activity.class);
-                                    intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP); //이전 액티비티들을 모두 kill
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); //이전 액티비티들을 모두 kill
                                     startActivity(intent);
 
                                 } else {

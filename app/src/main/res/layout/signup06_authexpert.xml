@@ -36,42 +36,63 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/signup05_text01"
+                android:id="@+id/signup06_text01"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="전문가를 인증할 수 있는 \n사진을 보내주세요"
+                android:text="전문가임을\n입증할 수 있는\n파일을 업로드 해주세요. "
                 android:textColor="@color/black"
                 android:textSize="28sp" />
 
 
             <TextView
-                android:id="@+id/signup05_text02"
+                android:id="@+id/signup06_text02"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="joker@gachon.ac.kr으로\n방금 입력하신 이메일과\n전문가 인증 사진을 함께 보내주세요."
+                android:text="전문가 인증은 운영측에서 확인 후\n완료시까지 1~2일이 소요될 수 있습니다."
                 android:textColor="@color/gray"
                 android:textSize="18sp" />
 
 
             <TextView
-                android:id="@+id/signup05_text03"
+                android:id="@+id/signup06_text03"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="운영측에서 확인 후, 이메일로 가입 확정 메일을 보내드립니다. 이 일은 1~2일이 소요될 수 있습니다."
+                android:text="인증 완료 전 및 실패 시에도\n서비스는 자유롭게 이용하실 수 있습니다."
                 android:textColor="@color/gray"
                 android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/signup06_edittext01"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/mainGreen"
+                android:textSize="22sp"
+                android:enabled="false" />
 
             <!--                background : 버튼 누르면 물결 효과-->
             <Button
                 android:id="@+id/signup06_button01"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
-                android:layout_gravity="right"
+                android:layout_margin="10dp"
+                android:layout_gravity="center"
                 android:background="@drawable/all_button_bg_ripple_round_15"
-                android:text="완료"
+                android:text="파일 선택"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+                tools:ignore="RtlHardcoded" />
+
+            <Button
+                android:id="@+id/signup06_button02"
+                android:layout_width="165dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/all_button_bg_ripple_round_15"
+                android:text="업로드 및 가입하기"
                 android:textColor="@color/white"
                 android:textSize="15dp"
                 tools:ignore="RtlHardcoded" />
