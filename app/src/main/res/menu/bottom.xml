@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/community"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_people_24"
+        android:title="Community" />
+
+    <item
+        android:id="@+id/matching"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_sync_24"
+        android:title="Matching" />
+
+    <item
+        android:id="@+id/chat"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_forum_24"
+        android:title="Chat" />
+
+    <item
+        android:id="@+id/myinfo"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="MyInfo" />
+
+</menu>
