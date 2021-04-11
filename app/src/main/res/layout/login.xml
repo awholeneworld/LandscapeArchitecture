@@ -61,6 +61,7 @@
             android:textSize="18dp"
             android:hint="Enter Password"
             android:singleLine="true"
+            android:inputType="textPassword"
             android:backgroundTint="@color/mainGreen"/>
 
         <Button

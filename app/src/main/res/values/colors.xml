@@ -2,6 +2,8 @@
 <resources>
     <color name="mainGreen">#509664</color>
     <color name="gray">#80000000</color>
+    <color name="whitegray">#2A000000</color>
+
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

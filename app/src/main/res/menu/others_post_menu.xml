@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <item
+        android:id="@+id/show_profile"
+        android:title="프로필보기"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/decelerate"
+        android:title="신고"
+        app:showAsAction="never"
+        />
+
+
+</menu>
