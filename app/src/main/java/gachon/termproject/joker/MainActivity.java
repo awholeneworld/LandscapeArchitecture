@@ -1,5 +1,6 @@
 package gachon.termproject.joker;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,15 +15,15 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static Activity mainActivity;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fm;
     private FragmentTransaction ft;
     private Home home;
-    private gachon.termproject.joker.Community community;
+    private Community community;
     private Matching matching;
     private Chat chat;
-    private gachon.termproject.joker.MyInfo myinfo;
+    private MyInfo myinfo;
     Menu menu;
 
     @Override
@@ -73,10 +74,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         home = new Home();
-        community = new gachon.termproject.joker.Community();
+        community = new Community();
         matching = new Matching();
         chat = new Chat();
-        myinfo = new gachon.termproject.joker.MyInfo();
+        myinfo = new MyInfo();
 
         setFrag(0);
     }
@@ -88,26 +89,31 @@ public class MainActivity extends AppCompatActivity {
         switch (n) {
             case 0:
                 ft.replace(R.id.main_frame, home);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
 
             case 1:
                 ft.replace(R.id.main_frame, community);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
 
             case 2:
                 ft.replace(R.id.main_frame, matching);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
 
             case 3:
                 ft.replace(R.id.main_frame, chat);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
 
             case 4:
                 ft.replace(R.id.main_frame, myinfo);
+                ft.addToBackStack(null);
                 ft.commit();
                 break;
         }

@@ -8,12 +8,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
-
     FirebaseAuth fAuth;
 
     @Override
@@ -21,8 +25,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        Button button_login = (Button)findViewById(R.id.login_button);
-        TextView forgetPW = (TextView)findViewById(R.id.login_text04_forgetPW);
+        Button button_login = (Button) findViewById(R.id.login_button);
+        TextView forgetPW = (TextView) findViewById(R.id.login_text04_forgetPW);
         TextView toSignup = findViewById(R.id.login_text06_signup);
         EditText id = findViewById(R.id.login_editText_ID);
         EditText pw = findViewById(R.id.login_editText_PW);
@@ -37,23 +41,23 @@ public class LoginActivity extends AppCompatActivity {
                 String ID = id.getText().toString().trim();
                 String PW = pw.getText().toString().trim();
 
-                //뭐 아이디랑 비밀번호가지고 여차져차 햇습니다
-
-                boolean isEnable = true; //아뒤비번이맞으면  true, 아니면 flase
-
-                if(isEnable){ //아듸비번맞으면 홈으로 넘어갑니다
-
-
-                    //근데 아직 홈을 구현 안해서... 구현되면 주석풀면됨
-                    //일단 로그인 되었다고 치고 토스트만 띄웁니다
-                    Toast.makeText(getApplicationContext(), "로그인 성공!! (화면넘어가는건 추후 홈이 구현된뒤에..)", Toast.LENGTH_LONG).show();
-
-//                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-//                    startActivity(intent);
-                }
-                else{ //아뒤비번이 안맞으면 토스트띄웁니다
-                    Toast.makeText(getApplicationContext(), "아이디나 비밀번호가 다릅니다", Toast.LENGTH_LONG).show();
-                }
+                // 아이디 비번 맞는지 확인하는 절차 코드 작성해야함
+                if (ID.length() > 0 && PW.length() > 0) {
+                    fAuth.signInWithEmailAndPassword(ID, PW)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        FirebaseUser user = fAuth.getCurrentUser();
+                                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_LONG).show();
+                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                        finish();
+                                    } else if (task.getException() != null)
+                                        Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                } else
+                    Toast.makeText(getApplicationContext(), "이메일 또는 비밀번호를 입력해 주세요.", Toast.LENGTH_LONG).show();
             }
         });
 

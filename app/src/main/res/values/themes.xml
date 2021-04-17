@@ -29,6 +29,7 @@
     </style>
 
     <style name="Theme.Joker.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="Theme.Joker.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

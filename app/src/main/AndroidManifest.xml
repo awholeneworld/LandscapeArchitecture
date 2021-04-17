@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="gachon.termproject.joker">
-
-    <!-- camera, gallery -->
+    <!-- 카메라, 외부 저장소 접근 권한 -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -14,13 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Joker">
-
-        <activity android:name=".LoginActivity"
+        <activity
+            android:name=".LoginActivity"
             android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
         <activity android:name=".Signup00Activity" />
         <activity android:name=".Signup01Activity" />
         <activity android:name=".Signup02Activity" />
@@ -28,18 +29,12 @@
         <activity android:name=".Signup04Activity" />
         <activity android:name=".Signup05Activity" />
         <activity android:name=".Signup06Activity" />
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".writepostActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".WritePostActivity"
+            android:configChanges="screenSize|orientation">
+        <!--^화면 회전 시 상태 및 데이터 초기화 방지^-->
         </activity>
-        <activity android:name=".PostActivity">
-
-        </activity>
-
-
+        <activity android:name=".SeePostActivity"></activity>
     </application>
 
 </manifest>

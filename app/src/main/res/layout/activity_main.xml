@@ -22,7 +22,6 @@
         </TextView>
     </androidx.appcompat.widget.Toolbar>
 
-
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="0dp"
@@ -37,7 +36,6 @@
 
     </FrameLayout>
 
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom"
         android:layout_width="match_parent"
@@ -48,4 +46,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom"
         tools:layout_editor_absoluteX="0dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

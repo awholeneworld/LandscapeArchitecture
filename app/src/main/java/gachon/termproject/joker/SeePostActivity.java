@@ -22,7 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 
-public class PostActivity extends AppCompatActivity {
+public class SeePostActivity extends AppCompatActivity {
     private Context mContext;
     private Activity mActivity;
     private Toolbar mToolbar;

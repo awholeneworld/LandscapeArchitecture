@@ -118,9 +118,12 @@ public class Signup04Activity extends AppCompatActivity {
                                     // 유저 정보 만들기
                                     Map<String,Object> user = new HashMap<>();
                                     user.put("ID", ID);
-                                    user.put("name", name);
+                                    user.put("nickName", name);
                                     user.put("location", locations);
                                     user.put("isPublic", true);
+                                    user.put("posts", 0);
+                                    user.put("match", 0);
+                                    user.put("chat", 0);
 
                                     documentReference.set(user); // 명시된 경로에 데이터 저장
 

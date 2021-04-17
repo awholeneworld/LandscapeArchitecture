@@ -41,6 +41,7 @@
             android:layout_gravity="center"
             android:textSize="18dp"
             android:hint="Enter ID"
+            android:inputType="textEmailAddress"
             android:singleLine="true"
             android:backgroundTint="@color/mainGreen"
             />

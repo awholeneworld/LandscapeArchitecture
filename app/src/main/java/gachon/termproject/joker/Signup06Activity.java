@@ -3,14 +3,17 @@ package gachon.termproject.joker;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -72,13 +75,6 @@ public class Signup06Activity extends AppCompatActivity {
 
     }
 
-    private void selectFile(){
-        Intent intent = new Intent();
-        intent.setType("application/*"); // 모든 종류의 파일 선택 가능
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"파일을 선택하세요."),0);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,29 +85,37 @@ public class Signup06Activity extends AppCompatActivity {
         }
     }
 
+    private void selectFile(){
+        Intent intent = new Intent();
+        intent.setType("application/*"); // 모든 종류의 파일 선택 가능
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"파일을 선택하세요."),0);
+    }
+
     private void uploadFileAndRegister() {
         if (file == null) { // 파일 선택 안했을 시
             Toast.makeText(getApplicationContext(), "파일을 선택하세요.", Toast.LENGTH_SHORT).show();
         } else { // 파일 선택했을 시
-            final ProgressDialog progressDialog = new ProgressDialog(this); // 진행 상황 표시 팝업
-            progressDialog.setTitle("업로드 중");
-            progressDialog.show();
+
+            ProgressBar progressBar = new ProgressBar(Signup06Activity.this, null, android.R.attr.progressBarStyleLarge); // 진행 상황 표시 팝업
+            progressBar.setVisibility(View.VISIBLE);
 
             String ID = ((Signup01Activity)Signup01Activity.context_01).identifier; // 누가 업로드 했는지 알기 위함
 
             StorageReference reference = storageReference.child("verification/" + ID); // 파일 저장소 경로 생성
-            reference.putFile(file).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() { // 파일 업로드
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) { // 업로드 완료되면
-                    Toast.makeText(Signup06Activity.this,"업로드가 완료되었습니다.",Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    register(); // 회원가입 진행
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            reference.putFile(file).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) { // 업로드 몇퍼센트 진행되고 있는지 알려줌
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    progressDialog.setMessage("업로드 진행 : "+ (int)progress+ "%");
+                    progressBar.setProgress((int)progress, true);
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() { // 파일 업로드
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) { // 업로드 완료되면
+                    Toast.makeText(Signup06Activity.this,"업로드가 완료되었습니다.",Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    register(); // 회원가입 진행
                 }
             });
         }
@@ -133,11 +137,14 @@ public class Signup06Activity extends AppCompatActivity {
                     String userID = fAuth.getCurrentUser().getUid();
                     DocumentReference documentReference = fStore.collection("users").document(userID);
 
-                    Map<String,Object> user = new HashMap<>();
+                    Map<String, Object> user = new HashMap<>();
                     user.put("ID", ID);
-                    user.put("name", name);
+                    user.put("nickName", name);
                     user.put("location", locations);
                     user.put("isPublic", true);
+                    user.put("posts", 0);
+                    user.put("match", 0);
+                    user.put("chat", 0);
 
                     documentReference.set(user);
 
