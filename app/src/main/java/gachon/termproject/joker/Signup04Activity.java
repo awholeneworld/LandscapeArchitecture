@@ -106,7 +106,7 @@ public class Signup04Activity extends AppCompatActivity {
                         // 회원가입을 위한 전역 변수 가져오기
                         String ID = ((Signup01Activity)Signup01Activity.context_01).identifier;
                         String PW = ((Signup02Activity)Signup02Activity.context_02).password;
-                        String name = ((Signup03Activity)Signup03Activity.context_03).name;
+                        String nickname = ((Signup03Activity)Signup03Activity.context_03).nickname;
                         List<String> locations = location;
                         // 회원가입 프로세스
                         fAuth.createUserWithEmailAndPassword(ID, PW).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -118,7 +118,7 @@ public class Signup04Activity extends AppCompatActivity {
                                     // 유저 정보 만들기
                                     Map<String,Object> user = new HashMap<>();
                                     user.put("ID", ID);
-                                    user.put("nickName", name);
+                                    user.put("nickname", nickname);
                                     user.put("location", locations);
                                     user.put("isPublic", true);
                                     user.put("posts", 0);
@@ -146,7 +146,7 @@ public class Signup04Activity extends AppCompatActivity {
 
                 }
                 else {//체크가 하나도 안되어있다면
-                    Toast.makeText(getApplicationContext(), "하나 이상의 지역을 선택해주세요.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "하나 이상의 지역을 선택해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

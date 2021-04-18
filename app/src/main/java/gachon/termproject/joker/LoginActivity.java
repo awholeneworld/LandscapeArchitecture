@@ -25,8 +25,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        Button button_login = (Button) findViewById(R.id.login_button);
-        TextView forgetPW = (TextView) findViewById(R.id.login_text04_forgetPW);
+        Button button_login = findViewById(R.id.login_button);
+        TextView forgetPW = findViewById(R.id.login_text04_forgetPW);
         TextView toSignup = findViewById(R.id.login_text06_signup);
         EditText id = findViewById(R.id.login_editText_ID);
         EditText pw = findViewById(R.id.login_editText_PW);
@@ -48,16 +48,19 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        FirebaseUser user = fAuth.getCurrentUser();
-                                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                         finish();
                                     } else if (task.getException() != null)
-                                        Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
                                 }
                             });
+                } else if (ID.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "이메일을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                } else if (PW.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
                 } else
-                    Toast.makeText(getApplicationContext(), "이메일 또는 비밀번호를 입력해 주세요.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "이메일 또는 비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
             }
         });
 

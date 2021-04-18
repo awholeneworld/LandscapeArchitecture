@@ -2,6 +2,7 @@ package gachon.termproject.joker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +16,20 @@ import java.util.ArrayList;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
 {
     private Context context;
-    ArrayList<TitleContent> titleContentList;
+    ArrayList<PostContent> postContentList;
     
-    public PostAdapter(Context context, ArrayList<TitleContent> titleContentList)
+    public PostAdapter(Context context, ArrayList<PostContent> postContentList)
     {
         this.context = context;
-        this.titleContentList = titleContentList;
+        this.postContentList = postContentList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
         TextView title;
+        String titleInPost;
+        ArrayList<String> contentInPost;
+        ArrayList<String> imagesInPost;
+        ArrayList<Integer> orderInPost;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -34,6 +39,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, SeePostActivity.class);
+                    intent.putExtra("title", titleInPost);
+                    intent.putStringArrayListExtra("content", contentInPost);
+                    intent.putStringArrayListExtra("images", imagesInPost);
+                    intent.putIntegerArrayListExtra("order", orderInPost);
                     context.startActivity(intent);
                 }
             });
@@ -52,14 +61,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        TitleContent content = titleContentList.get(position);
-        viewHolder.title.setText(content.getTitle());
+        PostContent content = postContentList.get(position);
+        String contentTitle = content.getTitle();
+        viewHolder.title.setText(contentTitle);
+        viewHolder.titleInPost = contentTitle;
+        viewHolder.contentInPost = content.getContent();
+        viewHolder.imagesInPost = content.getImages();
+        viewHolder.orderInPost = content.getOrder();
     }
 
     @Override
     public int getItemCount() {
-        return titleContentList.size();
+        return postContentList.size();
     }
-
-    
 }

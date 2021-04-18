@@ -8,13 +8,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 public class Signup03Activity extends AppCompatActivity {
     public static Context context_03;
-    public String name;
+    private FirebaseFirestore fStore;
+    private CollectionReference collectionReference;
+    private boolean isDuplicate = true;
+    public String nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,31 +48,45 @@ public class Signup03Activity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
         Button nextButton = findViewById(R.id.signup03_button01);
-        EditText nickName = findViewById(R.id.signup03_edittext01);
+        EditText nicknameText = findViewById(R.id.signup03_edittext01);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //닉네임을 입력받음
-                String nickname = nickName.getText().toString();
+                String temp = nicknameText.getText().toString();
 
                 //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
-                boolean isDuplicate = false; // true 면 사용되고 있는것 (데이터에 따라 바꿔주세요)
+                fStore = FirebaseFirestore.getInstance();
+                collectionReference = fStore.collection("users");
+                collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            List<DocumentSnapshot> list = querySnapshot.getDocuments();
 
+                            for (int i = 0; i < list.size(); i++) {
+                                DocumentSnapshot snapshot = list.get(i);
+                                String nicknameCheck = snapshot.getString("nickname");
+                                if (temp.compareTo(nicknameCheck) == 0) {
+                                    Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
+                                    isDuplicate = true;
+                                    break;
+                                }
+                            }
 
+                            if (!isDuplicate) {
+                                nickname = temp;
+                                //주 활동 지역 페이지로 이동
+                                Intent intent = new Intent(getApplicationContext(), Signup04Activity.class);
+                                startActivity(intent);
+                            }
 
-                if (!isDuplicate){ //사용가능한 닉네임이라면
-                    //닉네임 데이터 여차저차 처리하고
-
-
-                    name = nickname;
-                    //주 활동 지역 페이지로 이동
-                    Intent intent = new Intent(getApplicationContext(), Signup04Activity.class);
-                    startActivity(intent);
-                }
-                else {//불일치한다면
-                    Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_LONG).show();
-                }
+                            isDuplicate = false; // 초기화
+                        }
+                    }
+                });
             }
         });
     }

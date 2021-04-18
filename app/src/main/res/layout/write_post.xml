@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:id="@+id/post_container"
         android:layout_width="match_parent"
@@ -74,13 +73,11 @@
                     android:paddingBottom="5dp"
                     android:textSize="16sp" />
 
-
             </LinearLayout>
 
         </ScrollView>
 
     </LinearLayout>
-
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -115,6 +112,5 @@
             android:textColor="@color/white"
             android:textSize="15sp" />
     </FrameLayout>
-
 
 </FrameLayout>

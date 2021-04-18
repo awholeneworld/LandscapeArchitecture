@@ -14,9 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,9 +22,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 public class  Community extends Fragment {
     private View view;
@@ -37,7 +35,7 @@ public class  Community extends Fragment {
     private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    ArrayList<TitleContent> titleContentList = new ArrayList<>();
+    ArrayList<PostContent> postContentList;
     ValueEventListener postsListener;
 
     @Nullable
@@ -50,20 +48,21 @@ public class  Community extends Fragment {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts/example/" + user.getUid());
+        databaseReference = firebaseDatabase.getReference("Posts/example");
 
-        PostAdapter postAdapter = new PostAdapter(getActivity(), titleContentList);
-        contents.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true));
+        postContentList = new ArrayList<>();
+        PostAdapter postAdapter = new PostAdapter(getActivity(), postContentList);
+        contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
         contents.setAdapter(postAdapter);
 
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                titleContentList.clear();
+                postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    TitleContent titleContent = snapshot.getValue(TitleContent.class);
-                    titleContentList.add(titleContent);
+                    PostContent postContent = snapshot.getValue(PostContent.class);
+                    postContentList.add(0, postContent);
                 }
                 postAdapter.notifyDataSetChanged();
             }
@@ -79,17 +78,28 @@ public class  Community extends Fragment {
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                databaseReference.addListenerForSingleValueEvent(postsListener);
+                refresher.setRefreshing(false);
             }
         });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), WritePostActivity.class));
+                startActivityForResult(new Intent(getActivity(), WritePostActivity.class), 1);
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK)
+                databaseReference.addListenerForSingleValueEvent(postsListener);
+        }
     }
 }

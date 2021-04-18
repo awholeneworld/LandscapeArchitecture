@@ -89,14 +89,13 @@ public class Signup06Activity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("application/*"); // 모든 종류의 파일 선택 가능
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"파일을 선택하세요."),0);
+        startActivityForResult(Intent.createChooser(intent,"파일을 선택하세요."), 0);
     }
 
     private void uploadFileAndRegister() {
         if (file == null) { // 파일 선택 안했을 시
             Toast.makeText(getApplicationContext(), "파일을 선택하세요.", Toast.LENGTH_SHORT).show();
         } else { // 파일 선택했을 시
-
             ProgressBar progressBar = new ProgressBar(Signup06Activity.this, null, android.R.attr.progressBarStyleLarge); // 진행 상황 표시 팝업
             progressBar.setVisibility(View.VISIBLE);
 
@@ -127,7 +126,7 @@ public class Signup06Activity extends AppCompatActivity {
 
         String ID = ((Signup01Activity)Signup01Activity.context_01).identifier;
         String PW = ((Signup02Activity)Signup02Activity.context_02).password;
-        String name = ((Signup03Activity)Signup03Activity.context_03).name;
+        String nickname = ((Signup03Activity)Signup03Activity.context_03).nickname;
         List<String> locations = ((Signup04Activity)Signup04Activity.context_04).location;
 
         fAuth.createUserWithEmailAndPassword(ID, PW).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -139,7 +138,7 @@ public class Signup06Activity extends AppCompatActivity {
 
                     Map<String, Object> user = new HashMap<>();
                     user.put("ID", ID);
-                    user.put("nickName", name);
+                    user.put("nickname", nickname);
                     user.put("location", locations);
                     user.put("isPublic", true);
                     user.put("posts", 0);

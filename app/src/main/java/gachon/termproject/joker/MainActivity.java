@@ -1,6 +1,5 @@
 package gachon.termproject.joker;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,21 +9,19 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    public static Activity mainActivity;
-    private BottomNavigationView bottomNavigationView;
     private FragmentManager fm;
-    private FragmentTransaction ft;
+    private BottomNavigationView bottomNavigationView;
     private Home home;
     private Community community;
     private Matching matching;
     private Chat chat;
     private MyInfo myinfo;
     Menu menu;
+    private int backPressed = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +38,10 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
         //toolbar~~~~~~~~~end
 
-
         bottomNavigationView = findViewById(R.id.bottom);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 switch (item.getItemId()) {
                     case R.id.home:
                         setFrag(0);
@@ -73,51 +68,83 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        home = new Home();
-        community = new Community();
-        matching = new Matching();
-        chat = new Chat();
-        myinfo = new MyInfo();
-
         setFrag(0);
     }
 
     private void setFrag(int n) {
         fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
 
         switch (n) {
             case 0:
-                ft.replace(R.id.main_frame, home);
-                ft.addToBackStack(null);
-                ft.commit();
+                if (home == null) {
+                    home = new Home();
+                    fm.beginTransaction().add(R.id.main_frame, home).commit();
+                }
+                if (home != null) fm.beginTransaction().show(home).commit();
+                if (community != null) fm.beginTransaction().hide(community).commit();
+                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                if (chat != null) fm.beginTransaction().hide(chat).commit();
+                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
                 break;
 
             case 1:
-                ft.replace(R.id.main_frame, community);
-                ft.addToBackStack(null);
-                ft.commit();
+                if (community == null) {
+                    community = new Community();
+                    fm.beginTransaction().add(R.id.main_frame, community).commit();
+                }
+                if (home != null) fm.beginTransaction().hide(home).commit();
+                if (community != null) fm.beginTransaction().show(community).commit();
+                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                if (chat != null) fm.beginTransaction().hide(chat).commit();
+                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
                 break;
 
             case 2:
-                ft.replace(R.id.main_frame, matching);
-                ft.addToBackStack(null);
-                ft.commit();
+                if (matching == null) {
+                    matching = new Matching();
+                    fm.beginTransaction().add(R.id.main_frame, matching).commit();
+                }
+                if (home != null) fm.beginTransaction().hide(home).commit();
+                if (community != null) fm.beginTransaction().hide(community).commit();
+                if (matching != null) fm.beginTransaction().show(matching).commit();
+                if (chat != null) fm.beginTransaction().hide(chat).commit();
+                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
                 break;
 
             case 3:
-                ft.replace(R.id.main_frame, chat);
-                ft.addToBackStack(null);
-                ft.commit();
+                if (chat == null) {
+                    chat = new Chat();
+                    fm.beginTransaction().add(R.id.main_frame, chat).commit();
+                }
+                if (home != null) fm.beginTransaction().hide(home).commit();
+                if (community != null) fm.beginTransaction().hide(community).commit();
+                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                if (chat != null) fm.beginTransaction().show(chat).commit();
+                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
                 break;
 
             case 4:
-                ft.replace(R.id.main_frame, myinfo);
-                ft.addToBackStack(null);
-                ft.commit();
+                if (myinfo == null) {
+                    myinfo = new MyInfo();
+                    fm.beginTransaction().add(R.id.main_frame, myinfo).addToBackStack(null).commit();
+                }
+                if (home != null) fm.beginTransaction().hide(home).commit();
+                if (community != null) fm.beginTransaction().hide(community).commit();
+                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                if (chat != null) fm.beginTransaction().hide(chat).commit();
+                if (myinfo != null) fm.beginTransaction().show(myinfo).commit();
                 break;
         }
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (backPressed == 0) {
+            setFrag(0);
+            bottomNavigationView.setSelectedItemId(R.id.home);
+            backPressed++;
+        }
+        else finish();
+    }
 }

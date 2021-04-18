@@ -49,15 +49,16 @@ public class WritePostActivity extends AppCompatActivity {
     private Context mContext;
     private Activity mActivity;
     private Toolbar mToolbar;
-    private TitleContent titleContent;
-    private Uri image; // 이미지 저장 변수
     private FirebaseUser user;
     private FirebaseFirestore fStore;
     private DocumentReference documentReference;
     private DatabaseReference mDatabase;
     private StorageReference storageReference;
-    private ArrayList<String> postContent = new ArrayList<String>();
-    private ArrayList<Uri> imageList = new ArrayList<Uri>();
+    private PostContent postContent;
+    private Uri image; // 이미지 저장 변수
+    private ArrayList<String> postContentList = new ArrayList<String>();
+    private ArrayList<String> imageList = new ArrayList<String>();
+    private ArrayList<Integer> contentOrder = new ArrayList<Integer>();
     private int postTime;
     LinearLayout layout;
     EditText title, content;
@@ -98,7 +99,7 @@ public class WritePostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (title.length() > 0 && content.length() > 0) {
                     post("example");
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class)); // startActivityForResult로 해야할듯
+                    setResult(RESULT_OK, new Intent());
                     finish();
                 } else if (title.length() <= 0){
                     Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주십시오.", Toast.LENGTH_SHORT).show();
@@ -134,7 +135,8 @@ public class WritePostActivity extends AppCompatActivity {
             editText.setBackground(null);
             editText.setTextSize(16);
 
-            imageList.add(image);
+            String imageStr = image.toString();
+            imageList.add(imageStr);
             layout.addView(imageView);
             layout.addView(editText);
         }
@@ -181,23 +183,27 @@ public class WritePostActivity extends AppCompatActivity {
         });
 
         // 게시글 내용 리스트에 담기
-        for (int i = 0; i < layout.getChildCount(); i++) {
+        for (int i = 1; i < layout.getChildCount(); i++) {
             View view = layout.getChildAt(i);
             if (view instanceof EditText) {
                 String text = ((EditText) view).getText().toString();
-
-                if (text.length() > 0)
-                    postContent.add(text);
+                if (text.length() > 0) {
+                    postContentList.add(text);
+                    contentOrder.add(0);
+                }
+            } else if (view instanceof ImageView) {
+                contentOrder.add(1);
+                postContentList.add("");
             }
         }
 
         // 제목, 내용 String으로 변환 후 리스트에 담기
         String titleToSend = title.getText().toString();
-        String contents = String.join("\n", postContent);
-        titleContent = new TitleContent(titleToSend, contents);
+        // String contents = String.join("\n", postContentList);
+        postContent = new PostContent(userId, titleToSend, postContentList, imageList, contentOrder);
 
         // DB에 올리기
-        mDatabase.child("Posts").child(category).child(userId).push().setValue(titleContent).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mDatabase.child("Posts").child(category).push().setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
@@ -207,7 +213,7 @@ public class WritePostActivity extends AppCompatActivity {
         // Storage에 이미지 올리기
         String postPath = String.valueOf(System.currentTimeMillis());
         for (int i = 0; i < imageList.size(); i++) {
-            image = imageList.get(i);
+            image = Uri.parse(imageList.get(i));
             storageReference.child("imagesPosted/" + category + "/" + userId + "/" + postPath + "/" + postPath + ".jpg").putFile(image).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
