@@ -36,7 +36,9 @@ public class  Community extends Fragment {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
+    PostContent contentPost;
     ValueEventListener postsListener;
+    String category;
 
     @Nullable
     @Override
@@ -46,9 +48,11 @@ public class  Community extends Fragment {
         contents = view.findViewById(R.id.content_community);
         button = view.findViewById(R.id.fab);
 
+        category = "example";
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts/example");
+        databaseReference = firebaseDatabase.getReference("Posts/" + category);
 
         postContentList = new ArrayList<>();
         PostAdapter postAdapter = new PostAdapter(getActivity(), postContentList);

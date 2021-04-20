@@ -1,12 +1,18 @@
 package gachon.termproject.joker;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +21,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,13 +30,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,22 +47,31 @@ import com.google.firebase.storage.UploadTask;
 
 import com.bumptech.glide.Glide;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class WritePostActivity extends AppCompatActivity {
     private Context mContext;
     private Activity mActivity;
     private Toolbar mToolbar;
-    private FirebaseUser user;
-    private FirebaseFirestore fStore;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
-    private DatabaseReference mDatabase;
-    private StorageReference storageReference;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+    private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private PostContent postContent;
     private Uri image; // 이미지 저장 변수
-    private ArrayList<String> postContentList = new ArrayList<String>();
-    private ArrayList<String> imageList = new ArrayList<String>();
+    private ArrayList<String> contentList = new ArrayList<String>();
+    private ArrayList<String> imagesNumber = new ArrayList<String>();
+    private ArrayList<Uri> imagesList = new ArrayList<Uri>();
     private ArrayList<Integer> contentOrder = new ArrayList<Integer>();
+    private String userId = user.getUid(); // 누가 업로드 했는지 알기 위함
+    private String postId;
     private int postTime;
     LinearLayout layout;
     EditText title, content;
@@ -111,16 +124,17 @@ public class WritePostActivity extends AppCompatActivity {
 
     }
 
-    // 문제 : 화면 회전 시 이미지 다 날라감. 다크모드 사용시 실행 안됨.
-    //이미지 동적 생성
+    // 이미지 파일 선택 후 실행되는 액티비티 : 이미지 동적 생성
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 0 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            image = data.getData(); // 파일 가져옴
+            // 이미지 파일 가져옴
+            image = data.getData();
 
+            // 레이아웃 설정
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(dpToPx(35),0, dpToPx(35),0);
 
@@ -129,20 +143,21 @@ public class WritePostActivity extends AppCompatActivity {
             imageView.setLayoutParams(layoutParams);
             Glide.with(this).load(image).into(imageView);
 
+            // 텍스트뷰가 이어서 생성된다.
             EditText editText = new EditText(WritePostActivity.this);
             editText.setLayoutParams(layoutParams);
             editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
             editText.setBackground(null);
             editText.setTextSize(16);
 
-            String imageStr = image.toString();
-            imageList.add(imageStr);
             layout.addView(imageView);
             layout.addView(editText);
+
+            imagesList.add(image);
         }
     }
 
-    //파일선택
+    // 파일선택 함수
     private void selectFile(){
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -150,19 +165,11 @@ public class WritePostActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent,"파일을 선택해주세요."),0);
     }
 
-    // 글(+이미지) 업로드
+    // 포스트 업로드 함수
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void post(String category) {
-        fStore = FirebaseFirestore.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        String userId = user.getUid(); // 누가 업로드 했는지 알기 위함
-        ProgressBar progressBar = new ProgressBar(WritePostActivity.this, null, android.R.attr.progressBarStyleLarge); // 진행 상황 표시 팝업
-        progressBar.setVisibility(View.VISIBLE);
-
-        // 게시한 글 수 업데이트
-        documentReference = fStore.collection("users").document(userId);
+        // 사용자가 게시한 글 수 업데이트
+        documentReference = fireStore.collection("users").document(userId);
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -182,53 +189,83 @@ public class WritePostActivity extends AppCompatActivity {
             }
         });
 
-        // 게시글 내용 리스트에 담기
+        // 글 내용과 글, 이미지 순서 각각 리스트에 담기
+        int j = 0;
         for (int i = 1; i < layout.getChildCount(); i++) {
             View view = layout.getChildAt(i);
             if (view instanceof EditText) {
                 String text = ((EditText) view).getText().toString();
                 if (text.length() > 0) {
-                    postContentList.add(text);
+                    contentList.add(text);
                     contentOrder.add(0);
                 }
             } else if (view instanceof ImageView) {
                 contentOrder.add(1);
-                postContentList.add("");
+                contentList.add("");
+                imagesNumber.add(j + "");
+                j++;
             }
         }
 
-        // 제목, 내용 String으로 변환 후 리스트에 담기
-        String titleToSend = title.getText().toString();
-        // String contents = String.join("\n", postContentList);
-        postContent = new PostContent(userId, titleToSend, postContentList, imageList, contentOrder);
+        // 포스트 내용 바구니
+        postId = String.valueOf(System.currentTimeMillis());
+        postContent = new PostContent(userId, title.getText().toString(), postId, contentList, imagesNumber, contentOrder);
 
-        // DB에 올리기
-        mDatabase.child("Posts").child(category).push().setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
+        // DB에 글 올리기
+        databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Storage에 이미지 올리기
-        String postPath = String.valueOf(System.currentTimeMillis());
-        for (int i = 0; i < imageList.size(); i++) {
-            image = Uri.parse(imageList.get(i));
-            storageReference.child("imagesPosted/" + category + "/" + userId + "/" + postPath + "/" + postPath + ".jpg").putFile(image).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) { // 업로드 몇퍼센트 진행되고 있는지 알려줌
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    progressBar.setProgress((int)progress, true);
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() { // 파일 업로드
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) { // 업로드 완료되면
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
-        }
+        // Storage에 이미지 업로드 후 Url 저장하기
+        for (int i = 0; i < imagesList.size(); i++) {
+            try {
+                StorageReference imageStorage = storageReference.child("imagesPosted/" + category + "/" + userId + "/" + postId + "/" + image.getLastPathSegment());
+                UploadTask uploadTask = imageStorage.putFile(imagesList.get(i));
+                int imageNum = i;
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
 
+                        // Continue with the task to get the download URL
+                        return imageStorage.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        if (task.isSuccessful()) {
+                            //파이어베이스에 데이터베이스 업로드
+                            @SuppressWarnings("VisibleForTests")
+                            Uri downloadUrl = task.getResult();
+                            String url = downloadUrl.toString();
+                            /*
+                            ImageDTO imageDTO = new ImageDTO();
+                            imageDTO.setImageUrl(downloadUrl.toString());
+                            imageDTO.setTitle(etTitle.getText().toString());
+                            imageDTO.setDescription(etDesc.getText().toString());
+                            imageDTO.setUid(mAuth.getCurrentUser().getUid());
+                            imageDTO.setUserId(mAuth.getCurrentUser().getEmail());
+                            */
+                            //image 라는 테이블에 json 형태로 담긴다.
+                            //database.getReference().child("Profile").setValue(imageDTO);
+                            //  .push()  :  데이터가 쌓인다.
+                            databaseReference.child("Posts/" + category + "/" + postId + "/images/" + imageNum).setValue(url);
+                            Toast.makeText(WritePostActivity.this, "업로드 성공", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Handle failures
+                            // ...
+                        }
+                    }
+                });
+            } catch (NullPointerException e) {
+                Toast.makeText(WritePostActivity.this, "이미지 없음", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public static int dpToPx(int dp){

@@ -26,7 +26,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
         TextView title;
+        String userIdInPost;
         String titleInPost;
+        String postIdInPost;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<Integer> orderInPost;
@@ -39,7 +41,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, SeePostActivity.class);
+                    intent.putExtra("userId", userIdInPost);
                     intent.putExtra("title", titleInPost);
+                    intent.putExtra("postId", postIdInPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putIntegerArrayListExtra("order", orderInPost);
@@ -64,7 +68,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         PostContent content = postContentList.get(position);
         String contentTitle = content.getTitle();
         viewHolder.title.setText(contentTitle);
+
+        viewHolder.userIdInPost = content.getId();
         viewHolder.titleInPost = contentTitle;
+        viewHolder.postIdInPost = content.getPostId();
         viewHolder.contentInPost = content.getContent();
         viewHolder.imagesInPost = content.getImages();
         viewHolder.orderInPost = content.getOrder();
