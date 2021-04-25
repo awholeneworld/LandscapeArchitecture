@@ -9,15 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class Matching extends Fragment {
-
-    private View view;
+public class CommunityAlbumStyle extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.community_album_style, container, false);
 
-        return view;
+        return rootView;
     }
 }

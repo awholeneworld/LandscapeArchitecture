@@ -15,11 +15,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
     private FragmentManager fm;
     private BottomNavigationView bottomNavigationView;
-    private Home home;
-    private Community community;
-    private Matching matching;
-    private Chat chat;
-    private MyInfo myinfo;
+    private HomeFrame home;
+    private CommunityListStyle community;
+    private MatchingFrame matching;
+    private ChatFrame chat;
+    private MyInfoFrame myinfo;
     Menu menu;
     private int backPressed = 0;
 
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         switch (n) {
             case 0:
                 if (home == null) {
-                    home = new Home();
+                    home = new HomeFrame();
                     fm.beginTransaction().add(R.id.main_frame, home).commit();
                 }
                 if (home != null) fm.beginTransaction().show(home).commit();
@@ -89,7 +89,9 @@ public class MainActivity extends AppCompatActivity {
 
             case 1:
                 if (community == null) {
-                    community = new Community();
+                    // Community Tab 완성하면 CommunityFrame으로 수정해야됨!!
+                    community = new CommunityListStyle();                    //
+                    //
                     fm.beginTransaction().add(R.id.main_frame, community).commit();
                 }
                 if (home != null) fm.beginTransaction().hide(home).commit();
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 2:
                 if (matching == null) {
-                    matching = new Matching();
+                    matching = new MatchingFrame();
                     fm.beginTransaction().add(R.id.main_frame, matching).commit();
                 }
                 if (home != null) fm.beginTransaction().hide(home).commit();
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 3:
                 if (chat == null) {
-                    chat = new Chat();
+                    chat = new ChatFrame();
                     fm.beginTransaction().add(R.id.main_frame, chat).commit();
                 }
                 if (home != null) fm.beginTransaction().hide(home).commit();
@@ -125,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 4:
                 if (myinfo == null) {
-                    myinfo = new MyInfo();
+                    myinfo = new MyInfoFrame();
                     fm.beginTransaction().add(R.id.main_frame, myinfo).addToBackStack(null).commit();
                 }
                 if (home != null) fm.beginTransaction().hide(home).commit();

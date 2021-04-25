@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Chat extends Fragment {
+public class ChatFrame extends Fragment {
     LinearLayout layout;
     RelativeLayout layout_2;
     ImageView sendButton;
@@ -32,7 +32,7 @@ public class Chat extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.chat, container, false);
+        view = inflater.inflate(R.layout.chat_frame, container, false);
         /*
         layout = view.findViewById(R.id.layout1);
         layout_2 = view.findViewById(R.id.layout2);
