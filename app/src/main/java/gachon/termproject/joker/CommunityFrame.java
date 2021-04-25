@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -30,79 +32,51 @@ import static android.app.Activity.RESULT_OK;
 
 public class  CommunityFrame extends Fragment {
     private View view;
-    private SwipeRefreshLayout refresher;
-    private RecyclerView contents;
-    private FirebaseUser user;
-    private FloatingActionButton button;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    ArrayList<PostContent> postContentList;
-    PostContent contentPost;
-    ValueEventListener postsListener;
-    String category;
+    private FragmentManager fm;
+    private FloatingActionButton button1;
+    private FloatingActionButton button2;
+    private CommunityListStyle communityList;
+    private CommunityAlbumStyle communityAlbum;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.community_frame, container, false);
-        refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
-        category = "example";
+        fm = getChildFragmentManager();
+        if (communityList == null) {
+            communityList = new CommunityListStyle();
+            fm.beginTransaction().add(R.id.community_frame, communityList).commit();
+            fm.beginTransaction().show(communityList).commit();
+        }
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts/" + category);
-
-        postContentList = new ArrayList<>();
-        PostAdapter postAdapter = new PostAdapter(getActivity(), postContentList);
-
-        postsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postContentList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    PostContent postContent = snapshot.getValue(PostContent.class);
-                    postContentList.add(0, postContent);
-                }
-                postAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        databaseReference.addListenerForSingleValueEvent(postsListener);
-
-        /*
-        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
-                refresher.setRefreshing(false);
-            }
-        });
-        */
-
-        button.setOnClickListener(new View.OnClickListener() {
+        // <현재 테스트용 코드>
+        // button1 = 리스트 & button2 = 앨범형
+        // 추후 탭 버튼이랑 연계하면 됨
+        button1 = view.findViewById(R.id.list);
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), WritePostActivity.class), 1);
+                if (communityAlbum != null) {
+                    fm.beginTransaction().hide(communityAlbum).commit();
+                    fm.beginTransaction().show(communityList).commit();
+                }
+            }
+        });
+
+        button2 = view.findViewById(R.id.album);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (communityAlbum == null) {
+                    communityAlbum = new CommunityAlbumStyle();
+                    fm.beginTransaction().add(R.id.community_frame, communityAlbum).commit();
+                }
+                fm.beginTransaction().show(communityAlbum).commit();
+                fm.beginTransaction().hide(communityList).commit();
             }
         });
 
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK)
-                databaseReference.addListenerForSingleValueEvent(postsListener);
-        }
     }
 }

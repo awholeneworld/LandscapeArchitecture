@@ -16,10 +16,10 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fm;
     private BottomNavigationView bottomNavigationView;
     private HomeFrame home;
-    private CommunityListStyle community;
+    private CommunityFrame community;
     private MatchingFrame matching;
     private ChatFrame chat;
-    private MyInfoFrame myinfo;
+    private MyInfoFrame myInfo;
     Menu menu;
     private int backPressed = 0;
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                         setFrag(3);
                         break;
 
-                    case R.id.myinfo:
+                    case R.id.myInfo:
                         setFrag(4);
                         break;
                 }
@@ -84,21 +84,20 @@ public class MainActivity extends AppCompatActivity {
                 if (community != null) fm.beginTransaction().hide(community).commit();
                 if (matching != null) fm.beginTransaction().hide(matching).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
-                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
+                if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
                 break;
 
             case 1:
                 if (community == null) {
                     // Community Tab 완성하면 CommunityFrame으로 수정해야됨!!
-                    community = new CommunityListStyle();                    //
-                    //
+                    community = new CommunityFrame();
                     fm.beginTransaction().add(R.id.main_frame, community).commit();
                 }
                 if (home != null) fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().show(community).commit();
                 if (matching != null) fm.beginTransaction().hide(matching).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
-                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
+                if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
                 break;
 
             case 2:
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 if (community != null) fm.beginTransaction().hide(community).commit();
                 if (matching != null) fm.beginTransaction().show(matching).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
-                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
+                if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
                 break;
 
             case 3:
@@ -122,19 +121,19 @@ public class MainActivity extends AppCompatActivity {
                 if (community != null) fm.beginTransaction().hide(community).commit();
                 if (matching != null) fm.beginTransaction().hide(matching).commit();
                 if (chat != null) fm.beginTransaction().show(chat).commit();
-                if (myinfo != null) fm.beginTransaction().hide(myinfo).commit();
+                if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
                 break;
 
             case 4:
-                if (myinfo == null) {
-                    myinfo = new MyInfoFrame();
-                    fm.beginTransaction().add(R.id.main_frame, myinfo).addToBackStack(null).commit();
+                if (myInfo == null) {
+                    myInfo = new MyInfoFrame();
+                    fm.beginTransaction().add(R.id.main_frame, myInfo).addToBackStack(null).commit();
                 }
                 if (home != null) fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
                 if (matching != null) fm.beginTransaction().hide(matching).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
-                if (myinfo != null) fm.beginTransaction().show(myinfo).commit();
+                if (myInfo != null) fm.beginTransaction().show(myInfo).commit();
                 break;
         }
 

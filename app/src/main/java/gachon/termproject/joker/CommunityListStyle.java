@@ -37,7 +37,7 @@ public class  CommunityListStyle extends Fragment {
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
-    PostContent contentPost;
+    PostContent postContent;
     ValueEventListener postsListener;
     String category;
 
@@ -45,10 +45,11 @@ public class  CommunityListStyle extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.community_list_style, container, false);
-        refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
         category = "example";
+        contents = view.findViewById(R.id.content_community);
+        refresher = view.findViewById(R.id.refresh_layout);
+        button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -57,12 +58,16 @@ public class  CommunityListStyle extends Fragment {
         postContentList = new ArrayList<>();
         PostAdapter postAdapter = new PostAdapter(getActivity(), postContentList);
 
+        contents.setLayoutManager(new LinearLayoutManager(getActivity()));
+        contents.setHasFixedSize(true);
+        contents.setAdapter(postAdapter);
+
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    PostContent postContent = snapshot.getValue(PostContent.class);
+                    postContent = snapshot.getValue(PostContent.class);
                     postContentList.add(0, postContent);
                 }
                 postAdapter.notifyDataSetChanged();
@@ -76,7 +81,6 @@ public class  CommunityListStyle extends Fragment {
 
         databaseReference.addListenerForSingleValueEvent(postsListener);
 
-        /*
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -84,7 +88,6 @@ public class  CommunityListStyle extends Fragment {
                 refresher.setRefreshing(false);
             }
         });
-        */
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,44 +109,3 @@ public class  CommunityListStyle extends Fragment {
         }
     }
 }
-
-/*
-package gachon.termproject.joker;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-
-import static android.app.Activity.RESULT_OK;
-
-public class CommunityListStyle extends Fragment {
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.community_list_style, container, false);
-
-        return rootView;
-    }
-
-}
-
- */
