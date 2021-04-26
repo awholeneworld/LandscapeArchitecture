@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
 import android.view.Gravity;
@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import gachon.termproject.joker.R;
 
 public class ChatFrame extends Fragment {
     LinearLayout layout;

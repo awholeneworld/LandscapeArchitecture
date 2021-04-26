@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.activity;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,6 +11,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import gachon.termproject.joker.R;
+import gachon.termproject.joker.fragment.ChatFrame;
+import gachon.termproject.joker.fragment.CommunityFrame;
+import gachon.termproject.joker.fragment.HomeFrame;
+import gachon.termproject.joker.fragment.MatchingFrame;
+import gachon.termproject.joker.fragment.MyInfoFrame;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentManager fm;

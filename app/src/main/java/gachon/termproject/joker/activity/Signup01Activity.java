@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +20,8 @@ import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+
+import gachon.termproject.joker.R;
 
 public class Signup01Activity extends AppCompatActivity {
     // 회원가입을 위한 전역변수 설정

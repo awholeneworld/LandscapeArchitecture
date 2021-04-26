@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -6,21 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -32,15 +28,15 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+
+import gachon.termproject.joker.R;
+
+import static gachon.termproject.joker.Util.isStorageUrl;
 
 public class SeePostActivity extends AppCompatActivity {
     private Context mContext;
@@ -55,10 +51,10 @@ public class SeePostActivity extends AppCompatActivity {
         setContentView(R.layout.see_post);
 
         Intent intent = getIntent();
-        String userId = intent.getStringExtra("userId");
         String postId = intent.getStringExtra("postId");
         String category = "example";
         ArrayList<String> content = intent.getStringArrayListExtra("content");
+        ArrayList<String> images = intent.getStringArrayListExtra("images");
         ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
 
         //toolbar를 activity bar로 지정!
@@ -81,8 +77,9 @@ public class SeePostActivity extends AppCompatActivity {
         container = findViewById(R.id.seepost_content);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        // imageview 채우기
+        // imageView 채우기
         databaseReference = FirebaseDatabase.getInstance().getReference();
+
         int imageNum = 0;
         for (int i = 0; i < order.size(); i++) {
             if (order.get(i) == 0) {
@@ -96,32 +93,17 @@ public class SeePostActivity extends AppCompatActivity {
 
                 //부모 뷰에 추가
                 container.addView(text_content);
-            } else if (order.get(i) == 1){
+            } else if (order.get(i) == 1 && isStorageUrl(images.get(imageNum))){
                 //이미지뷰 생성
                 ImageView imageView = new ImageView(SeePostActivity.this);
                 imageView.setLayoutParams(lp);
-                databaseReference.child("Posts/" + category + "/" + postId + "/images/" + imageNum).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Uri image = Uri.parse(String.valueOf(task.getResult().getValue()));
-                            Glide.with(SeePostActivity.this).load(image).into(imageView);
-                            container.addView(imageView);
-                        }
-                    }
-                });
+                Glide.with(SeePostActivity.this).load(images.get(imageNum)).into(imageView);
+                container.addView(imageView);
                 imageNum++;
             }
         }
 
-        //imageview같은 경우 사진 있는 경우만 나오게 예외처리? 해도될듯 ㅁㄹ알아서하세요~~ㅎ
-        //일단 ㄹㅇ 들어갈 자리만 봐둔거라 레이아웃은 시험 끝나고 손볼 예정이에요~~~
-        //그리고 코딩은 따로 안해둿는데 유저 이름 - 글올린 시간 - 사진도 다 넣어주셔야 해용 (아이디는 xml파일에 지정은 다 해둠ㅁ)
-        //아마 유저이름 그거할라면 login에서부터 이어져야겟죠? 하지만아직구현안해서 알아서하시면될듯... 모르겟으면 바로 연락주세요
         //댓글아직 구현암함!!!
-
-
-
     }
 
     //위에 메뉴 관련
@@ -148,25 +130,6 @@ public class SeePostActivity extends AppCompatActivity {
         }
 
         return true;
-    }
-
-    public static byte[] binaryStringToByteArray(String s) {
-        int count = s.length() / 8;
-        byte[] b = new byte[count];
-        for (int i = 1; i < count; ++i) {
-            String t = s.substring((i - 1) * 8, i * 8);
-            b[i - 1] = binaryStringToByte(t);
-        }
-        return b;
-    }
-
-    public static byte binaryStringToByte(String s) {
-        byte ret = 0, total = 0;
-        for (int i = 0; i < 8; ++i) {
-            ret = (s.charAt(7 - i) == '1') ? (byte) (1 << i) : 0;
-            total = (byte) (ret | total);
-        }
-        return total;
     }
 
     public static int dpToPx(int dp){

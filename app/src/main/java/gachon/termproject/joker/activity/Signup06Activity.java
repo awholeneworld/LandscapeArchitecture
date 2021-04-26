@@ -1,6 +1,5 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -33,6 +32,8 @@ import com.google.firebase.storage.UploadTask;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import gachon.termproject.joker.R;
 
 public class Signup06Activity extends AppCompatActivity {
     private StorageReference storageReference; // 파일 저장소

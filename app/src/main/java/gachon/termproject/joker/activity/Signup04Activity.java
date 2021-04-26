@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import gachon.termproject.joker.R;
 
 public class Signup04Activity extends AppCompatActivity {
     public static Context context_04;

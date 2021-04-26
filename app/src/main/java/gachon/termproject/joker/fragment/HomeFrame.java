@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,14 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class MatchingFrame extends Fragment {
+import gachon.termproject.joker.R;
+
+public class HomeFrame extends Fragment {
 
     private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_frame, container, false);
+        view = inflater.inflate(R.layout.home_frame, container, false);
 
         return view;
     }

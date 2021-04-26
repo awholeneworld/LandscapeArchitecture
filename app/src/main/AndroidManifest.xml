@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Joker">
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,19 +22,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Signup00Activity" />
-        <activity android:name=".Signup01Activity" />
-        <activity android:name=".Signup02Activity" />
-        <activity android:name=".Signup03Activity" />
-        <activity android:name=".Signup04Activity" />
-        <activity android:name=".Signup05Activity" />
-        <activity android:name=".Signup06Activity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".WritePostActivity"
+        <activity android:name=".activity.Signup00Activity" />
+        <activity android:name=".activity.Signup01Activity" />
+        <activity android:name=".activity.Signup02Activity" />
+        <activity android:name=".activity.Signup03Activity" />
+        <activity android:name=".activity.Signup04Activity" />
+        <activity android:name=".activity.Signup05Activity" />
+        <activity android:name=".activity.Signup06Activity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.WritePostActivity"
             android:configChanges="screenSize|orientation">
         <!--^화면 회전 시 상태 및 데이터 초기화 방지^-->
         </activity>
-        <activity android:name=".SeePostActivity"></activity>
+        <activity android:name=".activity.SeePostActivity"></activity>
     </application>
 
 </manifest>

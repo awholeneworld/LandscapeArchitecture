@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import gachon.termproject.joker.R;
 
 public class Signup00Activity extends AppCompatActivity {
     // 회원가입을 위한 전역변수 설정

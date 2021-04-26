@@ -1,0 +1,146 @@
+package gachon.termproject.joker.adapter;
+
+import android.content.Context;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
+import gachon.termproject.joker.OnPostListener;
+import gachon.termproject.joker.PostContent;
+import gachon.termproject.joker.R;
+import gachon.termproject.joker.activity.SeePostActivity;
+import gachon.termproject.joker.FirebaseHelper;
+
+public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
+{
+    private Context context;
+    private FirebaseHelper firebaseHelper;
+    ArrayList<PostContent> postContentList;
+    
+    public PostAdapter(Context context, ArrayList<PostContent> postContentList)
+    {
+        this.context = context;
+        this.postContentList = postContentList;
+    }
+
+    public void setOnPostListener(OnPostListener onPostListener){
+        firebaseHelper.setOnPostListener(onPostListener);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder  {
+        TextView title;
+        TextView nickname;
+        TextView date;
+        TextView content;
+        ImageView image;
+        String userIdInPost;
+        String titleInPost;
+        String nicknameInPost;
+        String timeInPost;
+        String postIdInPost;
+        ArrayList<String> contentInPost;
+        ArrayList<String> imagesInPost;
+        ArrayList<Integer> orderInPost;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.title);
+            content = itemView.findViewById(R.id.content);
+            nickname = itemView.findViewById(R.id.writer);
+            date = itemView.findViewById(R.id.date);
+            image = itemView.findViewById(R.id.image);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, SeePostActivity.class);
+                    intent.putExtra("userId", userIdInPost);
+                    intent.putExtra("title", titleInPost);
+                    intent.putExtra("postId", postIdInPost);
+                    intent.putStringArrayListExtra("content", contentInPost);
+                    intent.putStringArrayListExtra("images", imagesInPost);
+                    intent.putIntegerArrayListExtra("order", orderInPost);
+                    context.startActivity(intent);
+                }
+            });
+        }
+
+    }
+    
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_content_community, viewGroup,false);
+        ViewHolder viewHolder = new ViewHolder(view);
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+        PostContent content = postContentList.get(position);
+
+        String contentTitle = content.getTitle();
+        String contentNickname = content.getNickname();
+        ArrayList<String> contentsList = content.getContent();
+        ArrayList<String> imagesList = content.getImages();
+        ArrayList<Integer> orderList = content.getOrder();
+
+        Date contentTime = new Date();
+
+        viewHolder.userIdInPost = content.getUserId();
+        viewHolder.titleInPost = contentTitle;
+        viewHolder.nicknameInPost = contentNickname;
+        viewHolder.timeInPost = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(contentTime);
+        viewHolder.postIdInPost = content.getPostId();
+        viewHolder.contentInPost = contentsList;
+        viewHolder.imagesInPost = imagesList;
+        viewHolder.orderInPost = orderList;
+
+
+        viewHolder.title.setText(contentTitle);
+        viewHolder.nickname.setText(contentNickname);
+        viewHolder.date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(contentTime));
+
+        int inputImage = 0;
+        int inputLetters = 0;
+        String contents = "";
+        for (int i = 0; i < orderList.size(); i++) {
+            int order = orderList.get(i);
+            String writings = contentsList.get(i);
+
+            if (inputLetters <= 15 && order == 0){
+                int writingsLength = writings.length();
+                if (inputLetters + writingsLength > 15) {
+                    contents += (" " + writings.substring(0, 15 - inputLetters) + "더보기...");
+                    inputLetters += writingsLength;
+                } else {
+                    contents += (" " + writings);
+                    inputLetters += writingsLength;
+                }
+            } else if (inputImage == 0 && order == 1){
+                Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(viewHolder.image);
+                inputImage++;
+            }
+        }
+        viewHolder.content.setText(contents);
+    }
+
+    @Override
+    public int getItemCount() {
+        return postContentList.size();
+    }
+}
