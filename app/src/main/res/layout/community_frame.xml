@@ -7,46 +7,53 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-<!--    <com.google.android.material.tabs.TabLayout-->
-<!--        android:id="@+id/tabs"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:elevation="1dp"-->
-<!--        android:background="@android:color/background_light"-->
-<!--        app:tabMode="fixed"-->
-<!--        app:tabGravity="fill"-->
-<!--        app:tabTextColor="@color/purple_200"-->
-<!--        app:tabSelectedTextColor="@color/purple_700" />-->
-
-<!--    <FrameLayout-->
-<!--        android:id="@+id/container"-->
-<!--        android:layout_below="@id/tabs"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" >-->
-<!--    </FrameLayout>-->
-
-    <!-- 탭 버튼이라 생각해보기 - 버튼 id 확인 -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/list"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/ic_baseline_add_24"
-        app:fabSize="normal"
-        android:backgroundTint="#3CAF5C"
-        app:tint="@null"/>
+        android:background="@android:color/background_light"
+        android:elevation="0dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextColor="@color/gray">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/album"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginLeft="50dp"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/ic_baseline_add_24"
-        app:fabSize="normal"
-        android:backgroundTint="#3CAF5C"
-        app:tint="@null"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="자유" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab2"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="후기" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab3"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="조경 팁" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <Button
+        android:id="@+id/selectCommunityMode"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="66dp"
+        android:layout_marginTop="9dp"
+        android:layout_toRightOf="@+id/tabs"
+        android:background="@drawable/ic_baseline_view_list_24"/>
+
+    <FrameLayout
+        android:id="@+id/contents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tabs"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintTop_toBottomOf="@id/tabs">
+    </FrameLayout>
 
 </RelativeLayout>
