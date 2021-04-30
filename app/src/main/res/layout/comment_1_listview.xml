@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:id="@+id/layout_comment_image"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true">
+
+            <ImageView
+                android:id="@+id/comment_img"
+                android:layout_width="40dp"
+                android:layout_marginRight="12dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_launcher_background"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@id/layout_comment_image"
+            android:layout_toLeftOf="@+id/layout_comment_movevert">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/comment_nickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="닉네임"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_weight="1"
+                    android:textColor="@color/gray"
+                    android:id="@+id/comment_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="댓글내용dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_comment_movevert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true">
+
+            <ImageView
+                android:id="@+id/comment_movevert"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/more_vert_grey_72x72"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

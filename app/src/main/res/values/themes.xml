@@ -21,6 +21,7 @@
         </item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
 
+
     </style>
 
     <style name="Theme.Joker.NoActionBar">

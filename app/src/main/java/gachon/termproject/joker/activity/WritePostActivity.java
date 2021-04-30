@@ -73,6 +73,9 @@ public class WritePostActivity extends AppCompatActivity {
     ImageButton imageAddButton;
     Button register;
 
+    private int imageorder[];
+    private int imagenum;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,15 +141,18 @@ public class WritePostActivity extends AppCompatActivity {
             imageView.setLayoutParams(layoutParams);
             Glide.with(this).load(image).into(imageView);
 
-            // 텍스트뷰가 이어서 생성된다.
-            EditText editText = new EditText(WritePostActivity.this);
-            editText.setLayoutParams(layoutParams);
-            editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
-            editText.setBackground(null);
-            editText.setTextSize(16);
-
+//            // 텍스트뷰가 이어서 생성된다.
+//            EditText editText = new EditText(WritePostActivity.this);
+//            editText.setLayoutParams(layoutParams);
+//            editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
+//            editText.setBackground(null);
+//            editText.setTextSize(16);
+            
+            imageView.setId(imagenum);
             layout.addView(imageView);
-            layout.addView(editText);
+
+//            layout.addView(editText);
+
 
             imagesList.add(image);
         }
