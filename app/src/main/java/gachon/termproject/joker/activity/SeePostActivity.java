@@ -65,11 +65,16 @@ public class SeePostActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
 
-        TextView title = findViewById(R.id.signup01_text01);
+        // 제목, 닉네임, 작성시간 세팅
+        TextView title = findViewById(R.id.title);
+        TextView nickname = findViewById(R.id.postNickname);
+        TextView time = findViewById(R.id.postTime);
         title.setText(intent.getStringExtra("title"));
+        nickname.setText(intent.getStringExtra("nickname"));
+        time.setText(intent.getStringExtra("time"));
 
-        //oimage 동그랗게
-        ImageView profile = findViewById(R.id.post_profile);
+        // 프로필 사진 세팅 (oimage 동그랗게)
+        ImageView profile = findViewById(R.id.postProfile);
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
 
@@ -78,8 +83,6 @@ public class SeePostActivity extends AppCompatActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         // imageView 채우기
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
         int imageNum = 0;
         for (int i = 0; i < order.size(); i++) {
             if (order.get(i) == 0) {
@@ -104,6 +107,7 @@ public class SeePostActivity extends AppCompatActivity {
         }
 
         //댓글아직 구현암함!!!
+        databaseReference = FirebaseDatabase.getInstance().getReference(); // 댓글 구현 시 DB 접근 필요할 듯 해서 넣음
     }
 
     //위에 메뉴 관련

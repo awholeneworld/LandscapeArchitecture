@@ -69,6 +69,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     Intent intent = new Intent(context, SeePostActivity.class);
                     intent.putExtra("userId", userIdInPost);
                     intent.putExtra("title", titleInPost);
+                    intent.putExtra("nickname", nicknameInPost);
+                    intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
@@ -95,16 +97,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
 
         String contentTitle = content.getTitle();
         String contentNickname = content.getNickname();
+        String contentTime = content.getPostTime();
         ArrayList<String> contentsList = content.getContent();
         ArrayList<String> imagesList = content.getImages();
         ArrayList<Integer> orderList = content.getOrder();
 
-        Date contentTime = new Date();
-
         viewHolder.userIdInPost = content.getUserId();
         viewHolder.titleInPost = contentTitle;
         viewHolder.nicknameInPost = contentNickname;
-        viewHolder.timeInPost = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(contentTime);
+        viewHolder.timeInPost = contentTime;
         viewHolder.postIdInPost = content.getPostId();
         viewHolder.contentInPost = contentsList;
         viewHolder.imagesInPost = imagesList;
@@ -113,7 +114,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
 
         viewHolder.title.setText(contentTitle);
         viewHolder.nickname.setText(contentNickname);
-        viewHolder.date.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(contentTime));
+        viewHolder.date.setText(contentTime);
 
         int inputImage = 0;
         int inputLetters = 0;

@@ -41,7 +41,10 @@ import com.google.firebase.storage.UploadTask;
 
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.PostContent;
@@ -203,9 +206,13 @@ public class WritePostActivity extends AppCompatActivity {
             }
         });
 
+        // 포스트 시간 설정
+        Date currentTime = new Date();
+        String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(currentTime);
+
         // 포스트할 내용 바구니
         postId = String.valueOf(System.currentTimeMillis());
-        postContent = new PostContent(userId, title.getText().toString(), "admin", postId, contentList, imagesNumber, contentOrder);
+        postContent = new PostContent(userId, title.getText().toString(), "admin", updateTime, postId, contentList, imagesNumber, contentOrder);
 
         // DB에 글 내용 올리기
         databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
