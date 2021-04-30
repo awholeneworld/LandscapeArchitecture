@@ -47,9 +47,6 @@ public class  CommunityFrame extends Fragment {
     private FreeCommunity free;
     private ReviewCommunity review;
     private TipCommunity tip;
-    private CommunityListStyle communityList;
-    private CommunityAlbumStyle communityAlbum;
-
     TabLayout tabs;
     Button selectCommunityMode;
     boolean i = true;
@@ -59,60 +56,52 @@ public class  CommunityFrame extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.community_frame, container, false);
 
-        TabLayout tabLayout = view.findViewById(R.id.tabs);
-        tabs = view.findViewById(R.id.tabs) ;
+        // 지민이가 새로 다시 만들고 깃에 업데이트하면 돼~
+        // 단, 앨범, 리스트 변환 버튼 부분은 내가 해야될 것 같아서 삭제했음
+        tabs = view.findViewById(R.id.tabs);
+        fm = getChildFragmentManager();
 
-        FreeCommunity freeCommunity = new FreeCommunity();
-        ReviewCommunity reviewCommunity = new ReviewCommunity();
-        TipCommunity tipCommunity = new TipCommunity();
+        if (free == null) {
+            free = new FreeCommunity();
+            fm.beginTransaction().add(R.id.community_frame, free).commit();
+        }
 
-        fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.add(R.id.contents, new FreeCommunity());
-        fragmentTransaction.commit();
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch(tab.getPosition()) {
+                switch (tabs.getSelectedTabPosition()) {
                     case 0 :
-                        fm.beginTransaction().replace(R.id.contents, new FreeCommunity()).commit();
-                        break ;
+                        if (review != null) fm.beginTransaction().hide(review).commit();
+                        if (tip != null) fm.beginTransaction().hide(tip).commit();
+                        fm.beginTransaction().show(free).commit();
+                        break;
                     case 1 :
-                        fm.beginTransaction().replace(R.id.contents, new ReviewCommunity()).commit();
-                        break ;
+                        if (review == null) {
+                            review = new ReviewCommunity();
+                            fm.beginTransaction().add(R.id.community_frame, review).commit();
+                        }
+                        fm.beginTransaction().show(review).commit();
+                        fm.beginTransaction().hide(free).commit();
+                        if (tip != null) fm.beginTransaction().hide(tip).commit();
+                        break;
                     case 2 :
-                        fm.beginTransaction().replace(R.id.contents, new TipCommunity()).commit();
-                        break ;
+                        if (tip == null) {
+                            tip = new TipCommunity();
+                            fm.beginTransaction().add(R.id.community_frame, tip).commit();
+                        }
+                        fm.beginTransaction().show(tip).commit();
+                        fm.beginTransaction().hide(free).commit();
+                        if (review != null) fm.beginTransaction().hide(review).commit();
+                        break;
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                // do nothing
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                // do nothing
-            }
-
-        }) ;
-
-        // 앨범,리스트 변환부분
-        selectCommunityMode = view.findViewById(R.id.selectCommunityMode);
-        selectCommunityMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (i == true){
-                    fm.beginTransaction().replace(R.id.contents, new CommunityListStyle()).commit();
-                    selectCommunityMode.setBackgroundResource(R.drawable.ic_baseline_photo_library_24);
-                    i = false;
-                } else {
-                    fm.beginTransaction().replace(R.id.contents, new CommunityAlbumStyle()).commit();
-                    selectCommunityMode.setBackgroundResource(R.drawable.ic_baseline_view_list_24);
-                    i = true;
-                }
             }
         });
 

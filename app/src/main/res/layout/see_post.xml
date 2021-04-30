@@ -42,7 +42,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/signup01_text01"
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="35dp"
@@ -58,7 +58,7 @@
                     android:paddingTop="15dp">
 
                     <ImageView
-                        android:id="@+id/post_profile"
+                        android:id="@+id/postProfile"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginRight="12dp"
@@ -70,7 +70,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/post_postNickname"
+                            android:id="@+id/postNickname"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="nickname"
@@ -78,7 +78,7 @@
                             android:textSize="16sp" />
 
                         <TextView
-                            android:id="@+id/post_postTime"
+                            android:id="@+id/postTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="4월 5일 오후 8시 39분"
