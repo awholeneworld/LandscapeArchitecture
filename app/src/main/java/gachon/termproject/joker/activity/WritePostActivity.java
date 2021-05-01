@@ -41,7 +41,10 @@ import com.google.firebase.storage.UploadTask;
 
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.PostContent;
@@ -72,6 +75,9 @@ public class WritePostActivity extends AppCompatActivity {
     EditText title, content;
     ImageButton imageAddButton;
     Button register;
+
+    private int imageorder[];
+    private int imagenum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,15 +144,18 @@ public class WritePostActivity extends AppCompatActivity {
             imageView.setLayoutParams(layoutParams);
             Glide.with(this).load(image).into(imageView);
 
-            // 텍스트뷰가 이어서 생성된다.
-            EditText editText = new EditText(WritePostActivity.this);
-            editText.setLayoutParams(layoutParams);
-            editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
-            editText.setBackground(null);
-            editText.setTextSize(16);
-
+//            // 텍스트뷰가 이어서 생성된다.
+//            EditText editText = new EditText(WritePostActivity.this);
+//            editText.setLayoutParams(layoutParams);
+//            editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
+//            editText.setBackground(null);
+//            editText.setTextSize(16);
+            
+            imageView.setId(imagenum);
             layout.addView(imageView);
-            layout.addView(editText);
+
+//            layout.addView(editText);
+
 
             imagesList.add(image);
         }
@@ -203,9 +212,13 @@ public class WritePostActivity extends AppCompatActivity {
             }
         });
 
+        // 포스트 시간 설정
+        Date currentTime = new Date();
+        String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(currentTime);
+
         // 포스트할 내용 바구니
         postId = String.valueOf(System.currentTimeMillis());
-        postContent = new PostContent(userId, title.getText().toString(), "admin", postId, contentList, imagesNumber, contentOrder);
+        postContent = new PostContent(userId, title.getText().toString(), "admin", updateTime, postId, contentList, imagesNumber, contentOrder);
 
         // DB에 글 내용 올리기
         databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
