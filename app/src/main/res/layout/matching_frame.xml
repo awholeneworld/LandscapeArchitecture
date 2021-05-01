@@ -3,11 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
+    <!-- 나중에 community_frame처럼 바꾸면될듯. 아래는 for 테스트-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Matching 입니다"
         android:textSize="40dp" />
+
+    <Button
+        android:id="@+id/expertList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="expert"
+        />
 
 </LinearLayout>
