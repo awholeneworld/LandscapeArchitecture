@@ -18,6 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import gachon.termproject.joker.R;
 /*
@@ -37,7 +39,7 @@ public class MatchingFrame extends Fragment {
 
 public class MatchingFrame extends Fragment {
 
-
+    public ArrayList<String> expertList = new ArrayList<String>();
     private FirebaseFirestore fStore;
     private CollectionReference collectionReference;
     @Override
@@ -61,8 +63,7 @@ public class MatchingFrame extends Fragment {
                                 DocumentSnapshot snapshot = list.get(i);
                                 Boolean publicCheck = snapshot.getBoolean("isPublic");
                                 if (!publicCheck) {
-                                    //list에 snapshot 추가
-                                    break;
+                                expertList.add(snapshot.getId());
                                 }
                             }
                         }
