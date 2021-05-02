@@ -1,6 +1,5 @@
 package gachon.termproject.joker.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -28,15 +27,13 @@ import java.util.Map;
 import gachon.termproject.joker.R;
 
 public class Signup04Activity extends AppCompatActivity {
-    public static Context context_04;
-    public List<String> location;
-    CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN;
+    public static List<String> location; // 회원가입을 위한 전역변수(전문가 회원가입을 위해 static으로 설정)
+    private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup04_location);
-        context_04 = this;
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -91,49 +88,48 @@ public class Signup04Activity extends AppCompatActivity {
                 //어떤 버튼이 눌렸는지 체크!
                 List<String> locationSelected = checklocation();
 
-
                 if (!locationSelected.isEmpty()) { //하나라도 체크가 되었다면
-                    //지역 데이터 잘 처리하시고
                     location = locationSelected;
 
-                    //로그인 완료 페이지로 이동~ 하기 전에!!!
-                    //회원가입 맨 처음 창에서 입력한 일반인/전문가 정보에 따라서
-                    //전문가인지 일반인인지 구별하세요!!!!!!!!!! DB에 저장될때로 일반인과 전문가를 구별해야함
-                    boolean isPublic = ((Signup00Activity)Signup00Activity.context_00).publicMan; //일반인인지 체크하는 데이터 어떻게 넘겨야할지는 잘 모르겟음.
-
-                    if (isPublic) { //일반인이라면 회원가입 프로세스 거친 후 가입완료 페이지로
-                        // 데이터베이스 설정
+                    // 회원가입 완료 페이지로 이동~ 하기 전에!!!
+                    // 회원가입 맨 처음 창에서 입력한 일반인/전문가 정보에 따라서
+                    // 일반 가입인지 전문가 가입인지 구별
+                    if (Signup00Activity.publicMan) { //일반인이라면 회원가입 프로세스 거친 후 가입완료 페이지로
+                        // 데이터베이스 가져오기
                         FirebaseAuth fAuth = FirebaseAuth.getInstance();
                         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
+
                         // 회원가입을 위한 전역 변수 가져오기
-                        String ID = ((Signup01Activity)Signup01Activity.context_01).identifier;
-                        String PW = ((Signup02Activity)Signup02Activity.context_02).password;
-                        String nickname = ((Signup03Activity)Signup03Activity.context_03).nickname;
-                        List<String> locations = location;
+                        String ID = Signup01Activity.identifier;
+                        String PW = Signup02Activity.password;
+                        String nickname = Signup03Activity.nickname;
+
                         // 회원가입 프로세스
                         fAuth.createUserWithEmailAndPassword(ID, PW).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
+                                    // 유저 고유 아이디 생성 후 정보 저장할 데이터베이스 경로 생성
                                     String userID = fAuth.getCurrentUser().getUid();
-                                    DocumentReference documentReference = fStore.collection("users").document(userID); // 데이터베이스 schema 생성 후 참조
-                                    // 유저 정보 만들기
-                                    Map<String,Object> user = new HashMap<>();
+                                    DocumentReference documentReference = fStore.collection("users").document(userID);
+
+                                    // 가입 유저 정보 맵에 모으기
+                                    // 필요한 정보 더 추가 가능
+                                    Map<String, Object> user = new HashMap<>();
                                     user.put("ID", ID);
                                     user.put("nickname", nickname);
-                                    user.put("location", locations);
+                                    user.put("location", location);
                                     user.put("isPublic", true);
-                                    user.put("posts", 0);
-                                    user.put("match", 0);
-                                    user.put("chat", 0);
+                                    user.put("profileUrl", "None"); // 프로필 이미지 url
+                                    user.put("posts", 0); // 게시물 수
+                                    user.put("match", 0); // 매칭 게시물 수
 
-                                    documentReference.set(user); // 명시된 경로에 데이터 저장
+                                    documentReference.set(user); // 데이터베이스에 정보 저장
 
                                     // 가입완료 페이지로 이동
                                     Intent intent = new Intent(getApplicationContext(), Signup05Activity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); //이전 액티비티들을 모두 kill
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 이전 액티비티들을 모두 kill
                                     startActivity(intent);
-
                                 } else {
                                     Toast.makeText(Signup04Activity.this, "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                 }
@@ -141,19 +137,14 @@ public class Signup04Activity extends AppCompatActivity {
                         });
                     }
                     else { //전문가라면 전문가 인증 페이지로 슝
-                        Intent intent = new Intent(getApplicationContext(), Signup06Activity.class);
-                        startActivity(intent);
+                        startActivity(new Intent(getApplicationContext(), Signup06Activity.class));
                     }
-
-
                 }
                 else {//체크가 하나도 안되어있다면
                     Toast.makeText(getApplicationContext(), "하나 이상의 지역을 선택해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-
     }
 
     public List<String> checklocation() {

@@ -1,8 +1,6 @@
 package gachon.termproject.joker;
 
-import static gachon.termproject.joker.Util.isStorageUrl;
 import static gachon.termproject.joker.Util.showToast;
-import static gachon.termproject.joker.Util.storageUrlToName;
 
 import android.app.Activity;
 
@@ -11,10 +9,8 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
+import gachon.termproject.joker.container.PostContent;
 
 public class FirebaseHelper {
     private Activity activity;

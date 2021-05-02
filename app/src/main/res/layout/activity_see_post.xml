@@ -30,10 +30,11 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/ScrollView1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -66,7 +67,7 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <TextView
@@ -84,6 +85,7 @@
                             android:text="4월 5일 오후 8시 39분"
                             android:textColor="@color/gray"
                             android:textSize="14sp" />
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -105,19 +107,17 @@
                     android:layout_height="1dp"
                     android:background="@color/whitegray"/>
 
-
                 <!--댓글-->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/comment_listview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-
                 </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
 
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
@@ -147,22 +147,18 @@
                 android:layout_toLeftOf="@+id/see_post_comment_send_button"/>
 
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/see_post_comment_send_button"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginRight="5dp"
-                android:src="@drawable/send_grey_72x72"
+                android:background="@drawable/send_grey_72x72"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"/>
 
-
-
         </RelativeLayout>
 
-
-
-
     </LinearLayout>
+
 </RelativeLayout>
 

@@ -11,31 +11,52 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.adapter.PostCommentAdapter;
+import gachon.termproject.joker.container.PostCommentContent;
 
 import static gachon.termproject.joker.Util.isStorageUrl;
 
 public class SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
-    private RecyclerView comments;
+    private RecyclerView commentSection;
     private DatabaseReference databaseReference;
+    private ArrayList<PostCommentContent> postCommentList;
+    private PostCommentAdapter postCommentAdapter;
+    private PostCommentContent postComment;
+    private ValueEventListener commentsListener;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -46,6 +67,7 @@ public class SeePostActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
+        String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
         ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
@@ -70,6 +92,8 @@ public class SeePostActivity extends AppCompatActivity {
         ImageView profile = findViewById(R.id.postProfile);
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
+        if (!profileImg.equals("None"))
+            Glide.with(this).load(profileImg).into(profile);
 
         // 포스트 내용 넣을 공간 지정
         container = findViewById(R.id.seepost_content);
@@ -101,8 +125,57 @@ public class SeePostActivity extends AppCompatActivity {
 
         // 댓글 불러오기
         databaseReference = FirebaseDatabase.getInstance().getReference("Posts/" + category + "/" + postId + "/comments");
-        comments = findViewById(R.id.comment_listview);
+        commentSection = findViewById(R.id.comment_listview);
 
+        postCommentList = new ArrayList<>();
+        postCommentAdapter = new PostCommentAdapter(getApplicationContext(), postCommentList);
+
+        commentSection.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        commentSection.setHasFixedSize(true);
+        commentSection.setAdapter(postCommentAdapter);
+
+        commentsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postCommentList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    postComment = snapshot.getValue(PostCommentContent.class);
+                    postCommentList.add(postComment);
+                }
+                postCommentAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        databaseReference.addListenerForSingleValueEvent(commentsListener);
+
+        // 댓글 작성
+        ImageButton uploadComment = findViewById(R.id.see_post_comment_send_button);
+        uploadComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText commentContent = findViewById(R.id.see_post_comment_text);
+                String comment = commentContent.getText().toString();
+                Date currentTime = new Date();
+                String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
+                String commentId = String.valueOf(System.currentTimeMillis());
+                PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment);
+
+                // DB에 올리기
+                databaseReference.child(commentId).setValue(postCommentContent)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                databaseReference.addListenerForSingleValueEvent(commentsListener);
+                            }
+                        });
+            }
+        });
     }
 
     //위에 메뉴 관련
@@ -129,6 +202,11 @@ public class SeePostActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     public static int dpToPx(int dp){

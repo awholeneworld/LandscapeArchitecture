@@ -24,11 +24,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.database.DatabaseReference;
@@ -43,12 +41,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import gachon.termproject.joker.PostContent;
+import gachon.termproject.joker.container.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
+import gachon.termproject.joker.UserInfo;
 
 public class WritePostActivity extends AppCompatActivity {
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -60,15 +58,14 @@ public class WritePostActivity extends AppCompatActivity {
     private ArrayList<String> imagesNumber = new ArrayList<>();
     private ArrayList<Uri> imagesList = new ArrayList<>();
     private ArrayList<Integer> contentOrder = new ArrayList<>();
-    private String userId = user.getUid(); // 누가 업로드 했는지 알기 위함
-    private String nickname;
+    private String userId = UserInfo.userId; // 누가 업로드 했는지 알기 위함
+    private String nickname = UserInfo.nickname;
     private String postId;
     private int postTime;
-    LinearLayout layout;
-    EditText title, content;
-    ImageButton imageAddButton;
-    Button register;
-
+    private LinearLayout layout;
+    private EditText title, content;
+    private ImageButton imageAddButton;
+    private Button register;
     private int imageorder[];
     private int imagenum;
 
@@ -91,6 +88,7 @@ public class WritePostActivity extends AppCompatActivity {
         imageAddButton = findViewById(R.id.writepost_imageAddButton);
         register = findViewById(R.id.writepost_assign);
 
+        // 어떤 게시판에서 올리려고 하는 글인지 카테고리 정보 가져오기
         Intent intent = getIntent();
         String category = intent.getStringExtra("category");
 
@@ -109,7 +107,7 @@ public class WritePostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (title.length() > 0 && content.length() > 0) {
                     post(category);
-                    setResult(RESULT_OK, new Intent());
+                    setResult(RESULT_OK, new Intent()); // 게시판에게 완료됐다는 신호 보내기
                     finish();
                 } else if (title.length() <= 0){
                     Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주십시오.", Toast.LENGTH_SHORT).show();
@@ -186,6 +184,7 @@ public class WritePostActivity extends AppCompatActivity {
             }
         }
 
+        // 사용자가 게시한 글 수 업데이트
         documentReference = fireStore.collection("users").document(userId);
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -193,8 +192,6 @@ public class WritePostActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // 사용자 닉네임 가져오고(미완성) 게시한 글 수 업데이트
-                        // nickname = document.get("nickname").toString();
                         postTime = document.getLong("posts").intValue();
                         postTime += 1;
                         documentReference.update("posts", postTime);
@@ -210,11 +207,11 @@ public class WritePostActivity extends AppCompatActivity {
 
         // 포스트 시간 설정
         Date currentTime = new Date();
-        String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault()).format(currentTime);
+        String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
         // 포스트할 내용 바구니
         postId = String.valueOf(System.currentTimeMillis());
-        postContent = new PostContent(category, userId, title.getText().toString(), "admin", updateTime, postId, contentList, imagesNumber, contentOrder);
+        postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesNumber, contentOrder);
 
         // DB에 글 내용 올리기
         databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

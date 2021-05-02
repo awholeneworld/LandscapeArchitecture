@@ -27,7 +27,6 @@ public class Signup05Activity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
         Button nextButton = findViewById(R.id.signup05_button01);
-
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

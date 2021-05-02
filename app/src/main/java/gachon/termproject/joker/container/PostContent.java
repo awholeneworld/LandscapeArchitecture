@@ -1,13 +1,12 @@
-package gachon.termproject.joker;
-
-import android.net.Uri;
+package gachon.termproject.joker.container;
 
 import java.util.ArrayList;
-import java.util.Date;
 
+// 게시할 글에 들어가는 정보들을 모아주는 클래스
 public class PostContent {
     public String category;
     public String userId;
+    public String profileImg;
     public String title;
     public String nickname;
     public String postTime;
@@ -20,9 +19,10 @@ public class PostContent {
     public PostContent() {
     }
 
-    public PostContent(String category, String userId, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, ArrayList<Integer> order) {
+    public PostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, ArrayList<Integer> order) {
         this.category = category;
         this.userId = userId;
+        this.profileImg = profileImg;
         this.title = title;
         this.nickname = nickname;
         this.postTime = postTime;
@@ -34,6 +34,7 @@ public class PostContent {
 
     public String getCategory() { return category; }
     public String getUserId() { return userId; }
+    public String getProfileImg() { return profileImg; }
     public String getTitle() {
         return title;
     }
@@ -45,6 +46,7 @@ public class PostContent {
     public ArrayList<Integer> getOrder() { return order; }
     public void setCategory() { this.category = category; }
     public void setUserId(String id) { this.userId = userId; }
+    public void setProfileImg(String url) { this.profileImg = url; }
     public void setTitle(String title) { this.title = title; }
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setPostTime(String postTime) { this.postTime = postTime; }

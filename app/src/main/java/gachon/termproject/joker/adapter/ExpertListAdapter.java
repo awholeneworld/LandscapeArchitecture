@@ -15,7 +15,7 @@ import java.util.Date;
 
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.ExpertListContent;
+import gachon.termproject.joker.container.ExpertListContent;
 
 public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.ViewHolder>{
 

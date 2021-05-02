@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <view
+    <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_marginHorizontal="20dp"
+        android:layout_height="1dp"
+        android:background="@color/whitegray"/>
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -27,8 +29,7 @@
                 android:layout_width="40dp"
                 android:layout_marginRight="12dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_launcher_background"
-                />
+                android:src="@drawable/ic_launcher_background" />
 
         </LinearLayout>
 
@@ -61,6 +62,7 @@
                     android:text="댓글내용dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" />
 
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -70,15 +72,14 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/comment_movevert"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/more_vert_grey_72x72"/>
+
         </LinearLayout>
 
     </RelativeLayout>
-
-
 
 </LinearLayout>

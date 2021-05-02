@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -66,6 +67,7 @@ public class Signup06Activity extends AppCompatActivity {
                 selectFile();
             }
         });
+
         // 파일 업로드
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +88,7 @@ public class Signup06Activity extends AppCompatActivity {
         }
     }
 
+    // 파일 선택 함수
     private void selectFile(){
         Intent intent = new Intent();
         intent.setType("application/*"); // 모든 종류의 파일 선택 가능
@@ -93,6 +96,7 @@ public class Signup06Activity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent,"파일을 선택하세요."), 0);
     }
 
+    // 파일 업로드 후 회원가입 함수
     private void uploadFileAndRegister() {
         if (file == null) { // 파일 선택 안했을 시
             Toast.makeText(getApplicationContext(), "파일을 선택하세요.", Toast.LENGTH_SHORT).show();
@@ -100,35 +104,41 @@ public class Signup06Activity extends AppCompatActivity {
             ProgressBar progressBar = new ProgressBar(Signup06Activity.this, null, android.R.attr.progressBarStyleLarge); // 진행 상황 표시 팝업
             progressBar.setVisibility(View.VISIBLE);
 
-            String ID = ((Signup01Activity)Signup01Activity.context_01).identifier; // 누가 업로드 했는지 알기 위함
+            String ID = Signup01Activity.identifier; // 누가 업로드 했는지 알기 위함
 
-            StorageReference reference = storageReference.child("verification/" + ID); // 파일 저장소 경로 생성
+            StorageReference reference = storageReference.child("forExpertVerification/" + ID); // 파일 저장소 경로 생성
             reference.putFile(file).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) { // 업로드 몇퍼센트 진행되고 있는지 알려줌
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    progressBar.setProgress((int)progress, true);
+                    progressBar.setProgress((int)progress, true); // 업로드 몇퍼센트 진행되고 있는지 알려줌
                 }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() { // 파일 업로드
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) { // 업로드 완료되면
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) { // 파일 업로드 완료되면
                     Toast.makeText(Signup06Activity.this,"업로드가 완료되었습니다.",Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                    register(); // 회원가입 진행
+                    progressBar.setVisibility(View.GONE); // 표시 팝업 없애기
+                    register(ID); // 회원가입 진행
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(Signup06Activity.this,"업로드에 실패하였습니다.",Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
+
     // Signup04Activity 파일에 있던 회원가입 기능 가져온거
-    private void register(){
+    private void register(String ID){
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         FirebaseFirestore fStore = FirebaseFirestore.getInstance();
 
-        String ID = ((Signup01Activity)Signup01Activity.context_01).identifier;
-        String PW = ((Signup02Activity)Signup02Activity.context_02).password;
-        String nickname = ((Signup03Activity)Signup03Activity.context_03).nickname;
-        List<String> locations = ((Signup04Activity)Signup04Activity.context_04).location;
+        // 회원가입을 위한 전역변수 가져오기
+        String PW = Signup02Activity.password;
+        String nickname = Signup03Activity.nickname;
+        List<String> locations = Signup04Activity.location;
 
         fAuth.createUserWithEmailAndPassword(ID, PW).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -141,17 +151,16 @@ public class Signup06Activity extends AppCompatActivity {
                     user.put("ID", ID);
                     user.put("nickname", nickname);
                     user.put("location", locations);
-                    user.put("isPublic", true);
-                    user.put("posts", 0);
-                    user.put("match", 0);
-                    user.put("chat", 0);
+                    user.put("isPublic", false);
+                    user.put("profileUrl", "None"); // 프로필 이미지 url
+                    user.put("posts", 0); // 게시물 수
+                    user.put("match", 0); // 매칭 게시물 수
 
                     documentReference.set(user);
 
                     Intent intent = new Intent(getApplicationContext(), Signup05Activity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); //이전 액티비티들을 모두 kill
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 이전 액티비티들을 모두 kill
                     startActivity(intent);
-
                 } else {
                     Toast.makeText(Signup06Activity.this, "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 }

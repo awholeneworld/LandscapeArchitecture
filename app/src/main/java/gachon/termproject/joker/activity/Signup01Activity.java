@@ -1,6 +1,5 @@
 package gachon.termproject.joker.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,16 +23,14 @@ import com.google.firebase.auth.FirebaseAuthException;
 import gachon.termproject.joker.R;
 
 public class Signup01Activity extends AppCompatActivity {
-    // 회원가입을 위한 전역변수 설정
-    public static Context context_01;
-    public String identifier;
-    FirebaseAuth fAuth;
+    public static String identifier; // 회원가입을 위한 전역변수
+    private FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup01_email);
-        context_01 = this; // 이게 할당되어야 전역변수 쓸 수 있음
+
         fAuth = FirebaseAuth.getInstance();
 
         //toolbar를 activity bar로 지정!
@@ -63,6 +60,7 @@ public class Signup01Activity extends AppCompatActivity {
         });
     }
 
+    // 이메일 중복여부 확인하는 함수 : 회원가입하려는 유저가 입력한 이메일에 비번 12로 로그인 실시하여 유도해냄
     private void checkEmail(String email) {
         fAuth.signInWithEmailAndPassword(email, "12")
                 .addOnCompleteListener(Signup01Activity.this, new OnCompleteListener<AuthResult>() {

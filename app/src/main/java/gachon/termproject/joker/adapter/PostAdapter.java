@@ -13,13 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import gachon.termproject.joker.OnPostListener;
-import gachon.termproject.joker.PostContent;
+import gachon.termproject.joker.container.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.SeePostActivity;
 import gachon.termproject.joker.FirebaseHelper;
@@ -48,6 +45,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         ImageView image;
         String categoryOfPost;
         String userIdInPost;
+        String profileImgInPost;
         String titleInPost;
         String nicknameInPost;
         String timeInPost;
@@ -70,6 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     Intent intent = new Intent(context, SeePostActivity.class);
                     intent.putExtra("category", categoryOfPost);
                     intent.putExtra("userId", userIdInPost);
+                    intent.putExtra("profileImg", profileImgInPost);
                     intent.putExtra("title", titleInPost);
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
@@ -81,7 +80,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                 }
             });
         }
-
     }
     
     @NonNull
@@ -104,8 +102,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         ArrayList<String> imagesList = content.getImages();
         ArrayList<Integer> orderList = content.getOrder();
 
+        // 뷰홀더 클래스의 전역 변수 설정
         viewHolder.categoryOfPost = content.getCategory();
         viewHolder.userIdInPost = content.getUserId();
+        viewHolder.profileImgInPost = content.getProfileImg();
         viewHolder.titleInPost = contentTitle;
         viewHolder.nicknameInPost = contentNickname;
         viewHolder.timeInPost = contentTime;
@@ -131,7 +131,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
             if (inputLetters <= 15 && order == 0){
                 int writingsLength = writings.length();
                 if (inputLetters + writingsLength > 15) {
-                    contents += (" " + writings.substring(0, 15 - inputLetters) + "더보기...");
+                    contents += (" " + writings.substring(0, 15 - inputLetters) + " 더보기...");
                     inputLetters += writingsLength;
                 } else {
                     contents += (" " + writings);
@@ -142,6 +142,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                 inputImage++;
             }
         }
+
         viewHolder.content.setText(contents);
     }
 

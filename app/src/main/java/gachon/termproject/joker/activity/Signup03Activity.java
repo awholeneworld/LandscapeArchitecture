@@ -1,6 +1,5 @@
 package gachon.termproject.joker.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,17 +24,15 @@ import java.util.List;
 import gachon.termproject.joker.R;
 
 public class Signup03Activity extends AppCompatActivity {
-    public static Context context_03;
     private FirebaseFirestore fStore;
     private CollectionReference collectionReference;
     private boolean isDuplicate = true;
-    public String nickname;
+    public static String nickname; // 회원가입을 위한 전역변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup03_nickname);
-        context_03 = this;
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);

@@ -1,6 +1,5 @@
 package gachon.termproject.joker.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,14 +15,12 @@ import androidx.appcompat.widget.Toolbar;
 import gachon.termproject.joker.R;
 
 public class Signup02Activity extends AppCompatActivity {
-    public static Context context_02;
-    public String password;
+    public static String password; // 회원가입을 위한 전역변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup02_pw);
-        context_02 = this;
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -41,10 +38,10 @@ public class Signup02Activity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //비밀번호 맞는지 확인
                 String pw = firstPw.getText().toString().trim();
                 String checkPw = secondPw.getText().toString().trim();
 
+                // 비밀번호 확인
                 if (TextUtils.isEmpty(pw)) {
                     Toast.makeText(getApplicationContext(), "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }
@@ -59,12 +56,8 @@ public class Signup02Activity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "비밀번호는 최소 6자가 되어야 합니다.", Toast.LENGTH_SHORT).show();
                 }
                 else { //비밀번호가 일치한다면
-                    //pw 로 여차저차 데이터 처리
                     password = pw; // PW 전역변수 설정
-
-                    //닉네임 페이지로 이동
-                    Intent intent = new Intent(getApplicationContext(), Signup03Activity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(getApplicationContext(), Signup03Activity.class)); //닉네임 페이지로 이동
                 }
             }
         });
