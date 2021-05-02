@@ -30,24 +30,25 @@
 **3. 그외 자잘**
 write_post 이미지 업로드 아이콘 변경
 
-0502
 
-김승윤
+## 0502
 
-1. LoginActivity.java
+### 김승윤
+
+**1. LoginActivity.java**
 
 로그인 할 시, 다음 앱 실행부터는 로그인 상태 유지
 
 -임시 로그아웃 버튼 메인페이지(홈)에 생성-
 
-2. 파일 이름 변경
+**2. 파일 이름 변경**
 
 역할에 맞고 일관적이게 파일 이름을 변경하였음
 
-3. CommunityFrame.java(+files related to the community)
+**3. CommunityFrame.java(+files related to the community)**
 
 각 커뮤니티에 맞게 탭 이동할 수 있도록 수정
 
-4. DB
+**4. DB**
  
 게시물 업로드 시, 각 커뮤니티에 해당하는 경로에 저장
