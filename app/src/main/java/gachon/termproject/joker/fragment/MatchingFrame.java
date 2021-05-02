@@ -1,14 +1,17 @@
 package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -21,35 +24,31 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import gachon.termproject.joker.R;
-/*
-public class MatchingFrame extends Fragment {
 
+import gachon.termproject.joker.ExpertListContent;
+import gachon.termproject.joker.R;
+
+public class MatchingFrame extends Fragment {
+    private FragmentManager fm;
     private View view;
+    private ExpertList Elist;
+    public static ArrayList<ExpertListContent> expertList = new ArrayList<ExpertListContent>();
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_frame, container, false);
+        view = inflater.inflate(R.layout.frame_matching, container, false);
+        fm = getChildFragmentManager();
 
-        return view;
-    }
-}
-*/
-
-public class MatchingFrame extends Fragment {
-
-    public ArrayList<String> expertList = new ArrayList<String>();
-    private FirebaseFirestore fStore;
-    private CollectionReference collectionReference;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Button nextButton = getActivity().findViewById(R.id.expertList);
+        Button nextButton = view.findViewById(R.id.expertList);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                FirebaseFirestore fStore;
+                CollectionReference collectionReference;
+
                 fStore = FirebaseFirestore.getInstance();
                 collectionReference = fStore.collection("users");
                 collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -63,7 +62,7 @@ public class MatchingFrame extends Fragment {
                                 DocumentSnapshot snapshot = list.get(i);
                                 Boolean publicCheck = snapshot.getBoolean("isPublic");
                                 if (!publicCheck) {
-                                expertList.add(snapshot.getId());
+                                    expertList.add(new ExpertListContent(snapshot.getId(), snapshot.getString("nickname")));
                                 }
                             }
                         }
@@ -71,5 +70,6 @@ public class MatchingFrame extends Fragment {
                 });
             }
         });
+        return view;
     }
 }

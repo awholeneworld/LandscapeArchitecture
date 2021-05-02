@@ -141,7 +141,7 @@ public class Signup06Activity extends AppCompatActivity {
                     user.put("ID", ID);
                     user.put("nickname", nickname);
                     user.put("location", locations);
-                    user.put("isPublic", true);
+                    user.put("isPublic", false);
                     user.put("posts", 0);
                     user.put("match", 0);
                     user.put("chat", 0);

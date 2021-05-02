@@ -31,14 +31,14 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
 
         public class ViewHolder extends RecyclerView.ViewHolder  {
             TextView nickname;
-            ImageView image;
+           // ImageView image; //사진 추가하면 주석해제
             //ArrayList<String> imagesInPost;
             //ArrayList<Integer> orderInPost;
 
             ViewHolder(View itemView) {
                 super(itemView);
                 nickname = itemView.findViewById(R.id.writer);
-                image = itemView.findViewById(R.id.image);
+                //image = itemView.findViewById(R.id.image);
 
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -75,10 +75,7 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
 
 
         String contentNickname = content.getNickname();
-        ArrayList<String> imagesList = content.getImages();
-
-
-        Date contentTime = new Date();
+        //ArrayList<String> imagesList = content.getImages();
 
         ExpertListContent matchingContent = matchingContentList.get(position);
         viewHolder.nickname.setText(matchingContent.getNickname());
