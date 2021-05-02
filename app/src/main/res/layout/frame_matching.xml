@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <!-- 나중에 community_frame처럼 바꾸면될듯. 아래는 for 테스트-->
     <TextView
@@ -16,5 +17,11 @@
         android:layout_height="wrap_content"
         android:text="expert"
         />
+    <FrameLayout
+        android:id="@+id/expertList_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/expertList">
+    </FrameLayout>
 
 </LinearLayout>
