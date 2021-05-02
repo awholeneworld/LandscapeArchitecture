@@ -8,6 +8,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!-- 여기에 내용 넣으면 됩-->
+        <!-- 여기에 내용 넣으면 되는데 잠시 편의상 로그아웃 버튼 넣음-->
+        <Button
+            android:id="@+id/logOut"
+            android:layout_width="106dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="150dp"
+            android:layout_gravity="center"
+            android:text="Log out"
+            android:textColor="@color/black" />
+
     </LinearLayout>
+
 </LinearLayout>

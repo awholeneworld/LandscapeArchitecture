@@ -1,12 +1,12 @@
-package gachon.termproject.joker.fragment;
+package gachon.termproject.joker;
 
 import java.util.ArrayList;
 
-public class MatchingContent {
+public class ExpertListContent {
     public String nickname;
     public ArrayList<String> images;
 
-    public MatchingContent(String nickname, ArrayList<String> images) {
+    public ExpertListContent(String nickname, ArrayList<String> images) {
 
         this.nickname = nickname;
         this.images = images;

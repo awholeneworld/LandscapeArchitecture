@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class PostContent {
+    public String category;
     public String userId;
     public String title;
     public String nickname;
@@ -19,7 +20,8 @@ public class PostContent {
     public PostContent() {
     }
 
-    public PostContent(String userId, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, ArrayList<Integer> order) {
+    public PostContent(String category, String userId, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, ArrayList<Integer> order) {
+        this.category = category;
         this.userId = userId;
         this.title = title;
         this.nickname = nickname;
@@ -30,6 +32,7 @@ public class PostContent {
         this.order = order;
     }
 
+    public String getCategory() { return category; }
     public String getUserId() { return userId; }
     public String getTitle() {
         return title;
@@ -40,6 +43,7 @@ public class PostContent {
     public ArrayList<String> getContent() { return content; }
     public ArrayList<String> getImages() { return images; }
     public ArrayList<Integer> getOrder() { return order; }
+    public void setCategory() { this.category = category; }
     public void setUserId(String id) { this.userId = userId; }
     public void setTitle(String title) { this.title = title; }
     public void setNickname(String nickname) { this.nickname = nickname; }

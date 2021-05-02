@@ -1,7 +1,6 @@
 package gachon.termproject.joker.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,27 +10,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 import gachon.termproject.joker.FirebaseHelper;
-import gachon.termproject.joker.OnPostListener;
-import gachon.termproject.joker.PostContent;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.SeePostActivity;
-import gachon.termproject.joker.fragment.MatchingContent;
+import gachon.termproject.joker.ExpertListContent;
 
-public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.ViewHolder>{
+public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.ViewHolder>{
 
         private Context context;
         private FirebaseHelper firebaseHelper;
-        ArrayList<MatchingContent> matchingContentList;
+        ArrayList<ExpertListContent> matchingContentList;
 
-    public MatchingAdapter(Context context, ArrayList<MatchingContent> matchingContentList) {
+    public ExpertListAdapter(Context context, ArrayList<ExpertListContent> matchingContentList) {
             this.context = context;
             this.matchingContentList = matchingContentList;
         }
@@ -71,15 +63,15 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_content_matching, parent,false);
-        MatchingAdapter.ViewHolder viewHolder = new MatchingAdapter.ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_content_expert_list_matching, parent,false);
+        ExpertListAdapter.ViewHolder viewHolder = new ExpertListAdapter.ViewHolder(view);
 
         return viewHolder;
     }
 
     @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        MatchingContent content = matchingContentList.get(position);
+        ExpertListContent content = matchingContentList.get(position);
 
 
         String contentNickname = content.getNickname();
@@ -88,7 +80,7 @@ public class MatchingAdapter extends RecyclerView.Adapter<MatchingAdapter.ViewHo
 
         Date contentTime = new Date();
 
-        MatchingContent matchingContent = matchingContentList.get(position);
+        ExpertListContent matchingContent = matchingContentList.get(position);
         viewHolder.nickname.setText(matchingContent.getNickname());
         //viewHolder.image.setImageDrawable(matchingContent.getImages());
         //viewHolder.nicknameInPost = contentNickname;

@@ -1,14 +1,11 @@
 package gachon.termproject.joker.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,17 +15,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,20 +33,19 @@ import gachon.termproject.joker.R;
 import static gachon.termproject.joker.Util.isStorageUrl;
 
 public class SeePostActivity extends AppCompatActivity {
-    private Context mContext;
-    private Activity mActivity;
     private LinearLayout container;
+    private RecyclerView comments;
     private DatabaseReference databaseReference;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.see_post);
+        setContentView(R.layout.activity_see_post);
 
         Intent intent = getIntent();
+        String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
-        String category = "example";
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
         ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
@@ -106,8 +99,10 @@ public class SeePostActivity extends AppCompatActivity {
             }
         }
 
-        //댓글아직 구현암함!!!
-        databaseReference = FirebaseDatabase.getInstance().getReference(); // 댓글 구현 시 DB 접근 필요할 듯 해서 넣음
+        // 댓글 불러오기
+        databaseReference = FirebaseDatabase.getInstance().getReference("Posts/" + category + "/" + postId + "/comments");
+        comments = findViewById(R.id.comment_listview);
+
     }
 
     //위에 메뉴 관련
@@ -128,7 +123,7 @@ public class SeePostActivity extends AppCompatActivity {
         inflater.inflate(R.menu.others_post_menu,menu);
 
         // To display icon on overflow menu
-        if(menu instanceof MenuBuilder){
+        if (menu instanceof MenuBuilder){
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);
         }

@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,7 +40,7 @@ import gachon.termproject.joker.activity.WritePostActivity;
 
 import static android.app.Activity.RESULT_OK;
 
-public class  ReviewCommunity extends Fragment {
+public class  TipCommunity extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -59,9 +59,9 @@ public class  ReviewCommunity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.review_community, container, false);
+        view = inflater.inflate(R.layout.tip_community, container, false);
 
-        category = "review";
+        category = "tip";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
@@ -145,7 +145,9 @@ public class  ReviewCommunity extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), WritePostActivity.class), 1);
+                Intent intent = new Intent(getActivity(), WritePostActivity.class);
+                intent.putExtra("category", "tip");
+                startActivityForResult(intent, 1);
             }
         });
 

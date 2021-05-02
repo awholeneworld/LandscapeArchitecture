@@ -1,7 +1,6 @@
 package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import gachon.termproject.joker.R;
 
@@ -34,7 +29,7 @@ public class ChatFrame extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.chat_frame, container, false);
+        view = inflater.inflate(R.layout.frame_chat, container, false);
         /*
         layout = view.findViewById(R.id.layout1);
         layout_2 = view.findViewById(R.id.layout2);

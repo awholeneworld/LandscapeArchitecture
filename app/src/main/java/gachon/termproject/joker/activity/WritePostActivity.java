@@ -1,13 +1,10 @@
 package gachon.termproject.joker.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -46,15 +43,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
 
 public class WritePostActivity extends AppCompatActivity {
-    private Context mContext;
-    private Activity mActivity;
-    private Toolbar mToolbar;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
     private DocumentReference documentReference;
@@ -63,10 +56,10 @@ public class WritePostActivity extends AppCompatActivity {
     private FirebaseHelper firebaseHelper = new FirebaseHelper(this);
     private PostContent postContent;
     private Uri image; // 이미지 저장 변수
-    private ArrayList<String> contentList = new ArrayList<String>();
-    private ArrayList<String> imagesNumber = new ArrayList<String>();
-    private ArrayList<Uri> imagesList = new ArrayList<Uri>();
-    private ArrayList<Integer> contentOrder = new ArrayList<Integer>();
+    private ArrayList<String> contentList = new ArrayList<>();
+    private ArrayList<String> imagesNumber = new ArrayList<>();
+    private ArrayList<Uri> imagesList = new ArrayList<>();
+    private ArrayList<Integer> contentOrder = new ArrayList<>();
     private String userId = user.getUid(); // 누가 업로드 했는지 알기 위함
     private String nickname;
     private String postId;
@@ -82,7 +75,7 @@ public class WritePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.write_post);
+        setContentView(R.layout.activity_write_post);
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -98,6 +91,9 @@ public class WritePostActivity extends AppCompatActivity {
         imageAddButton = findViewById(R.id.writepost_imageAddButton);
         register = findViewById(R.id.writepost_assign);
 
+        Intent intent = getIntent();
+        String category = intent.getStringExtra("category");
+
         // 파일 선택
         imageAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +108,7 @@ public class WritePostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (title.length() > 0 && content.length() > 0) {
-                    post("example");
+                    post(category);
                     setResult(RESULT_OK, new Intent());
                     finish();
                 } else if (title.length() <= 0){
@@ -218,7 +214,7 @@ public class WritePostActivity extends AppCompatActivity {
 
         // 포스트할 내용 바구니
         postId = String.valueOf(System.currentTimeMillis());
-        postContent = new PostContent(userId, title.getText().toString(), "admin", updateTime, postId, contentList, imagesNumber, contentOrder);
+        postContent = new PostContent(category, userId, title.getText().toString(), "admin", updateTime, postId, contentList, imagesNumber, contentOrder);
 
         // DB에 글 내용 올리기
         databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

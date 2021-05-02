@@ -46,6 +46,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         TextView date;
         TextView content;
         ImageView image;
+        String categoryOfPost;
         String userIdInPost;
         String titleInPost;
         String nicknameInPost;
@@ -67,6 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, SeePostActivity.class);
+                    intent.putExtra("category", categoryOfPost);
                     intent.putExtra("userId", userIdInPost);
                     intent.putExtra("title", titleInPost);
                     intent.putExtra("nickname", nicknameInPost);
@@ -102,6 +104,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         ArrayList<String> imagesList = content.getImages();
         ArrayList<Integer> orderList = content.getOrder();
 
+        viewHolder.categoryOfPost = content.getCategory();
         viewHolder.userIdInPost = content.getUserId();
         viewHolder.titleInPost = contentTitle;
         viewHolder.nicknameInPost = contentNickname;
@@ -111,11 +114,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         viewHolder.imagesInPost = imagesList;
         viewHolder.orderInPost = orderList;
 
-
+        // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         viewHolder.title.setText(contentTitle);
         viewHolder.nickname.setText(contentNickname);
         viewHolder.date.setText(contentTime);
 
+        // 목록에 나타나는 글의 내용 표시
+        // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
         int inputImage = 0;
         int inputLetters = 0;
         String contents = "";

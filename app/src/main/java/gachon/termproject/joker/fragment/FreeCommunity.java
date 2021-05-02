@@ -1,4 +1,4 @@
-package gachon.termproject.joker;
+package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -145,7 +145,9 @@ public class  FreeCommunity extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), WritePostActivity.class), 1);
+                Intent intent = new Intent(getActivity(), WritePostActivity.class);
+                intent.putExtra("category", "free");
+                startActivityForResult(intent, 1);
             }
         });
 

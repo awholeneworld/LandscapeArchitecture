@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
 
         Button button_login = findViewById(R.id.login_button);
         TextView forgetPW = findViewById(R.id.login_text04_forgetPW);
@@ -32,7 +32,12 @@ public class LoginActivity extends AppCompatActivity {
         EditText id = findViewById(R.id.login_editText_ID);
         EditText pw = findViewById(R.id.login_editText_PW);
 
+        // 이미 로그인한 경우 로그인 상태 유지
         fAuth = FirebaseAuth.getInstance();
+        if (fAuth.getCurrentUser() != null){
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
 
         //login버튼을 눌럿을때
         button_login.setOnClickListener(new View.OnClickListener() {

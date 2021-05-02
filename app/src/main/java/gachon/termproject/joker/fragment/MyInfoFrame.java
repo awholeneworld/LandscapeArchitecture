@@ -18,7 +18,7 @@ public class MyInfoFrame extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.myinfo_frame, container, false);
+        view = inflater.inflate(R.layout.frame_myinfo, container, false);
 
         return view;
     }
