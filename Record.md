@@ -85,6 +85,7 @@ DB의 비동기식 작동 방식 때문에 게시글, 댓글을 불러오는 동
 그래서 프로필 사진, 닉네임 불러오고 싶으면 이 파일을 import해서 쓰면 됨.
 
 예) 
+
 import gachon.termproject.joker.UserInfo;
 
 String nickname = UserInfo.nickname;
@@ -96,6 +97,9 @@ String nickname = UserInfo.nickname;
 **Improvement**
 
 댓글 작성 시간 표시할 수 있게 xml 만들어주면 좋겠음
+
 게시글 내용이 3줄 초과면 리스트에 불러올 때 더보기 붙이기
+
 이메일 .com 체크 로직이 작동을 안함
+
 닉네임 중복아니면 바로 다음 단계 넘어갈 수 있게 손봐야함 (역시 DB 비동기식 작동 문제)
