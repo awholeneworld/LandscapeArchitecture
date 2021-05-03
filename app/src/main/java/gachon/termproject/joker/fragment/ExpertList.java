@@ -14,15 +14,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
-import gachon.termproject.joker.ExpertListContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.adapter.ExpertListAdapter;
+import gachon.termproject.joker.container.ExpertListContent;
 
 public class ExpertList extends Fragment {
     private View view;
