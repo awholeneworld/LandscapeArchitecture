@@ -70,7 +70,7 @@ SeePost.java 파일을 제외한 모든 파일에 주석 제대로 달고
 
 container라는 package를 만들어 다 넣어버렸음
 
-**3. UserInfo.java **
+**3. UserInfo.java**
 
 게시글, 댓글 불러올 시 프로필 사진, 닉네임 불러와야 하는데
 
@@ -94,7 +94,7 @@ String nickname = UserInfo.nickname;
  
 댓글 업로드 시, 해당하는 글의 DB 경로에 저장
 
-**Improvement**
+***Improvement***
 
 댓글 작성 시간 표시할 수 있게 xml 만들어주면 좋겠음
 
