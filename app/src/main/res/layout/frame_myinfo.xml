@@ -10,4 +10,36 @@
         android:text="My Info 입니다"
         android:textSize="40dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" "
+        android:textSize="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="밑에"
+        android:textSize="20dp" />
+
+    <EditText
+        android:id="@+id/text_change_nick"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:singleLine="true"
+        android:backgroundTint="@color/mainGreen"
+        android:hint="닉네임을 입력하세요" />
+
+    <Button
+        android:id="@+id/change_nick"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_gravity="right"
+        android:background="@drawable/all_button_bg_ripple_round_15"
+        android:text="닉네임 변경"
+        android:textColor="@color/white"
+        android:textSize="10dp" />
+
 </LinearLayout>

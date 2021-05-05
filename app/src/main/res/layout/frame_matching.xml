@@ -12,7 +12,7 @@
         android:textSize="40dp" />
 
     <Button
-        android:id="@+id/expertList"
+        android:id="@+id/show_expertList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="expert"
@@ -21,7 +21,7 @@
         android:id="@+id/expertList_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/expertList">
+        app:layout_constraintTop_toBottomOf="@id/show_expertList">
     </FrameLayout>
 
 </LinearLayout>

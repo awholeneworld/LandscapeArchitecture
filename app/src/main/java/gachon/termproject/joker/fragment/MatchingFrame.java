@@ -29,6 +29,7 @@ public class MatchingFrame extends Fragment {
     private View view;
     private ExpertList Elist;
     public static ArrayList<ExpertListContent> expertList = new ArrayList<ExpertListContent>();
+    ExpertList eexpertList;
 
 
     @Nullable
@@ -37,7 +38,7 @@ public class MatchingFrame extends Fragment {
         view = inflater.inflate(R.layout.frame_matching, container, false);
         fm = getChildFragmentManager();
 
-        Button nextButton = view.findViewById(R.id.expertList);
+        Button nextButton = view.findViewById(R.id.show_expertList);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +65,7 @@ public class MatchingFrame extends Fragment {
                         }
                     }
                 });
+                //fm.beginTransaction().replace(R.id.expertList_frame, eexpertList).commit();
             }
         });
         return view;
