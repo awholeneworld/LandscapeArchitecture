@@ -11,26 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.container.ExpertListContent;
 
 public class MatchingFrame extends Fragment {
     private FragmentManager fm;
     private View view;
-    private ExpertList Elist;
-    public static ArrayList<ExpertListContent> expertList = new ArrayList<ExpertListContent>();
-    ExpertList eexpertList;
-
+    private ExpertList expertList;
 
     @Nullable
     @Override
@@ -38,36 +24,19 @@ public class MatchingFrame extends Fragment {
         view = inflater.inflate(R.layout.frame_matching, container, false);
         fm = getChildFragmentManager();
 
-        Button nextButton = view.findViewById(R.id.show_expertList);
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        // 전문가 리스트 보기 테스트
+        Button testExpertList = view.findViewById(R.id.show_expertList);
+        testExpertList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                FirebaseFirestore fStore;
-                CollectionReference collectionReference;
-
-                fStore = FirebaseFirestore.getInstance();
-                collectionReference = fStore.collection("users");
-                collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot querySnapshot = task.getResult();
-                            List<DocumentSnapshot> list = querySnapshot.getDocuments();
-
-                            for (int i = 0; i < list.size(); i++) {
-                                DocumentSnapshot snapshot = list.get(i);
-                                Boolean publicCheck = snapshot.getBoolean("isPublic");
-                                if (!publicCheck) {
-                                    expertList.add(new ExpertListContent(snapshot.getId(), snapshot.getString("nickname")));
-                                }
-                            }
-                        }
-                    }
-                });
-                //fm.beginTransaction().replace(R.id.expertList_frame, eexpertList).commit();
+                if (expertList == null) {
+                    expertList = new ExpertList();
+                    fm.beginTransaction().add(R.id.expertList_frame, expertList).commit();
+                }
+                fm.beginTransaction().show(expertList).commit();
             }
         });
+
         return view;
     }
 }
