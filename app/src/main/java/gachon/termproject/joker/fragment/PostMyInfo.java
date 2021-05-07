@@ -11,13 +11,13 @@ import androidx.fragment.app.Fragment;
 
 import gachon.termproject.joker.R;
 
-public class CommunityAlbumStyle extends Fragment {
+public class PostMyInfo extends Fragment {
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.album_item_content_community, container, false);
-
-        return rootView;
+        view = inflater.inflate(R.layout.post_myinfo, container, false);
+        return view;
     }
 }

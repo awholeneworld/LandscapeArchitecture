@@ -13,15 +13,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Comment;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,17 +37,77 @@ import gachon.termproject.joker.UserInfo;
 public class MyInfoFrame extends Fragment {
 
     private View view;
+    private FragmentManager fm;
+    private PostMyInfo post;
+    private CommentMyInfo comment;
+    private PortfolioMyInfo portfolio;
+    TabLayout tabs;
+    Button selectCommunityMode;
+    boolean i = true;
+    
+    // 닉네임 변경 부분
+    /*
     private CollectionReference collectionReference;
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
     private String userId = UserInfo.userId;
+    
+     */
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frame_myinfo, container, false);
 
-        Button changeButton = view.findViewById(R.id.change_nick);
+        tabs = view.findViewById(R.id.myinfo_tabs);
+        fm = getChildFragmentManager();
+
+        if (post == null) {
+            post = new PostMyInfo();
+            fm.beginTransaction().add(R.id.myinfo_frame, post).commit();
+        }
+
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tabs.getSelectedTabPosition()) {
+                    case 0 :
+                        if (comment != null) fm.beginTransaction().hide(comment).commit();
+                        if (portfolio != null) fm.beginTransaction().hide(portfolio).commit();
+                        fm.beginTransaction().show(post).commit();
+                        break;
+                    case 1 :
+                        if (comment == null) {
+                            comment = new CommentMyInfo();
+                            fm.beginTransaction().add(R.id.myinfo_frame, comment).commit();
+                        }
+                        if (portfolio != null) fm.beginTransaction().hide(portfolio).commit();
+                        fm.beginTransaction().hide(post).commit();
+                        fm.beginTransaction().show(comment).commit();
+                        break;
+                    case 2 :
+                        if (portfolio == null) {
+                            portfolio = new PortfolioMyInfo();
+                            fm.beginTransaction().add(R.id.myinfo_frame, portfolio).commit();
+                        }
+                        if (comment != null) fm.beginTransaction().hide(comment).commit();
+                        fm.beginTransaction().hide(post).commit();
+                        fm.beginTransaction().show(portfolio).commit();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+        
+        // 설정 구현되면 설정 안에 이 내용 넣기 - 닉네임 변경
+        /*Button changeButton = view.findViewById(R.id.change_nick);
         EditText nicknameText = view.findViewById(R.id.text_change_nick);
 
         changeButton.setOnClickListener(new View.OnClickListener() {
@@ -86,7 +150,7 @@ public class MyInfoFrame extends Fragment {
                 });
             }
 
-        });
+        }); */
         return view;
     }
 }
