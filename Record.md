@@ -94,6 +94,24 @@ String nickname = UserInfo.nickname;
  
 댓글 업로드 시, 해당하는 글의 DB 경로에 저장
 
+
+## 0507
+
+### 김승윤
+
+**1. ExpertList.java 관련된 파일들**
+
+전문가 목록 조회 가능
+
+
+
+
+
+
+
+
+
+
 ***Improvement***
 
 댓글 작성 시간 표시할 수 있게 xml 만들어주면 좋겠음
