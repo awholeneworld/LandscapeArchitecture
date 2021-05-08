@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ExpertListAdapter;
 import gachon.termproject.joker.container.ExpertListContent;
 
@@ -61,10 +62,11 @@ public class ExpertList extends Fragment {
                     for (int i = 0; i < list.size(); i++) {
                         DocumentSnapshot snapshot = list.get(i);
                         Boolean isPublic = snapshot.getBoolean("isPublic");
-                        if (!isPublic) {
+                        String userId = snapshot.getId();
+                        if (!isPublic && !userId.equals(UserInfo.userId)) {
                             String nickname = snapshot.getString("nickname");
                             String profileImg = snapshot.getString("profileUrl");
-                            expertList.add(new ExpertListContent(nickname, profileImg));
+                            expertList.add(new ExpertListContent(userId, nickname, profileImg));
                         }
                     }
                     expertListAdapter.notifyDataSetChanged();
