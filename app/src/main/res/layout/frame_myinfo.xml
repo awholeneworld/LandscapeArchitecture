@@ -81,10 +81,11 @@
         android:id="@+id/myinfo_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
         android:layout_below="@id/information"
         android:elevation="0dp"
-        android:backgroundTint="#48B466">
+        app:tabBackground="@drawable/myinfo_tab_background"
+        app:tabSelectedTextColor="#ffffff"
+        app:tabTextColor="#ffffff">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab1"

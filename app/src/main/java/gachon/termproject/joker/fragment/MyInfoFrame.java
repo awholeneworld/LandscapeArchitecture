@@ -1,5 +1,6 @@
 package gachon.termproject.joker.fragment;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -60,6 +61,7 @@ public class MyInfoFrame extends Fragment {
         view = inflater.inflate(R.layout.frame_myinfo, container, false);
 
         tabs = view.findViewById(R.id.myinfo_tabs);
+        tabs.setSelectedTabIndicatorHeight(0);
         fm = getChildFragmentManager();
 
         if (post == null) {
@@ -72,6 +74,7 @@ public class MyInfoFrame extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tabs.getSelectedTabPosition()) {
                     case 0 :
+                        // tabs.getChildAt(0).setBackgroundColor(Color.parseColor("#4B3D5A"));
                         if (comment != null) fm.beginTransaction().hide(comment).commit();
                         if (portfolio != null) fm.beginTransaction().hide(portfolio).commit();
                         fm.beginTransaction().show(post).commit();
