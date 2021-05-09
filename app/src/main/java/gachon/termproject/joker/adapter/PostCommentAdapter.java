@@ -69,16 +69,15 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
     @NonNull
     @Override
-    public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.comment_1_listview, viewGroup,false);
-        CommentViewHolder viewHolder = new CommentViewHolder(view);
+    public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_1_listview, parent,false);
 
-        return viewHolder;
+        return new CommentViewHolder(view);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void onBindViewHolder(@NonNull CommentViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         PostCommentContent commentContent = postCommentList.get(position);
 
         String commentProfileImg = commentContent.getProfileImg();
@@ -86,22 +85,22 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         String commentTime = commentContent.getCommentTime();
         String comment = commentContent.getContent();
 
-        viewHolder.categoryOfComment = commentContent.getCategory();
-        viewHolder.userIdInComment = commentContent.getUserId();
-        viewHolder.nicknameInComment = commentNickname;
-        viewHolder.timeInComment = commentTime;
-        viewHolder.comment = comment;
+        holder.categoryOfComment = commentContent.getCategory();
+        holder.userIdInComment = commentContent.getUserId();
+        holder.nicknameInComment = commentNickname;
+        holder.timeInComment = commentTime;
+        holder.comment = comment;
 
         // 댓글의 작성자, 작성 시간, 내용 표시
-        viewHolder.nickname.setText(commentNickname);
-        // viewHolder.date.setText(commentTime);
-        viewHolder.content.setText(comment);
+        holder.nickname.setText(commentNickname);
+        // holder.date.setText(commentTime);
+        holder.content.setText(comment);
 
         // 댓글의 작성자 프로필 사진 표시
-        viewHolder.profileImg.setBackground(new ShapeDrawable(new OvalShape()));
-        viewHolder.profileImg.setClipToOutline(true);
+        holder.profileImg.setBackground(new ShapeDrawable(new OvalShape()));
+        holder.profileImg.setClipToOutline(true);
         if (!commentProfileImg.equals("None"))
-            Glide.with(context).load(commentProfileImg).into(viewHolder.profileImg);
+            Glide.with(context).load(commentProfileImg).into(holder.profileImg);
     }
 
     @Override

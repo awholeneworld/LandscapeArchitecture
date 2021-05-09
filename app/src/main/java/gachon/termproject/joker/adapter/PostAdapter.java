@@ -84,15 +84,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
     
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_content_community, viewGroup,false);
-        ViewHolder viewHolder = new ViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_content_community, parent,false);
 
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PostContent content = postContentList.get(position);
 
         String contentTitle = content.getTitle();
@@ -103,21 +102,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         ArrayList<Integer> orderList = content.getOrder();
 
         // 뷰홀더 클래스의 전역 변수 설정
-        viewHolder.categoryOfPost = content.getCategory();
-        viewHolder.userIdInPost = content.getUserId();
-        viewHolder.profileImgInPost = content.getProfileImg();
-        viewHolder.titleInPost = contentTitle;
-        viewHolder.nicknameInPost = contentNickname;
-        viewHolder.timeInPost = contentTime;
-        viewHolder.postIdInPost = content.getPostId();
-        viewHolder.contentInPost = contentsList;
-        viewHolder.imagesInPost = imagesList;
-        viewHolder.orderInPost = orderList;
+        holder.categoryOfPost = content.getCategory();
+        holder.userIdInPost = content.getUserId();
+        holder.profileImgInPost = content.getProfileImg();
+        holder.titleInPost = contentTitle;
+        holder.nicknameInPost = contentNickname;
+        holder.timeInPost = contentTime;
+        holder.postIdInPost = content.getPostId();
+        holder.contentInPost = contentsList;
+        holder.imagesInPost = imagesList;
+        holder.orderInPost = orderList;
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
-        viewHolder.title.setText(contentTitle);
-        viewHolder.nickname.setText(contentNickname);
-        viewHolder.date.setText(contentTime);
+        holder.title.setText(contentTitle);
+        holder.nickname.setText(contentNickname);
+        holder.date.setText(contentTime);
 
         // 목록에 나타나는 글의 내용 표시
         // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
@@ -138,12 +137,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     inputLetters += writingsLength;
                 }
             } else if (inputImage == 0 && order == 1){
-                Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(viewHolder.image);
+                Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
                 inputImage++;
             }
         }
 
-        viewHolder.content.setText(contents);
+        holder.content.setText(contents);
     }
 
     @Override
