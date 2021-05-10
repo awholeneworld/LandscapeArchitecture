@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.container.PostMyInfoContent;
+import gachon.termproject.joker.container.PostAlbumContent;
 
 public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.ViewHolder> {
 

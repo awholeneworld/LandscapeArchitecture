@@ -1,4 +1,4 @@
-package gachon.termproject.joker.adapter;
+package gachon.termproject.joker.container;
 
 public class PostAlbumContent {
     public int img;
