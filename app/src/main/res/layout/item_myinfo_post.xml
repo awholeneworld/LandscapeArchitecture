@@ -2,20 +2,16 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
-    android:layout_width="match_parent"
+    android:id="@+id/post_myinfo_card_view"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     app:cardElevation="0dp"
     app:cardBackgroundColor="@android:color/white">
 
-    <ImageView
-        android:id="@+id/image2"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_weight="1"
-        android:layout_width="0dp"
-        android:layout_height="150dp" />
+        <ImageView
+            android:layout_width="130dp"
+            android:layout_height="200dp"
+            android:id="@+id/image"/>
 
 </androidx.cardview.widget.CardView>

@@ -16,7 +16,7 @@ public class CommunityAlbumStyle extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.album_item_content_community, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.item_content_album_community, container, false);
 
         return rootView;
     }

@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/postMyInfo"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/post_myinfo_container">
+    android:fitsSystemWindows="true">
 
-    <!-- CardView 사용해서 하기 -->
+    <include layout="@layout/content_post_myinfo" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Post MyInfo"
-        android:textSize="50dp"
-        android:background="#3dfaf2" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

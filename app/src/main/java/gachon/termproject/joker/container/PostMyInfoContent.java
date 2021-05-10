@@ -1,12 +1,12 @@
-package gachon.termproject.joker.adapter;
+package gachon.termproject.joker.container;
 
-public class PostAlbumContent {
+public class PostMyInfoContent {
     public int img;
 
-    public PostAlbumContent() {
+    public PostMyInfoContent() {
     }
 
-    public PostAlbumContent(int img) {
+    public PostMyInfoContent(int img) {
         this.img = img;
     }
 
@@ -17,4 +17,4 @@ public class PostAlbumContent {
     public void setImg(Integer img) {
         this.img = img;
     }
-} 
+}
