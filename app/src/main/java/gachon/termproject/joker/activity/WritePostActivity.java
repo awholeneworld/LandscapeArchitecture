@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import gachon.termproject.joker.adapter.PostImage;
 import gachon.termproject.joker.container.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
@@ -130,28 +132,16 @@ public class WritePostActivity extends AppCompatActivity {
             image = data.getData();
 
             // 레이아웃 설정
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(dpToPx(35),0, dpToPx(35),0);
 
-            // 이미지뷰를 생성하고 초기화한다.
-            ImageView imageView = new ImageView(WritePostActivity.this);
-            imageView.setLayoutParams(layoutParams);
-            Glide.with(this).load(image).into(imageView);
 
-//            // 텍스트뷰가 이어서 생성된다.
-//            EditText editText = new EditText(WritePostActivity.this);
-//            editText.setLayoutParams(layoutParams);
-//            editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
-//            editText.setBackground(null);
-//            editText.setTextSize(16);
-            
-            imageView.setId(imagenum);
-            layout.addView(imageView);
-
-//            layout.addView(editText);
+            PostImage postimage = new PostImage(WritePostActivity.this, image, layoutParams);
 
 
+            layout.addView(postimage);
             imagesList.add(image);
+
         }
     }
 

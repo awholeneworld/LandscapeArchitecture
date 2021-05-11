@@ -34,6 +34,7 @@ import java.util.Map;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.fragment.PostMyInfo;
 
 public class MyInfoFrame extends Fragment {
 
@@ -45,14 +46,14 @@ public class MyInfoFrame extends Fragment {
     TabLayout tabs;
     Button selectCommunityMode;
     boolean i = true;
-    
+
     // 닉네임 변경 부분
     /*
     private CollectionReference collectionReference;
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
     private String userId = UserInfo.userId;
-    
+
      */
 
     @Nullable
