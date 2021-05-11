@@ -105,6 +105,13 @@ String nickname = UserInfo.nickname;
 
 
 
+## 0511
+
+### 김수현
+
+**1. post write할 때 이미지 삭제하기**
+java file : PostImage, WritePostActivity
+xml : post_write_image_view.xml
 
 
 
