@@ -10,8 +10,9 @@
     app:cardBackgroundColor="@android:color/white">
 
     <ImageView
+        android:background="@drawable/post_myinfo_border"
         android:layout_width="130dp"
-        android:layout_height="200dp"
+        android:layout_height="130dp"
         android:id="@+id/image"/>
 
 </androidx.cardview.widget.CardView>

@@ -1,4 +1,4 @@
-package gachon.termproject.joker.adapter;
+package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,7 +35,14 @@ public class PostMyInfo extends Fragment {
         mAdapter = new MyInfoPostAdapter(dataSet);
         contents.setAdapter(mAdapter);
 
-        dataSet.add(new PostMyInfoContent(R.drawable.ic_launcher_background));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
+        dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
         dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
         dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
         dataSet.add(new PostMyInfoContent(R.mipmap.ic_launcher));
