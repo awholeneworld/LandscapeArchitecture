@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.adapter.MyInfoPostAdapter;
 import gachon.termproject.joker.adapter.PostAlbumAdapter;
 import gachon.termproject.joker.container.PostAlbumContent;
-import gachon.termproject.joker.container.PostMyInfoContent;
 
 public class CommunityAlbumStyle extends Fragment {
 

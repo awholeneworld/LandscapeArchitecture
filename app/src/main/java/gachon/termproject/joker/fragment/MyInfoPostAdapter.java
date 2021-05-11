@@ -1,4 +1,4 @@
-package gachon.termproject.joker.adapter;
+package gachon.termproject.joker.fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;

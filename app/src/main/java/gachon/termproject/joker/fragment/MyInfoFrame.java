@@ -41,7 +41,7 @@ public class MyInfoFrame extends Fragment {
     private FragmentManager fm;
     private PostMyInfo post;
     private CommentMyInfo comment;
-    private PortfolioMyInfo portfolio;
+    //private PortfolioMyInfo portfolio;
     TabLayout tabs;
     Button selectCommunityMode;
     boolean i = true;
@@ -76,7 +76,7 @@ public class MyInfoFrame extends Fragment {
                     case 0 :
                         // tabs.getChildAt(0).setBackgroundColor(Color.parseColor("#4B3D5A"));
                         if (comment != null) fm.beginTransaction().hide(comment).commit();
-                        if (portfolio != null) fm.beginTransaction().hide(portfolio).commit();
+                        //if (portfolio != null) fm.beginTransaction().hide(portfolio).commit();
                         fm.beginTransaction().show(post).commit();
                         break;
                     case 1 :
@@ -84,10 +84,11 @@ public class MyInfoFrame extends Fragment {
                             comment = new CommentMyInfo();
                             fm.beginTransaction().add(R.id.myinfo_frame, comment).commit();
                         }
-                        if (portfolio != null) fm.beginTransaction().hide(portfolio).commit();
+                        //if (portfolio != null) fm.beginTransaction().hide(portfolio).commit();
                         fm.beginTransaction().hide(post).commit();
                         fm.beginTransaction().show(comment).commit();
                         break;
+                        /*
                     case 2 :
                         if (portfolio == null) {
                             portfolio = new PortfolioMyInfo();
@@ -97,6 +98,8 @@ public class MyInfoFrame extends Fragment {
                         fm.beginTransaction().hide(post).commit();
                         fm.beginTransaction().show(portfolio).commit();
                         break;
+
+                         */
                 }
             }
 
