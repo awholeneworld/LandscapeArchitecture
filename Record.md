@@ -114,11 +114,16 @@ java file : PostImage, WritePostActivity
 xml : post_write_image_view.xml
 
 
+**2. 댓글 수정**
+java file : SeePostActivity -> 댓글쓰면 댓글창 초기화, 0글자 입력 방지
+xml : menu_button_threedot_ripple, activity_see_post, comment_1_listview xml 수정
 
 
 
-
-
+<br>
+<br>
+<br>
+<br>
 ***Improvement***
 
 댓글 작성 시간 표시할 수 있게 xml 만들어주면 좋겠음
