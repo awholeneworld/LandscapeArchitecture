@@ -1,0 +1,61 @@
+package gachon.termproject.joker.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseTooManyRequestsException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+
+import gachon.termproject.joker.R;
+
+public class FindPassword extends AppCompatActivity {
+    //public static String identifier; // 회원가입을 위한 전역변수
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.find_password);
+
+        //toolbar를 activity bar로 지정!
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
+        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
+
+        Button findButton = findViewById(R.id.find_password_button01);
+        EditText email = findViewById(R.id.find_password_edittext01);
+
+        findButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String UserEmail = email.getText().toString().trim();
+
+                if (TextUtils.isEmpty(UserEmail))
+                    Toast.makeText(getApplicationContext(), "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                else
+                    checkEmail(UserEmail);
+            }
+        });
+    }
+
+    // 비밀번호를 찾기 위한 이메일 확인!!
+    private void checkEmail(String email) {
+
+    }
+}
