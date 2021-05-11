@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -39,24 +40,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="35dp"
                     android:text="이것은 제목입니다"
                     android:textColor="@color/black"
-                    android:textSize="28sp" />
+                    android:textSize="25sp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="35dp"
                     android:orientation="horizontal"
-                    android:paddingTop="15dp">
+                    android:paddingTop="5dp">
 
                     <ImageView
                         android:id="@+id/postProfile"
@@ -82,7 +87,7 @@
                             android:id="@+id/postTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="4월 5일 오후 8시 39분"
+                            android:text="0월 0일 오후 0시 00분"
                             android:textColor="@color/gray"
                             android:textSize="14sp" />
 
@@ -95,29 +100,27 @@
                     android:id="@+id/seepost_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="30dp"
                     android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="vertical">
-
                 </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_height="1dp"
-                    android:background="@color/whitegray"/>
-
-                <!--댓글-->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/comment_listview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                </androidx.recyclerview.widget.RecyclerView>
 
             </LinearLayout>
 
-        </androidx.core.widget.NestedScrollView>
+            <!--댓글-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/comment_listview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="20dp"
+                >
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
@@ -125,36 +128,40 @@
         android:id="@+id/layout_seepost_bottom"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginVertical="0dp"
+        android:paddingVertical="5dp"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="5dp"
+            android:layout_marginVertical="3dp"
             android:background="@drawable/radius_15_whitegray_bg">
 
             <EditText
                 android:id="@+id/see_post_comment_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="10dp"
+                android:layout_toLeftOf="@+id/see_post_comment_send_button"
                 android:background="#00ff0000"
                 android:hint="댓글을 입력하세요"
-                android:textSize="20sp"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/see_post_comment_send_button"/>
+                android:textSize="15sp" />
 
 
             <ImageButton
                 android:id="@+id/see_post_comment_send_button"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/send_grey_72x72"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
+                android:maxLength="3" />
 
         </RelativeLayout>
 
