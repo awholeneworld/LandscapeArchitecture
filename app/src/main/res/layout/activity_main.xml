@@ -7,13 +7,13 @@
 
     <!--toolbar-->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         tools:ignore="MissingConstraints">
 
         <TextView
-            android:id="@+id/signup01_toolbar_textview"
+            android:id="@+id/main_toolbar_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="게시물"

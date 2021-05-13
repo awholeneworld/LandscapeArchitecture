@@ -2,6 +2,8 @@ package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +31,8 @@ public class  CommunityFrame extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frame_community, container, false);
+
+        setHasOptionsMenu(true); //action bar menu
 
         // 앨범, 리스트 변환 버튼 부분은 내가 해야될 것 같아서 삭제했음
         tabs = view.findViewById(R.id.tabs);
@@ -80,4 +84,13 @@ public class  CommunityFrame extends Fragment {
 
         return view;
     }
+
+
+    //action bar menu
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.top_search_app_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }

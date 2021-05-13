@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
-
+import com.makeramen.RoundedImageView;
 import gachon.termproject.joker.R;
 
 public class PostImage extends RelativeLayout {
@@ -33,6 +33,7 @@ public class PostImage extends RelativeLayout {
         imageView.setLayoutParams(layoutParams);
         Glide.with(this).load(image).into(imageView);
 
+
         btn = findViewById(R.id.writeImageButton);
 
         btn.setOnClickListener(new View.OnClickListener(){
@@ -43,6 +44,4 @@ public class PostImage extends RelativeLayout {
         });
 
     }
-
-
 }

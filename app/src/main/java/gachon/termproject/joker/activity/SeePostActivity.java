@@ -46,6 +46,8 @@ import java.util.Locale;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
+import gachon.termproject.joker.adapter.PostImage;
+import gachon.termproject.joker.adapter.PostImageSee;
 import gachon.termproject.joker.container.PostCommentContent;
 
 import static gachon.termproject.joker.Util.isStorageUrl;
@@ -100,6 +102,14 @@ public class SeePostActivity extends AppCompatActivity {
         container = findViewById(R.id.seepost_content);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
+
+        //===================> image 넣기 (이걸 사용하시면 됩니다)
+//        LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer); //이미지 들어갈 컨테이너
+//
+//        PostImageSee postimage = new PostImageSee(SeePostActivity.this, image); //이미지뷰 생성
+//        imageContainer.addView(postimage); //컨테이너에 더해주기
+
+
         // imageView 채우기
         int imageNum = 0;
         for (int i = 0; i < order.size(); i++) {
@@ -114,6 +124,7 @@ public class SeePostActivity extends AppCompatActivity {
 
                 //부모 뷰에 추가
                 container.addView(text_content);
+
             } else if (order.get(i) == 1 && isStorageUrl(images.get(imageNum))){
                 //이미지뷰 생성
                 ImageView imageView = new ImageView(SeePostActivity.this);
@@ -228,4 +239,5 @@ public class SeePostActivity extends AppCompatActivity {
     public static int dpToPx(int dp){
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
+
 }

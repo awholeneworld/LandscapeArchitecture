@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -61,6 +63,9 @@ public class MyInfoFrame extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frame_myinfo, container, false);
 
+        setHasOptionsMenu(true); //action bar menu
+
+
         tabs = view.findViewById(R.id.myinfo_tabs);
         tabs.setSelectedTabIndicatorHeight(0);
         fm = getChildFragmentManager();
@@ -112,7 +117,7 @@ public class MyInfoFrame extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-        
+
         // 설정 구현되면 설정 안에 이 내용 넣기 - 닉네임 변경
         /*Button changeButton = view.findViewById(R.id.change_nick);
         EditText nicknameText = view.findViewById(R.id.text_change_nick);
@@ -160,4 +165,12 @@ public class MyInfoFrame extends Fragment {
         }); */
         return view;
     }
+
+    //action bar menu
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.top_setting_app_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 }
