@@ -118,6 +118,27 @@ xml : post_write_image_view.xml<br>
 java file : SeePostActivity -> 댓글쓰면 댓글창 초기화, 0글자 입력 방지<br>
 xml : menu_button_threedot_ripple, activity_see_post, comment_1_listview xml 수정<br>
 
+## 0513
+### 김수현
+**1. SeePostActivity**
+: 보는 게시글에 들어갈 image frame 넣어둠 (106~110 이용하시면 됨)
+
+
+**2. see_post**
+: 글에 댓글 recylerview와 댓글입력창 추가
+| id | 내용 |
+|---|:---:|
+| see_post_comment_text | 작성 댓글 텍스트 |
+| see_post_comment_send_button | 댓글 전송버튼 |
+
+**3. 전반적인 action bar 손봄**
+액션바 관련해서 애매하거나 궁금한거잇으면 카톡 ㄱ
+
+**3. 그외자잘쓰**
+댓글 날짜 추가
+댓글 글쓰면 지워지면서 내려가는것도 추가
+댓글 글씨 안쓰면 입력 안되게
+
 
 
 <br>
