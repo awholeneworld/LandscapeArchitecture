@@ -26,7 +26,6 @@ import gachon.termproject.joker.R;
 public class Signup03Activity extends AppCompatActivity {
     private FirebaseFirestore fStore;
     private CollectionReference collectionReference;
-    private boolean isDuplicate = true;
     public static String nickname; // 회원가입을 위한 전역변수
 
     @Override
@@ -66,19 +65,13 @@ public class Signup03Activity extends AppCompatActivity {
                                 String nicknameCheck = snapshot.getString("nickname");
                                 if (temp.compareTo(nicknameCheck) == 0) {
                                     Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
-                                    isDuplicate = true;
                                     break;
+                                } else if (i == list.size() - 1) {
+                                    // 닉네임 설정 후 다음 페이지로 이동
+                                    nickname = temp;
+                                    startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
                                 }
                             }
-
-                            if (!isDuplicate) {
-                                nickname = temp;
-                                //주 활동 지역 페이지로 이동
-                                Intent intent = new Intent(getApplicationContext(), Signup04Activity.class);
-                                startActivity(intent);
-                            }
-
-                            isDuplicate = false; // 초기화
                         }
                     }
                 });

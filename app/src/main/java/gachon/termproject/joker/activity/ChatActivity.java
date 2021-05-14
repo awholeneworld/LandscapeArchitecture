@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.auth.User;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -26,13 +27,14 @@ import gachon.termproject.joker.adapter.ChatAreaAdapter;
 import gachon.termproject.joker.container.ChatMessageContent;
 
 public class ChatActivity extends AppCompatActivity {
-    public static String chatRoomId;
+    public static String chatRoomId = null;
     public static String opponentNickname;
     public static String opponentProfileImg;
     public static RecyclerView chatArea;
     private ImageView sendButton;
     private EditText messageArea;
     private String opponentUserId;
+    private boolean send = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +56,27 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!messageArea.getText().toString().equals("")) {
-                    // 채팅방 생성
-                    if (chatRoomId == null) {
+                    if (chatRoomId == null) { // 채팅방 생성
                         ChatMessageContent chatMessageContent = new ChatMessageContent();
-                        chatMessageContent.users.put(UserInfo.userId, true);
-                        chatMessageContent.users.put(opponentUserId, true);
+                        ChatMessageContent.User user = new ChatMessageContent.User();
+                        ChatMessageContent.User opponent = new ChatMessageContent.User();
+                        // 나의 정보
+                        user.nickname = UserInfo.nickname;
+                        user.profileUrl = UserInfo.profileImg;
+                        chatMessageContent.users.put(UserInfo.userId, user);
+
+                        // 상대방 정보
+                        opponent.nickname = opponentNickname;
+                        opponent.profileUrl = opponentProfileImg;
+                        chatMessageContent.users.put(opponentUserId, opponent);
 
                         sendButton.setEnabled(false);
 
                         FirebaseDatabase.getInstance().getReference().child("Chat").push().setValue(chatMessageContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                send = true;
                                 checkChatRoom();
-                                sendMsgToDB();
                             }
                         });
                     } else {
@@ -78,15 +88,18 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void checkChatRoom() {
-        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.userId).equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     ChatMessageContent chatMessageContent = dataSnapshot.getValue(ChatMessageContent.class);
-                    if (chatMessageContent.users.containsKey(opponentUserId)) {
+                    if (chatMessageContent.users.containsKey(UserInfo.userId) && chatMessageContent.users.containsKey(opponentUserId)) {
                         chatRoomId = dataSnapshot.getKey();
+                        if (send) {
+                            send = false;
+                            sendMsgToDB();
+                        }
                         sendButton.setEnabled(true);
-
                         chatArea.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                         chatArea.setAdapter(new ChatAreaAdapter());
                     }
@@ -111,5 +124,11 @@ public class ChatActivity extends AppCompatActivity {
                 messageArea.setText("");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        chatRoomId = null;
     }
 }

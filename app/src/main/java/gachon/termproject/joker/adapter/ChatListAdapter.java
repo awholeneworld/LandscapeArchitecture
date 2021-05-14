@@ -56,7 +56,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatList.clear();
                 for (DataSnapshot item : snapshot.getChildren()) {
-                    chatList.add(0, item.getValue(ChatMessageContent.class));
+                    ChatMessageContent chatMessageContent = item.getValue(ChatMessageContent.class);
+                    if (chatMessageContent.users.containsKey(UserInfo.userId))
+                        chatList.add(0, chatMessageContent);
                 }
                 notifyDataSetChanged();
             }
@@ -113,9 +115,24 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         ChatMessageContent content = chatList.get(position);
 
         for (String user : content.users.keySet())
-            if (!user.equals(UserInfo.userId))
+            if (!user.equals(UserInfo.userId)) {
                 holder.opponentUid = user;
+                holder.opponentNickname = content.users.get(user).nickname;
+                holder.opponentProfileImg = content.users.get(user).profileUrl;
+                holder.roomName.setText(holder.opponentNickname);
 
+                if (!holder.opponentProfileImg.equals("None"))
+                    Glide.with(context).load(holder.opponentProfileImg).override(1000).thumbnail(0.1f).into(holder.profileImg);
+
+                Map<String, ChatMessageContent.Message> messages = new TreeMap<>(Collections.reverseOrder());
+                messages.putAll(content.messages);
+
+                String lastMessageKey = (String) messages.keySet().toArray()[0];
+                holder.lastMessage.setText(content.messages.get(lastMessageKey).message);
+            }
+
+
+        /*
         // 비동기식이라 업데이트 못따라감 수정 필요
         FirebaseFirestore.getInstance().collection("users").document(holder.opponentUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -133,6 +150,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 holder.lastMessage.setText(content.messages.get(lastMessageKey).message);
             }
         });
+         */
     }
 
     @Override
