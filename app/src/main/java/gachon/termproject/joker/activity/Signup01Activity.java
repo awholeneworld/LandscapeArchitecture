@@ -48,14 +48,16 @@ public class Signup01Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //editText에서 값을 받아와서 이메일을 처리한 다음에 넘어가야 함.
-                String UserEmail = email.getText().toString().trim();
-
-                //UserEmail에 이메일을 받아와서 여차저차함
-                if (TextUtils.isEmpty(UserEmail))
+                String userEmail = email.getText().toString().trim();
+                int atSymbolIdx = userEmail.indexOf('@');
+                //userEmail에 이메일을 받아와서 여차저차함
+                if (TextUtils.isEmpty(userEmail))
                     Toast.makeText(getApplicationContext(), "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                else if (atSymbolIdx != 0 && !userEmail.substring(atSymbolIdx).contains("."))
+                    Toast.makeText(getApplicationContext(), "올바른 이메일 형식이 아닙니다.", Toast.LENGTH_SHORT).show();
                 // Email 중복여부 확인
                 else
-                    checkEmail(UserEmail);
+                    checkEmail(userEmail);
             }
         });
     }
