@@ -46,7 +46,7 @@ import java.util.Map;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.adapter.PostMyInfo;
+import gachon.termproject.joker.fragment.PostMyInfo;
 
 public class MyInfoFrame extends Fragment {
 
@@ -71,7 +71,7 @@ public class MyInfoFrame extends Fragment {
     private FirebaseFirestore fStore;
     private FirebaseAuth fAuth;
     private String userId = UserInfo.userId;
-    
+
      */
 
     @Nullable
@@ -152,7 +152,7 @@ public class MyInfoFrame extends Fragment {
             @Override
             public void onClick(View v) {
                 //닉네임 입력 받기 + firebase 중복 확인 + 변경완료
-                
+
 
                 String temp = nicknameText.getText().toString();
 
