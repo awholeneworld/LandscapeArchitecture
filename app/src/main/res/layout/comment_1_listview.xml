@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp">
 
     <View
         android:layout_width="match_parent"
-        android:layout_marginHorizontal="20dp"
         android:layout_height="1dp"
         android:background="@color/whitegray"/>
 
@@ -14,7 +15,6 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
         android:layout_marginTop="10dp">
 
         <LinearLayout
@@ -46,20 +46,40 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/comment_nickname"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="닉네임"
-                    android:textColor="@color/black"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/comment_nickname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="닉네임"
+                        android:textColor="@color/black" />
+
+
+                    <TextView
+                        android:paddingLeft="8dp"
+                        android:id="@+id/comment_writetime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2020-05-50"
+                        android:textSize="10sp"
+                        android:textColor="@color/gray" />
+
+
+                </LinearLayout>
 
                 <TextView
-                    android:layout_weight="1"
-                    android:textColor="@color/gray"
                     android:id="@+id/comment_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="댓글내용dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" />
+                    android:layout_weight="1"
+                    android:text="댓글내용dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+                    android:textColor="#AB000000" />
+
 
             </LinearLayout>
 
@@ -72,11 +92,12 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true">
 
-            <ImageView
+            <Button
                 android:id="@+id/comment_movevert"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/more_vert_grey_72x72"/>
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/menu_button_threedot_ripple"
+                app:backgroundTint="@color/gray" />
 
         </LinearLayout>
 

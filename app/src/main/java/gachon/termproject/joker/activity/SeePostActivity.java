@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,6 +46,8 @@ import java.util.Locale;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
+import gachon.termproject.joker.adapter.PostImage;
+import gachon.termproject.joker.adapter.PostImageSee;
 import gachon.termproject.joker.container.PostCommentContent;
 
 import static gachon.termproject.joker.Util.isStorageUrl;
@@ -99,6 +102,14 @@ public class SeePostActivity extends AppCompatActivity {
         container = findViewById(R.id.seepost_content);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
+
+        //===================> image 넣기 (이걸 사용하시면 됩니다)
+//        LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer); //이미지 들어갈 컨테이너
+//
+//        PostImageSee postimage = new PostImageSee(SeePostActivity.this, image); //이미지뷰 생성
+//        imageContainer.addView(postimage); //컨테이너에 더해주기
+
+
         // imageView 채우기
         int imageNum = 0;
         for (int i = 0; i < order.size(); i++) {
@@ -113,6 +124,7 @@ public class SeePostActivity extends AppCompatActivity {
 
                 //부모 뷰에 추가
                 container.addView(text_content);
+
             } else if (order.get(i) == 1 && isStorageUrl(images.get(imageNum))){
                 //이미지뷰 생성
                 ImageView imageView = new ImageView(SeePostActivity.this);
@@ -165,15 +177,30 @@ public class SeePostActivity extends AppCompatActivity {
                 String commentId = String.valueOf(System.currentTimeMillis());
                 PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment);
 
+                //키보드 내리기
+                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                if (comment.length() == 0){
+                    Toast.makeText(getApplicationContext(), "1자 이상 댓글을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
                 // DB에 올리기
                 databaseReference.child(commentId).setValue(postCommentContent)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
                                 databaseReference.addListenerForSingleValueEvent(commentsListener);
                             }
                         });
+
+                //댓창 깨끗하게
+                commentContent.setText("");
+
+
             }
         });
     }
@@ -212,4 +239,5 @@ public class SeePostActivity extends AppCompatActivity {
     public static int dpToPx(int dp){
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
+
 }

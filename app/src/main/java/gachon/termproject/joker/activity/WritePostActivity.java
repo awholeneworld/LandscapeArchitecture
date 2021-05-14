@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import gachon.termproject.joker.adapter.PostImage;
 import gachon.termproject.joker.container.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
@@ -79,8 +84,11 @@ public class WritePostActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
+        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기 활성화 => 여기에 아이콘 바꿔치기
+        actionBar.setHomeAsUpIndicator(R.drawable.close_grey_24x24);
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목
+        TextView textview = findViewById(R.id.writepost_toolbar_textview);
+        textview.setText("게시글 작성");
 
         layout = findViewById(R.id.writepost_layout);
         title = findViewById(R.id.writepost_title);
@@ -130,29 +138,28 @@ public class WritePostActivity extends AppCompatActivity {
             image = data.getData();
 
             // 레이아웃 설정
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(dpToPx(35),0, dpToPx(35),0);
 
-            // 이미지뷰를 생성하고 초기화한다.
-            ImageView imageView = new ImageView(WritePostActivity.this);
-            imageView.setLayoutParams(layoutParams);
-            Glide.with(this).load(image).into(imageView);
-
-//            // 텍스트뷰가 이어서 생성된다.
-//            EditText editText = new EditText(WritePostActivity.this);
-//            editText.setLayoutParams(layoutParams);
-//            editText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_CLASS_TEXT);
-//            editText.setBackground(null);
-//            editText.setTextSize(16);
-            
-            imageView.setId(imagenum);
-            layout.addView(imageView);
-
-//            layout.addView(editText);
+            PostImage postimage = new PostImage(WritePostActivity.this, image, layoutParams);
 
 
+            layout.addView(postimage);
             imagesList.add(image);
+
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // 파일선택 함수

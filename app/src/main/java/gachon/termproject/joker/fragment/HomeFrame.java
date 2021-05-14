@@ -8,11 +8,14 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.activity.MainActivity;
 
 public class HomeFrame extends Fragment {
 
@@ -35,4 +38,5 @@ public class HomeFrame extends Fragment {
 
         return view;
     }
+
 }

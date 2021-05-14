@@ -54,7 +54,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             super(itemView);
             profileImg = itemView.findViewById(R.id.comment_img);
             nickname = itemView.findViewById(R.id.comment_nickname);
-            // date = itemView.findViewById(R.id.date);
+            date = itemView.findViewById(R.id.comment_writetime);
             content = itemView.findViewById(R.id.comment_content);
 
             // 땡떙떙 버튼 클릭시
@@ -93,7 +93,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
         // 댓글의 작성자, 작성 시간, 내용 표시
         holder.nickname.setText(commentNickname);
-        // holder.date.setText(commentTime);
+        holder.date.setText(commentTime);
         holder.content.setText(comment);
 
         // 댓글의 작성자 프로필 사진 표시
