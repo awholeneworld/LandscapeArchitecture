@@ -104,8 +104,6 @@ public class WritePostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (title.length() > 0 && content.length() > 0) {
                     post(category);
-                    setResult(RESULT_OK, new Intent()); // 게시판에게 완료됐다는 신호 보내기
-                    finish();
                 } else if (title.length() <= 0){
                     Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
                 } else {
