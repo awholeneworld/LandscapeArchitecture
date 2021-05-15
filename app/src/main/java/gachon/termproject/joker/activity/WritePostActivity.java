@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,6 +130,13 @@ public class WritePostActivity extends AppCompatActivity {
             layoutParams.setMargins(dpToPx(35),0, dpToPx(35),0);
 
             PostImage postimage = new PostImage(WritePostActivity.this, image, layoutParams);
+            postimage.getBtn().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    layout.removeView(postimage);
+                    imagesList.remove(image);
+                }
+            });
 
             layout.addView(postimage);
             imagesList.add(image);
