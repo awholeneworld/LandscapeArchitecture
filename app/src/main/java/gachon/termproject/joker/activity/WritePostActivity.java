@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,13 +22,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,8 +33,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,8 +46,6 @@ import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.UserInfo;
 
 public class WritePostActivity extends AppCompatActivity {
-    private FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
-    private DocumentReference documentReference;
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private FirebaseHelper firebaseHelper = new FirebaseHelper(this);
@@ -61,7 +53,6 @@ public class WritePostActivity extends AppCompatActivity {
     private Uri image; // 이미지 저장 변수
     private ArrayList<String> contentList = new ArrayList<>();
     private ArrayList<Uri> imagesList = new ArrayList<>();
-    private ArrayList<Integer> formatList = new ArrayList<>();
     private String userId = UserInfo.userId; // 누가 업로드 했는지 알기 위함
     private String nickname = UserInfo.nickname;
     private String postId;
@@ -116,9 +107,9 @@ public class WritePostActivity extends AppCompatActivity {
                     setResult(RESULT_OK, new Intent()); // 게시판에게 완료됐다는 신호 보내기
                     finish();
                 } else if (title.length() <= 0){
-                    Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주십시오.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "내용을 최소 1자 이상 써주십시오.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "내용을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -141,10 +132,8 @@ public class WritePostActivity extends AppCompatActivity {
 
             PostImage postimage = new PostImage(WritePostActivity.this, image, layoutParams);
 
-
             layout.addView(postimage);
             imagesList.add(image);
-
         }
     }
 
@@ -153,8 +142,8 @@ public class WritePostActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-
                 finish();
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -175,18 +164,15 @@ public class WritePostActivity extends AppCompatActivity {
         postId = String.valueOf(System.currentTimeMillis());
 
         //글넣기
-        String text = ((EditText) findViewById(R.id.writepost_content)).getText().toString();
-        contentList.add(text);
-        formatList.add(0);
+        contentList.add(content.getText().toString());
 
         if(imagesList.size() == 0){// 사진이 없다면? 바로 글쓰기
             // 포스트 시간 설정
-            imagesUrl.add("");
             Date currentTime = new Date();
             String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, formatList);
+            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -200,7 +186,7 @@ public class WritePostActivity extends AppCompatActivity {
         }
 
         //사진이 있다면 그림넣기
-        for(int i=0;i<imagesList.size();i++){
+        for (int i = 0; i < imagesList.size(); i++){
             try {
                 image = imagesList.get(i);
 
@@ -225,7 +211,6 @@ public class WritePostActivity extends AppCompatActivity {
                             String url = downloadUrl.toString();
 
                             imagesUrl.add(url);
-                            formatList.add(1);
                             contentList.add("");
                             uploadFinishCount++;
 
@@ -235,7 +220,7 @@ public class WritePostActivity extends AppCompatActivity {
                                 String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
                                 // 포스트할 내용
-                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, formatList);
+                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
 
                                 // Firebase Realtime DB에 글 내용 올리기
                                 databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

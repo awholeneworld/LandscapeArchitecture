@@ -52,7 +52,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         String postIdInPost;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
-        ArrayList<Integer> orderInPost;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -75,7 +74,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     intent.putExtra("postId", postIdInPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putIntegerArrayListExtra("order", orderInPost);
                     context.startActivity(intent);
                 }
             });
@@ -98,7 +96,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         String contentTime = content.getPostTime();
         ArrayList<String> contentsList = content.getContent();
         ArrayList<String> imagesList = content.getImages();
-        ArrayList<Integer> orderList = content.getOrder();
 
         // 뷰홀더 클래스의 전역 변수 설정
         holder.categoryOfPost = content.getCategory();
@@ -110,32 +107,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         holder.postIdInPost = content.getPostId();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
-        holder.orderInPost = orderList;
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
-        holder.title.setText(contentTitle);
+        if (contentTitle.length() > 15)
+            holder.title.setText(contentTitle.substring(0, 16));
+        else
+            holder.title.setText(contentTitle);
         holder.nickname.setText(contentNickname);
         holder.date.setText(contentTime);
 
         // 목록에 나타나는 글의 내용 표시
         // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
-        int inputImage = 0;
         int inputLetters = 0;
+        int inputImage = 0;
         String contents = "";
-        for (int i = 0; i < orderList.size(); i++) {
-            int order = orderList.get(i);
+        for (int i = 0; i < contentsList.size(); i++) {
             String writings = contentsList.get(i);
 
-            if (inputLetters <= 15 && order == 0){
+            if (inputLetters <= 15 && writings.length() > 0){
                 int writingsLength = writings.length();
                 if (inputLetters + writingsLength > 15) {
-                    contents += (" " + writings.substring(0, 15 - inputLetters) + " 더보기...");
+                    contents += (" " + writings.substring(0, 15 - inputLetters) + "...");
                     inputLetters += writingsLength;
                 } else {
                     contents += (" " + writings);
                     inputLetters += writingsLength;
                 }
-            } else if (inputImage == 0 && order == 1){
+            } else if (inputImage == 0 && writings.length() == 0){
                 Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
                 inputImage++;
             }
