@@ -134,6 +134,7 @@ public class  FreeCommunity extends Fragment {
                 contents.setAdapter(postAdapter);
                 databaseReference.addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
+                postAdapter.notifyDataSetChanged();
             }
         });
 

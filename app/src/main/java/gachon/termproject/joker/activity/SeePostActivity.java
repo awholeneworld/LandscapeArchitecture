@@ -8,6 +8,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,6 +71,9 @@ public class SeePostActivity extends AppCompatActivity {
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
 
+        //
+        UserInfo UserInfo = new UserInfo();
+
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,7 +95,9 @@ public class SeePostActivity extends AppCompatActivity {
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
         if (!profileImg.equals("None"))
-            Glide.with(this).load(profileImg).into(profile);
+            Glide.with(this).load(profileImg).into(profile); Log.e("asdf", profileImg);
+
+
 
         // 포스트 내용 넣을 공간 지정
         container = findViewById(R.id.seepost_content);

@@ -40,6 +40,7 @@ import com.google.firebase.storage.UploadTask;
 import org.w3c.dom.Comment;
 
 import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,7 @@ public class MyInfoFrame extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frame_myinfo, container, false);
         getFirebaseProfileImage(UserInfo.userId);
+        //getFirebaseProfileImage(UserInfo.profileImg);
 
 
         tabs = view.findViewById(R.id.myinfo_tabs);
@@ -198,7 +200,10 @@ public class MyInfoFrame extends Fragment {
         fReference.child("profile_img/" + "profile" + ID + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(getContext()).load(uri).into(profile_Album);
+                String str = uri.toString();
+                Glide.with(getContext()).load(str).into(profile_Album);
+                UserInfo UserInfo = new UserInfo();
+                UserInfo.setProfileImg(str);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
