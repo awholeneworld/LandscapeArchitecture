@@ -53,6 +53,8 @@
                     android:layout_marginHorizontal="35dp"
                     android:background="@color/white"
                     android:hint="제목을 입력하세요"
+                    android:singleLine="true"
+                    android:maxLength="30"
                     android:textSize="20sp" />
 
                 <!--선-->
