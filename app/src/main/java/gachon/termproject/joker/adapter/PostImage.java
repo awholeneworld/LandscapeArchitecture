@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
-import com.makeramen.RoundedImageView;
 import gachon.termproject.joker.R;
 
 public class PostImage extends RelativeLayout {

@@ -85,15 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         //비밀번호 까묵엇을때
         forgetPW.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
-                // 왜 오류뜨는지 모르겠다........................................
-                // 나중에하자...................................................
-                //Intent intent = new Intent(getApplicationContext(), FindPassword.class);
-                //startActivity(intent);
-
-                // forget password 글자 눌렀을 때 넘어가는 화면넣기
-                Toast.makeText(getApplicationContext(), "비밀번호를 까먹엇다고? 아직 비밀번호찾기페이지가 구현이 안되어서 찾을수없다..", Toast.LENGTH_LONG).show();
-
+                Intent intent = new Intent(getApplicationContext(), FindPassword.class);
+                startActivity(intent);
             }
         });
 
