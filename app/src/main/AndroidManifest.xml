@@ -34,7 +34,14 @@
             <!--^화면 회전 시 상태 및 데이터 초기화 방지^-->
         </activity>
         <activity android:name=".activity.SeePostActivity"></activity>
+        <activity android:name=".activity.Matching_expert_SeePostActivity"></activity>
+        <activity android:name=".activity.Matching_user_SeePostActivity"></activity>
+
         <activity android:name=".activity.ChatActivity"></activity>
+        <activity android:name=".activity.Matching_WritePostActivity"
+            android:configChanges="screenSize|orientation">
+            <!--^화면 회전 시 상태 및 데이터 초기화 방지^-->
+        </activity>
     </application>
 
 </manifest>

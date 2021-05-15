@@ -105,30 +105,60 @@
                     android:orientation="vertical">
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/seepost_imagecontainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
 
+                </LinearLayout>
 
-                <HorizontalScrollView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/seepost_location_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="지역명 | 지역명"
+                    android:textColor="@color/gray"/>
 
-                    <LinearLayout
-                        android:id="@+id/seepost_imagecontainer"
-                        android:layout_width="match_parent"
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/whitegray"
+                    android:layout_marginVertical="5dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal">
+                        android:text="매칭 요청 | "
+                        android:textColor="@color/gray"/>
 
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/seepost_request_total_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/gray"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="건"
+                        android:textColor="@color/gray"/>
 
-                </HorizontalScrollView>
-
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!--댓글-->
+            <!--요청리스트-->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/comment_listview"
+                android:id="@+id/matching_seepost_request_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="20dp"
@@ -140,49 +170,6 @@
 
 
 </androidx.core.widget.NestedScrollView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_seepost_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentBottom="true"
-        android:layout_marginVertical="0dp"
-        android:paddingVertical="5dp"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="3dp"
-            android:background="@drawable/radius_15_whitegray_bg">
-
-            <EditText
-                android:id="@+id/see_post_comment_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginHorizontal="25dp"
-                android:layout_marginVertical="10dp"
-                android:layout_toLeftOf="@+id/see_post_comment_send_button"
-                android:background="#00ff0000"
-                android:hint="댓글을 입력하세요"
-                android:textSize="15sp" />
-
-
-            <ImageButton
-                android:id="@+id/see_post_comment_send_button"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/send_grey_72x72"
-                android:maxLength="3" />
-
-        </RelativeLayout>
 
     </LinearLayout>
 

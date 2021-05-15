@@ -48,14 +48,21 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
 import gachon.termproject.joker.container.PostCommentContent;
 
-public class SeePostActivity extends AppCompatActivity {
+import static gachon.termproject.joker.Util.isStorageUrl;
+
+public class Matching_user_SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
-    private RecyclerView commentSection;
-    private DatabaseReference databaseReference;
-    private ArrayList<PostCommentContent> postCommentList;
-    private PostCommentAdapter postCommentAdapter;
-    private PostCommentContent postComment;
-    private ValueEventListener commentsListener;
+
+
+    //해야 할 일!
+//    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도
+//    2. 매칭요청이 몇건인지 보여주기
+//    3. 추가된 매칭이 있다면 list로 보여주기 => item_matching_request.xml 사용
+//    4. list item들의 button 연결하기.........
+//    5. 4에서 button 들이 연결된다면 "매칭 수락" 버튼을 눌렀을 때 팝업이 뜨게 해야 하는데,,,,,
+//    6. 매칭 수락해서 팝업에서 예 눌렀으면 item_matching_end.xml 을 나타내서 그거 한사람만 남기고 나머지는 다 지워주면 됨
+// 아예 게시글 상태같은걸 지정 해야 할듯?
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -69,6 +76,7 @@ public class SeePostActivity extends AppCompatActivity {
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
+        ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -98,7 +106,7 @@ public class SeePostActivity extends AppCompatActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         //TextView 생성
-        TextView text_content = new TextView(SeePostActivity.this);
+        TextView text_content = new TextView(Matching_user_SeePostActivity.this);
         //layout_width, layout_height, gravity, 내용 등 설정
         text_content.setLayoutParams(lp);
         text_content.setText(content.get(0));
@@ -115,81 +123,14 @@ public class SeePostActivity extends AppCompatActivity {
         for (int i = 0; i < images.size(); i++) {
             if(images.get(0).compareTo("") == 0) break;
 
-            ImageView imageView = new ImageView(SeePostActivity.this);
+            ImageView imageView = new ImageView(Matching_user_SeePostActivity.this);
             imageView.setLayoutParams(layoutParams);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
-            Glide.with(SeePostActivity.this).load(images.get(i)).into(imageView);
+            Glide.with(Matching_user_SeePostActivity.this).load(images.get(i)).into(imageView);
             imageContainer.addView(imageView);
         }
 
-        // 댓글 불러오기
-        databaseReference = FirebaseDatabase.getInstance().getReference("Posts/" + category + "/" + postId + "/comments");
-        commentSection = findViewById(R.id.comment_listview);
 
-        postCommentList = new ArrayList<>();
-        postCommentAdapter = new PostCommentAdapter(getApplicationContext(), postCommentList);
-
-        commentSection.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        commentSection.setHasFixedSize(true);
-        commentSection.setAdapter(postCommentAdapter);
-
-        commentsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postCommentList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postComment = snapshot.getValue(PostCommentContent.class);
-                    postCommentList.add(postComment);
-                }
-                postCommentAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        databaseReference.addListenerForSingleValueEvent(commentsListener);
-
-        // 댓글 작성
-        ImageButton uploadComment = findViewById(R.id.see_post_comment_send_button);
-        uploadComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText commentContent = findViewById(R.id.see_post_comment_text);
-                String comment = commentContent.getText().toString();
-                Date currentTime = new Date();
-                String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
-                String commentId = String.valueOf(System.currentTimeMillis());
-                PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment);
-
-                //키보드 내리기
-                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-                if (comment.length() == 0){
-                    Toast.makeText(getApplicationContext(), "1자 이상 댓글을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                // DB에 올리기
-                databaseReference.child(commentId).setValue(postCommentContent)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getApplicationContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
-                                databaseReference.addListenerForSingleValueEvent(commentsListener);
-                            }
-                        });
-
-                //댓창 깨끗하게
-                commentContent.setText("");
-
-
-            }
-        });
     }
 
     //위에 메뉴 관련

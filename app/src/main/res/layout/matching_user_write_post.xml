@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--게시글 작성하는 부분-->
+    <LinearLayout
+        android:id="@+id/post_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/layout_post_bottom">
+
+        <!--toolbar-->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/writepost_toolbar_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="게시물 작성"
+                android:textColor="@color/mainGreen"
+                android:textSize="20sp">
+
+            </TextView>
+        </androidx.appcompat.widget.Toolbar>
+
+        <ScrollView
+            android:id="@+id/ScrollView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/writepost_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <!--제목-->
+                <EditText
+                    android:id="@+id/writepost_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="35dp"
+                    android:background="@color/white"
+                    android:hint="제목을 입력하세요"
+                    android:textSize="20sp" />
+
+                <!--선-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/whitegray" />
+
+                <!--내용-->
+                <EditText
+                    android:id="@+id/writepost_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="35dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@null"
+                    android:hint="내용을 입력하세요"
+                    android:paddingBottom="5dp"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/post_select_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whitegray"
+        android:orientation="vertical"
+        android:layout_below="@id/layout_post_bottom">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:stretchColumns="0, 1">
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_SU"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="서울특별시"
+                    android:textSize="20sp">
+
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_GG"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="경기도"
+                    android:textSize="20sp">
+
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_IC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="인천광역시"
+                    android:textSize="20sp">
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_GW"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="강원도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_DJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="대전광역시"
+                    android:textSize="20sp">
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_CB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="충청북도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_GJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="광주광역시"
+                    android:textSize="20sp">
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_CN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="충청남도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_DG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="대구광역시"
+                    android:textSize="20sp">
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_GB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="경상북도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_US"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="울산광역시"
+                    android:textSize="20sp">
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_GN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="경상남도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_BS"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="부산광역시"
+                    android:textSize="20sp">
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_JB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="전라북도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_JJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="제주도"
+                    android:textSize="20sp">
+                </CheckBox>
+
+                <CheckBox
+                    android:id="@+id/signup04_JN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="전라남도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+        </TableLayout>
+
+
+    </LinearLayout>
+
+
+    <!--bottom bar -->
+    <FrameLayout
+        android:id="@+id/layout_post_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/whitegray" />
+
+        <!--사진입력-->
+        <ImageButton
+            android:id="@+id/writepost_imageAddButton"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="7dp"
+            android:background="@color/white"
+            android:scaleType="fitCenter"
+            android:src="@drawable/insert_photo_grey_72x72" />
+
+
+        <!--  지역 선택-->
+
+        <TextView
+            android:id="@+id/writepost_region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지역선택"
+            android:textColor="@color/gray"
+            android:layout_gravity="center"
+            android:layout_marginRight="20dp"/>
+
+        <!--등록버튼-->
+        <Button
+            android:id="@+id/writepost_assign"
+            android:layout_width="75dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="7dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/all_button_bg_ripple_round_15"
+            android:text="등록"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </FrameLayout>
+
+
+
+
+</RelativeLayout>

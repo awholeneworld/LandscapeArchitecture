@@ -48,14 +48,18 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
 import gachon.termproject.joker.container.PostCommentContent;
 
-public class SeePostActivity extends AppCompatActivity {
+import static gachon.termproject.joker.Util.isStorageUrl;
+
+public class Matching_expert_SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
-    private RecyclerView commentSection;
-    private DatabaseReference databaseReference;
-    private ArrayList<PostCommentContent> postCommentList;
-    private PostCommentAdapter postCommentAdapter;
-    private PostCommentContent postComment;
-    private ValueEventListener commentsListener;
+
+    //해야 할 일!
+//    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도
+//    2. 게시글 상태에 따라 버튼의 모양을 "매칭 신청", "매칭 대기", "매칭 완료"를 보여주어야 함. => 들어가있는 게시글 카테고리도 달라야 함.
+    // 이때, 매칭 완료인 경우는 그 전문가와 유저가 매칭 완료된 경우만 가능!
+    //다른 전문가에 의해 매칭이 완료되었다면 그냥 글 자체가 안보임.
+    //헷깔리면 바로 카톡 ㄱ
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -69,6 +73,7 @@ public class SeePostActivity extends AppCompatActivity {
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
+        ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -98,7 +103,7 @@ public class SeePostActivity extends AppCompatActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         //TextView 생성
-        TextView text_content = new TextView(SeePostActivity.this);
+        TextView text_content = new TextView(Matching_expert_SeePostActivity.this);
         //layout_width, layout_height, gravity, 내용 등 설정
         text_content.setLayoutParams(lp);
         text_content.setText(content.get(0));
@@ -115,81 +120,14 @@ public class SeePostActivity extends AppCompatActivity {
         for (int i = 0; i < images.size(); i++) {
             if(images.get(0).compareTo("") == 0) break;
 
-            ImageView imageView = new ImageView(SeePostActivity.this);
+            ImageView imageView = new ImageView(Matching_expert_SeePostActivity.this);
             imageView.setLayoutParams(layoutParams);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
-            Glide.with(SeePostActivity.this).load(images.get(i)).into(imageView);
+            Glide.with(Matching_expert_SeePostActivity.this).load(images.get(i)).into(imageView);
             imageContainer.addView(imageView);
         }
 
-        // 댓글 불러오기
-        databaseReference = FirebaseDatabase.getInstance().getReference("Posts/" + category + "/" + postId + "/comments");
-        commentSection = findViewById(R.id.comment_listview);
 
-        postCommentList = new ArrayList<>();
-        postCommentAdapter = new PostCommentAdapter(getApplicationContext(), postCommentList);
-
-        commentSection.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        commentSection.setHasFixedSize(true);
-        commentSection.setAdapter(postCommentAdapter);
-
-        commentsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postCommentList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postComment = snapshot.getValue(PostCommentContent.class);
-                    postCommentList.add(postComment);
-                }
-                postCommentAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        };
-
-        databaseReference.addListenerForSingleValueEvent(commentsListener);
-
-        // 댓글 작성
-        ImageButton uploadComment = findViewById(R.id.see_post_comment_send_button);
-        uploadComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText commentContent = findViewById(R.id.see_post_comment_text);
-                String comment = commentContent.getText().toString();
-                Date currentTime = new Date();
-                String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
-                String commentId = String.valueOf(System.currentTimeMillis());
-                PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment);
-
-                //키보드 내리기
-                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-                if (comment.length() == 0){
-                    Toast.makeText(getApplicationContext(), "1자 이상 댓글을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                // DB에 올리기
-                databaseReference.child(commentId).setValue(postCommentContent)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getApplicationContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
-                                databaseReference.addListenerForSingleValueEvent(commentsListener);
-                            }
-                        });
-
-                //댓창 깨끗하게
-                commentContent.setText("");
-
-
-            }
-        });
     }
 
     //위에 메뉴 관련
