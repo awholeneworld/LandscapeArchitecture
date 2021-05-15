@@ -94,7 +94,14 @@ public class WritePostActivity extends AppCompatActivity {
         imageAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectFile();
+
+                if(imagesList.size() < 10){
+                    selectFile();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Image는 10장까지 업로드 가능합니다", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -105,14 +112,13 @@ public class WritePostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (title.length() > 0 && content.length() > 0) {
                     post(category);
-                } else if (title.length() <= 0){
+                } else if (title.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), "내용을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     // 이미지 파일 선택 후 실행되는 액티비티 : 이미지 동적 생성
@@ -127,7 +133,7 @@ public class WritePostActivity extends AppCompatActivity {
 
             // 레이아웃 설정
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(dpToPx(35),0, dpToPx(35),0);
+            layoutParams.setMargins(dpToPx(35), 0, dpToPx(35), 0);
 
             PostImage postimage = new PostImage(WritePostActivity.this, image, layoutParams);
             postimage.getBtn().setOnClickListener(new View.OnClickListener() {
@@ -156,11 +162,11 @@ public class WritePostActivity extends AppCompatActivity {
     }
 
     // 파일선택 함수
-    private void selectFile(){
+    private void selectFile() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"파일을 선택해주세요."),0);
+        startActivityForResult(Intent.createChooser(intent, "파일을 선택해주세요."), 0);
     }
 
     // 글 올리기 함수
@@ -172,7 +178,7 @@ public class WritePostActivity extends AppCompatActivity {
         //글넣기
         contentList.add(content.getText().toString());
 
-        if(imagesList.size() == 0){// 사진이 없다면? 바로 글쓰기
+        if (imagesList.size() == 0) {// 사진이 없다면? 바로 글쓰기
             // 포스트 시간 설정
             Date currentTime = new Date();
             String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
@@ -190,7 +196,7 @@ public class WritePostActivity extends AppCompatActivity {
                 }
             });
         } else { //사진이 있다면 그림넣기
-            for (int i = 0; i < imagesList.size(); i++){
+            for (int i = 0; i < imagesList.size(); i++) {
                 try {
                     image = imagesList.get(i);
 
@@ -237,7 +243,7 @@ public class WritePostActivity extends AppCompatActivity {
                                     });
                                 }
 
-                                Toast.makeText(WritePostActivity.this, (uploadFinishCount) + "이미지 업로드 성공", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(WritePostActivity.this, "등록중", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -248,7 +254,7 @@ public class WritePostActivity extends AppCompatActivity {
         }
     }
 
-    public static int dpToPx(int dp){
+    public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 }
