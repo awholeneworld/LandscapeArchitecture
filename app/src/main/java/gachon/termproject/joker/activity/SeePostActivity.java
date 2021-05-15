@@ -106,20 +106,21 @@ public class SeePostActivity extends AppCompatActivity {
         text_content.setTextColor(Color.BLACK);
         container.addView(text_content);
 
-        //img 넣기
-        LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
-        layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
+        if (images != null) { //img 넣기
+            LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
+            layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
 
-        // imageView 채우기
-        for (int i = 0; i < images.size(); i++) {
-            if(images.get(0).compareTo("") == 0) break;
+            // imageView 채우기
+            for (int i = 0; i < images.size(); i++) {
+                if(images.get(0).compareTo("") == 0) break;
 
-            ImageView imageView = new ImageView(SeePostActivity.this);
-            imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
-            Glide.with(SeePostActivity.this).load(images.get(i)).into(imageView);
-            imageContainer.addView(imageView);
+                ImageView imageView = new ImageView(SeePostActivity.this);
+                imageView.setLayoutParams(layoutParams);
+                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                Glide.with(SeePostActivity.this).load(images.get(i)).into(imageView);
+                imageContainer.addView(imageView);
+            }
         }
 
         // 댓글 불러오기

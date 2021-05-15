@@ -181,62 +181,61 @@ public class WritePostActivity extends AppCompatActivity {
                     finish();
                 }
             });
-        }
+        } else { //사진이 있다면 그림넣기
+            for (int i = 0; i < imagesList.size(); i++){
+                try {
+                    image = imagesList.get(i);
 
-        //사진이 있다면 그림넣기
-        for (int i = 0; i < imagesList.size(); i++){
-            try {
-                image = imagesList.get(i);
+                    // Firebase Storage에 이미지 업로드
+                    StorageReference imageReference = storageReference.child("imagesPosted/" + category + "/" + userId + "/" + postId + "/" + image.getLastPathSegment());
 
-                // Firebase Storage에 이미지 업로드
-                StorageReference imageReference = storageReference.child("imagesPosted/" + category + "/" + userId + "/" + postId + "/" + image.getLastPathSegment());
-
-                UploadTask uploadTask = imageReference.putFile(image);
-                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-
-                        return imageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() { // URL 다운 성공 시
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) { // URL을 포스트 내용 Class(postContent)와 DB에 업데이트
-                            Uri downloadUrl = task.getResult();
-                            String url = downloadUrl.toString();
-
-                            imagesUrl.add(url);
-                            contentList.add("");
-                            uploadFinishCount++;
-
-                            if (uploadFinishCount == imagesList.size()) { // 이미지 업로드가 완료되면 글을 최종적으로 업로드
-                                // 포스트 시간 설정
-                                Date currentTime = new Date();
-                                String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
-
-                                // 포스트할 내용
-                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
-
-                                // Firebase Realtime DB에 글 내용 올리기
-                                databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                        setResult(RESULT_OK, new Intent());
-                                        finish();
-                                    }
-                                });
+                    UploadTask uploadTask = imageReference.putFile(image);
+                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
                             }
 
-                            Toast.makeText(WritePostActivity.this, (uploadFinishCount) + "이미지 업로드 성공", Toast.LENGTH_SHORT).show();
+                            return imageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
                         }
-                    }
-                });
-            } catch (NullPointerException e) {
-                Toast.makeText(WritePostActivity.this, "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() { // URL 다운 성공 시
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) { // URL을 포스트 내용 Class(postContent)와 DB에 업데이트
+                                Uri downloadUrl = task.getResult();
+                                String url = downloadUrl.toString();
+
+                                imagesUrl.add(url);
+                                contentList.add("");
+                                uploadFinishCount++;
+
+                                if (uploadFinishCount == imagesList.size()) { // 이미지 업로드가 완료되면 글을 최종적으로 업로드
+                                    // 포스트 시간 설정
+                                    Date currentTime = new Date();
+                                    String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
+
+                                    // 포스트할 내용
+                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
+
+                                    // Firebase Realtime DB에 글 내용 올리기
+                                    databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                            setResult(RESULT_OK, new Intent());
+                                            finish();
+                                        }
+                                    });
+                                }
+
+                                Toast.makeText(WritePostActivity.this, (uploadFinishCount) + "이미지 업로드 성공", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    Toast.makeText(WritePostActivity.this, "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
