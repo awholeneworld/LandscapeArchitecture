@@ -18,6 +18,7 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -29,19 +30,17 @@
         <activity android:name=".activity.Signup05Activity" />
         <activity android:name=".activity.Signup06Activity" />
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.WritePostActivity"
+        <activity
+            android:name=".activity.WritePostActivity"
             android:configChanges="screenSize|orientation">
-            <!--^화면 회전 시 상태 및 데이터 초기화 방지^-->
-        </activity>
-        <activity android:name=".activity.SeePostActivity"></activity>
-        <activity android:name=".activity.Matching_expert_SeePostActivity"></activity>
-        <activity android:name=".activity.Matching_user_SeePostActivity"></activity>
 
-        <activity android:name=".activity.ChatActivity"></activity>
-        <activity android:name=".activity.Matching_WritePostActivity"
-            android:configChanges="screenSize|orientation">
-            <!--^화면 회전 시 상태 및 데이터 초기화 방지^-->
+            <!-- ^화면 회전 시 상태 및 데이터 초기화 방지^ -->
         </activity>
+        <activity android:name=".activity.SeePostActivity" />
+        <activity android:name=".activity.ChatActivity" />
+        <activity android:name=".fragment.PortfolioMyInfo" />
+        <activity android:name=".activity.FindPassword" />
+
     </application>
 
 </manifest>
