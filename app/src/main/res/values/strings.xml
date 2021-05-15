@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">joker</string>
+    <string name="app_name">조커</string>
     <string name="title_activity_gallery">GalleryActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>

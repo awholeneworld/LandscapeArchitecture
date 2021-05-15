@@ -21,6 +21,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 
@@ -118,6 +120,8 @@ public class LoginActivity extends AppCompatActivity {
                         // 사용자 닉네임, 프로필 사진 Url 가져오기
                         UserInfo.nickname = document.getString("nickname");
                         UserInfo.profileImg = document.getString("profileUrl");
+                        UserInfo.isPublic = document.getBoolean("isPublic");
+                        UserInfo.location = (List<String>) document.get("location");
                     }
                 }
             }
