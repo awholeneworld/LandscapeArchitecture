@@ -95,7 +95,7 @@ public class SeePostActivity extends AppCompatActivity {
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
         if (!profileImg.equals("None"))
-            Glide.with(this).load(profileImg).into(profile); Log.e("asdf", profileImg);
+            Glide.with(this).load(profileImg).into(profile);
 
 
 
