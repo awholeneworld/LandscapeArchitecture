@@ -22,6 +22,10 @@ public class PostImage extends RelativeLayout {
     ImageView img;
     ImageButton btn;
 
+    public ImageButton getBtn() {
+        return btn;
+    }
+
     public PostImage(Context context, Uri image, RelativeLayout.LayoutParams layoutParams){
         super(context);
         LayoutInflater inflater = (LayoutInflater) context
@@ -35,13 +39,6 @@ public class PostImage extends RelativeLayout {
 
 
         btn = findViewById(R.id.writeImageButton);
-
-        btn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-
-            }
-        });
 
     }
 }
