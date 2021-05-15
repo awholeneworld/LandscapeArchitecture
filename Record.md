@@ -171,13 +171,16 @@ Ex) aaa@aaa -> 이메일 체크 통과 못함
 
 ### 김수현
 **1. SeePostActivity &WritePostActivity**
+
 : 수정끝~ => 후에 see에서 이미지 눌렀을 때 전체화면 되게 할거임
 
 
 **승민좌가 해야할 것들**
+
 1. Mathing_WritePostActivity
 2. Mathing_expert_SeePostActivity
 3. Mathing_user_SeePostActivity
+ 
 각 파일 상단에 할일 적어둠
 
 
