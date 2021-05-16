@@ -28,7 +28,7 @@ import gachon.termproject.joker.R;
 
 public class Signup04Activity extends AppCompatActivity {
     public static List<String> location; // 회원가입을 위한 전역변수(전문가 회원가입을 위해 static으로 설정)
-    private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN;
+    private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,7 @@ public class Signup04Activity extends AppCompatActivity {
         //경남 GN
         //전북 JB
         //전남 JN
+        //세종 SJ
 
         SU = findViewById(R.id.signup04_SU);
         IC = findViewById(R.id.signup04_IC);
@@ -79,6 +80,7 @@ public class Signup04Activity extends AppCompatActivity {
         GN = findViewById(R.id.signup04_GN);
         JB = findViewById(R.id.signup04_JB);
         JN = findViewById(R.id.signup04_JN);
+        SJ = findViewById(R.id.signup04_SJ);
 
         Button nextButton = findViewById(R.id.signup04_button01);
 
@@ -167,6 +169,7 @@ public class Signup04Activity extends AppCompatActivity {
         if(GN.isChecked()) location.add("GN");
         if(JB.isChecked()) location.add("JB");
         if(JN.isChecked()) location.add("JN");
+        if(SJ.isChecked()) location.add("SJ");
 
         return location;
     }
