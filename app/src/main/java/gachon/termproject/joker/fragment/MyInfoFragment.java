@@ -33,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.CheckPasswordActivity;
 import gachon.termproject.joker.activity.SettingActivity;
 
 public class MyInfoFragment extends Fragment {
@@ -211,7 +212,7 @@ public class MyInfoFragment extends Fragment {
         switch(item.getItemId())
         {
             case R.id.setting:
-                getActivity().startActivity(new Intent(getContext(), SettingActivity.class));
+                getActivity().startActivity(new Intent(getContext(), CheckPasswordActivity.class));
                 break;
         }
 

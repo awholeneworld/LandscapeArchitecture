@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import gachon.termproject.joker.R;
 
-public class FindPassword extends AppCompatActivity {
+public class FindPasswordActivity extends AppCompatActivity {
     //public static String identifier; // 회원가입을 위한 전역변수
 
     @Override

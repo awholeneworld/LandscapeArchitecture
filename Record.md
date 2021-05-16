@@ -196,6 +196,16 @@ Ex) aaa@aaa -> 이메일 체크 통과 못함
 
 세종특별자치시 추가
 
+**4. setting activity**
+
+setting 부분 디자인
+
+
+## 0517
+### 고지민
+**1. setting Activity **
+
+setting 부분 디자인 완료
 
 <br>
 <br>
