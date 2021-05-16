@@ -27,7 +27,7 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ExpertListAdapter;
 import gachon.termproject.joker.container.ExpertListContent;
 
-public class ExpertList extends Fragment {
+public class MatchingExpertListFragment extends Fragment {
     private View view;
     private RecyclerView content;
     private SwipeRefreshLayout refresher;
@@ -39,7 +39,7 @@ public class ExpertList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.content_expert_list_matching, container, false);
+        view = inflater.inflate(R.layout.matching_expert_list, container, false);
 
         content = view.findViewById(R.id.content);
         refresher = view.findViewById(R.id.refresh_layout);

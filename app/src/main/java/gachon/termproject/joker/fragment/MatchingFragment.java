@@ -13,15 +13,15 @@ import androidx.fragment.app.FragmentManager;
 
 import gachon.termproject.joker.R;
 
-public class MatchingFrame extends Fragment {
+public class MatchingFragment extends Fragment {
     private FragmentManager fm;
     private View view;
-    private ExpertList expertList;
+    private MatchingExpertListFragment matchingExpertListFragment;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frame_matching, container, false);
+        view = inflater.inflate(R.layout.fragment_matching, container, false);
         fm = getChildFragmentManager();
 
         // 전문가 리스트 보기 테스트
@@ -29,11 +29,11 @@ public class MatchingFrame extends Fragment {
         testExpertList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (expertList == null) {
-                    expertList = new ExpertList();
-                    fm.beginTransaction().add(R.id.expertList_frame, expertList).commit();
+                if (matchingExpertListFragment == null) {
+                    matchingExpertListFragment = new MatchingExpertListFragment();
+                    fm.beginTransaction().add(R.id.expertList_frame, matchingExpertListFragment).commit();
                 }
-                fm.beginTransaction().show(expertList).commit();
+                fm.beginTransaction().show(matchingExpertListFragment).commit();
             }
         });
 

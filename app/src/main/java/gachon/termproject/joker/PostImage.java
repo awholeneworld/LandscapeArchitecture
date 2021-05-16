@@ -1,4 +1,4 @@
-package gachon.termproject.joker.adapter;
+package gachon.termproject.joker;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
-import gachon.termproject.joker.R;
 
 public class PostImage extends RelativeLayout {
     ImageView imgView;
@@ -22,7 +21,7 @@ public class PostImage extends RelativeLayout {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.post_write_image_view, this);
+        inflater.inflate(R.layout.image_view_post_image, this);
 
         // 이미지뷰에 이미지 넣기.
         imgView = findViewById(R.id.writeImage);

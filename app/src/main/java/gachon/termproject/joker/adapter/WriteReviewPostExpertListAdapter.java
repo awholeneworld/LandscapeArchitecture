@@ -1,6 +1,5 @@
 package gachon.termproject.joker.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
@@ -71,7 +70,7 @@ public class WriteReviewPostExpertListAdapter extends RecyclerView.Adapter<Write
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_activity_write_review_post_expert_list, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_write_review_post_expert_list, parent,false);
 
         return new ViewHolder(view);
     }

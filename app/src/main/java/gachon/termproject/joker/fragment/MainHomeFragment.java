@@ -8,23 +8,20 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.MainActivity;
 
-public class HomeFrame extends Fragment {
+public class MainHomeFragment extends Fragment {
 
     private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frame_home, container, false);
+        view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // 임시 로그아웃 버튼
         Button button = view.findViewById(R.id.logOut);

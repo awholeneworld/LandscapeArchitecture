@@ -68,7 +68,7 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_content_expert_list_matching, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_expert_list_matching, parent,false);
 
         return new ViewHolder(view);
     }

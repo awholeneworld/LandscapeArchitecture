@@ -29,8 +29,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -44,7 +42,7 @@ import java.util.Locale;
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.adapter.PostImage;
+import gachon.termproject.joker.PostImage;
 import gachon.termproject.joker.container.PostContent;
 
 public class Matching_WritePostActivity extends AppCompatActivity {

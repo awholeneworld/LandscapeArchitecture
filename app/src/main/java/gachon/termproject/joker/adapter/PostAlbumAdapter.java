@@ -11,13 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.container.PostAlbumContent;
 
 public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.ViewHolder> {
 
-    private ArrayList<PostAlbumContent> dataSet;
+    private ArrayList<String> dataSet;
 
-    public PostAlbumAdapter(ArrayList<PostAlbumContent> dataSet) {
+    public PostAlbumAdapter() {
         this.dataSet = dataSet;
     }
 
@@ -33,13 +32,12 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_content_album_community, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album_community, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.imageView.setImageResource(dataSet.get(position).img);
     }
 
     @Override

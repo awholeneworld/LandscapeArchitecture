@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/portfolio_myinfo_container"
     android:orientation="vertical"
-    tools:context=".fragment.PortfolioMyInfo">
+    tools:context=".fragment.MyInfoPortfolioFragment">
 
     <LinearLayout
         android:id="@+id/information"

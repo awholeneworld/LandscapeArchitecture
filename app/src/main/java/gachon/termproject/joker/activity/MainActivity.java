@@ -1,8 +1,6 @@
 package gachon.termproject.joker.activity;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -14,22 +12,20 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.w3c.dom.Text;
-
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.fragment.ChatFrame;
-import gachon.termproject.joker.fragment.CommunityFrame;
-import gachon.termproject.joker.fragment.HomeFrame;
-import gachon.termproject.joker.fragment.MatchingFrame;
-import gachon.termproject.joker.fragment.MyInfoFrame;
+import gachon.termproject.joker.fragment.ChatFragment;
+import gachon.termproject.joker.fragment.CommunityFragment;
+import gachon.termproject.joker.fragment.MainHomeFragment;
+import gachon.termproject.joker.fragment.MatchingFragment;
+import gachon.termproject.joker.fragment.MyInfoFragment;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
-    private HomeFrame home;
-    private CommunityFrame community;
-    private MatchingFrame matching;
-    private ChatFrame chat;
-    private MyInfoFrame myInfo;
+    private MainHomeFragment home;
+    private CommunityFragment community;
+    private MatchingFragment matching;
+    private ChatFragment chat;
+    private MyInfoFragment myInfo;
     private int backPressed = 0;
     ActionBar actionBar;
     TextView action_bar_title;
@@ -94,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         switch (n) {
             case 0:
                 if (home == null) {
-                    home = new HomeFrame();
+                    home = new MainHomeFragment();
                     fm.beginTransaction().add(R.id.main_frame, home).commit();
                 }
                 if (home != null) fm.beginTransaction().show(home).commit();
@@ -110,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 1:
                 if (community == null) {
-                    community = new CommunityFrame();
+                    community = new CommunityFragment();
                     fm.beginTransaction().add(R.id.main_frame, community).commit();
                 }
                 fm.beginTransaction().hide(home).commit();
@@ -126,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 2:
                 if (matching == null) {
-                    matching = new MatchingFrame();
+                    matching = new MatchingFragment();
                     fm.beginTransaction().add(R.id.main_frame, matching).commit();
                 }
                 fm.beginTransaction().hide(home).commit();
@@ -142,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 3:
                 if (chat == null) {
-                    chat = new ChatFrame();
+                    chat = new ChatFragment();
                     fm.beginTransaction().add(R.id.main_frame, chat).commit();
                 }
                 fm.beginTransaction().hide(home).commit();
@@ -158,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
             case 4:
                 if (myInfo == null) {
-                    myInfo = new MyInfoFrame();
+                    myInfo = new MyInfoFragment();
                     fm.beginTransaction().add(R.id.main_frame, myInfo).commit();
                 }
                 fm.beginTransaction().hide(home).commit();

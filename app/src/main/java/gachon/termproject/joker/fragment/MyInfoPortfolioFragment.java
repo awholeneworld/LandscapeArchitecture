@@ -13,16 +13,17 @@ import com.bumptech.glide.Glide;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.adapter.MyInfoPortfolioAdapter;
 
-import static gachon.termproject.joker.fragment.MyInfoFrame.locationStr;
+import static gachon.termproject.joker.fragment.MyInfoFragment.locationStr;
 
-public class PortfolioMyInfo extends AppCompatActivity {
+public class MyInfoPortfolioFragment extends AppCompatActivity {
     private RecyclerView contents;
     private TextView numberView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.portfolio_myinfo);
+        setContentView(R.layout.myinfo_portfolio);
 
         ImageView profileImage= findViewById(R.id.myInfoProfileImage);
         TextView nickname = findViewById(R.id.myInfoNickname);

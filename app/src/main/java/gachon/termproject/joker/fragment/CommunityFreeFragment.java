@@ -32,7 +32,7 @@ import gachon.termproject.joker.activity.WritePostActivity;
 
 import static android.app.Activity.RESULT_OK;
 
-public class  FreeCommunity extends Fragment {
+public class CommunityFreeFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -51,7 +51,7 @@ public class  FreeCommunity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.free_community, container, false);
+        view = inflater.inflate(R.layout.community_free, container, false);
 
         category = "free";
         contents = view.findViewById(R.id.content_community);

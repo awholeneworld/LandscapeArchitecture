@@ -1,4 +1,4 @@
-package gachon.termproject.joker.fragment;
+package gachon.termproject.joker.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,13 +14,10 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -141,7 +138,7 @@ public class MyInfoPostAdapter extends RecyclerView.Adapter<MyInfoPostAdapter.Vi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_myinfo_post, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_myinfo, parent, false);
         return new ViewHolder(view);
     }
 

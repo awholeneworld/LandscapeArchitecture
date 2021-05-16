@@ -17,12 +17,12 @@ import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
 
-public class  CommunityFrame extends Fragment {
+public class CommunityFragment extends Fragment {
     private View view;
     private FragmentManager fm;
-    private FreeCommunity free;
-    private ReviewCommunity review;
-    private TipCommunity tip;
+    private CommunityFreeFragment free;
+    private CommunityReviewFragment review;
+    private CommunityTipFragment tip;
     TabLayout tabs;
     Button selectCommunityMode;
     boolean i = true;
@@ -30,7 +30,7 @@ public class  CommunityFrame extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frame_community, container, false);
+        view = inflater.inflate(R.layout.fragment_community, container, false);
 
         setHasOptionsMenu(true); //action bar menu
 
@@ -39,7 +39,7 @@ public class  CommunityFrame extends Fragment {
         fm = getChildFragmentManager();
 
         if (free == null) {
-            free = new FreeCommunity();
+            free = new CommunityFreeFragment();
             fm.beginTransaction().add(R.id.community_frame, free).commit();
         }
 
@@ -54,7 +54,7 @@ public class  CommunityFrame extends Fragment {
                         break;
                     case 1 :
                         if (review == null) {
-                            review = new ReviewCommunity();
+                            review = new CommunityReviewFragment();
                             fm.beginTransaction().add(R.id.community_frame, review).commit();
                         }
                         if (tip != null) fm.beginTransaction().hide(tip).commit();
@@ -63,7 +63,7 @@ public class  CommunityFrame extends Fragment {
                         break;
                     case 2 :
                         if (tip == null) {
-                            tip = new TipCommunity();
+                            tip = new CommunityTipFragment();
                             fm.beginTransaction().add(R.id.community_frame, tip).commit();
                         }
                         if (review != null) fm.beginTransaction().hide(review).commit();

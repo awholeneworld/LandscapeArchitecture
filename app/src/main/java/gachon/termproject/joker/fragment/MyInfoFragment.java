@@ -35,12 +35,12 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.SettingActivity;
 
-public class MyInfoFrame extends Fragment {
+public class MyInfoFragment extends Fragment {
     private StorageReference storageReference;
     private View view;
     private ImageView profileImg;
-    private PostMyInfo post;
-    private CommentMyInfo comment;
+    private MyInfoPostFragment post;
+    private MyInfoCommentFragment comment;
     private ViewGroup portfolioLayout;
     private FragmentManager fm;
     private TabLayout tabs;
@@ -57,7 +57,7 @@ public class MyInfoFrame extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frame_myinfo, container, false);
+        view = inflater.inflate(R.layout.fragment_myinfo, container, false);
 
         setHasOptionsMenu(true); //action bar menu
 
@@ -67,7 +67,7 @@ public class MyInfoFrame extends Fragment {
         portfolioLayout = view.findViewById(R.id.portfolioLayout);
 
         if (post == null) {
-            post = new PostMyInfo();
+            post = new MyInfoPostFragment();
             fm.beginTransaction().add(R.id.myinfo_frame, post).commit();
         }
 
@@ -81,7 +81,7 @@ public class MyInfoFrame extends Fragment {
                         break;
                     case 1:
                         if (comment == null) {
-                            comment = new CommentMyInfo();
+                            comment = new MyInfoCommentFragment();
                             fm.beginTransaction().add(R.id.myinfo_frame, comment).commit();
                         }
                         fm.beginTransaction().hide(post).commit();
@@ -142,7 +142,7 @@ public class MyInfoFrame extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getContext(), PortfolioMyInfo.class));
+                startActivity(new Intent(getContext(), MyInfoPortfolioFragment.class));
             }
         });
 

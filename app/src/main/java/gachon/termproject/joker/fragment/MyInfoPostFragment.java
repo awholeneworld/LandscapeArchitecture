@@ -12,15 +12,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.adapter.MyInfoPostAdapter;
 
-public class PostMyInfo extends Fragment {
+public class MyInfoPostFragment extends Fragment {
     private View view;
     private RecyclerView contents;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.post_myinfo, container, false);
+        view = inflater.inflate(R.layout.myinfo_post, container, false);
 
         int numberOfColumns = 3;
         contents = view.findViewById(R.id.content_post_myinfo);

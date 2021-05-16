@@ -25,14 +25,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
+import gachon.termproject.joker.activity.WriteReviewPostExpertListActivity;
 import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.container.PostContent;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.WritePostActivity;
 
 import static android.app.Activity.RESULT_OK;
 
-public class  TipCommunity extends Fragment {
+public class CommunityReviewFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -51,9 +51,9 @@ public class  TipCommunity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.tip_community, container, false);
+        view = inflater.inflate(R.layout.community_review, container, false);
 
-        category = "tip";
+        category = "review";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
@@ -137,12 +137,9 @@ public class  TipCommunity extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "tip");
-                startActivityForResult(intent, 1);
+                startActivityForResult(new Intent(getActivity(), WriteReviewPostExpertListActivity.class), 1);
             }
         });
-
 
         return view;
     }
@@ -157,6 +154,7 @@ public class  TipCommunity extends Fragment {
         }
     }
 
+    
     OnPostListener onPostListener = new OnPostListener() {
         @Override
         public void onPost() {

@@ -1,4 +1,4 @@
-package gachon.termproject.joker.fragment;
+package gachon.termproject.joker.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -65,7 +65,7 @@ public class MyInfoPortfolioAdapter  extends RecyclerView.Adapter<MyInfoPortfoli
     @NonNull
     @Override
     public MyInfoPortfolioAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_myinfo_portfolio, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_portfolio_myinfo, parent, false);
         return new MyInfoPortfolioAdapter.ViewHolder(view);
     }
 

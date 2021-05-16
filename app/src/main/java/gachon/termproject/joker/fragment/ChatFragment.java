@@ -25,7 +25,7 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ChatListAdapter;
 import gachon.termproject.joker.container.ChatMessageContent;
 
-public class ChatFrame extends Fragment {
+public class ChatFragment extends Fragment {
     private View view;
     private RecyclerView recyclerView;
     private ArrayList<ChatMessageContent> chatList;
@@ -34,7 +34,7 @@ public class ChatFrame extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frame_chat, container, false);
+        view = inflater.inflate(R.layout.fragment_chat, container, false);
         
         recyclerView = view.findViewById(R.id.roomList);
 

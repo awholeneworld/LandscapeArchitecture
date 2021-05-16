@@ -1,4 +1,4 @@
-package gachon.termproject.joker.fragment;
+package gachon.termproject.joker.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.container.CommentMyInfoContent;
 
 public class MyInfoCommentAdapter extends RecyclerView.Adapter<MyInfoCommentAdapter.ViewHolder> {
+    private ArrayList<String> dataSet;
 
-    private ArrayList<CommentMyInfoContent> dataSet;
-
-    public MyInfoCommentAdapter(ArrayList<CommentMyInfoContent> dataSet) { this.dataSet = dataSet; }
+    public MyInfoCommentAdapter() { this.dataSet = dataSet; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView comment;
@@ -36,15 +33,12 @@ public class MyInfoCommentAdapter extends RecyclerView.Adapter<MyInfoCommentAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_myinfo_comment, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment_myinfo, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        CommentMyInfoContent content = dataSet.get(position);
-        holder.commentInComment = content.getComment();
-        holder.postTitleInComment = content.getPostTitle();
     }
 
     @Override
