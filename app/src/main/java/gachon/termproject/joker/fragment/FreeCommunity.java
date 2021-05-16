@@ -129,12 +129,8 @@ public class  FreeCommunity extends Fragment {
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                postContentList = new ArrayList<>();
-                postAdapter = new PostAdapter(getActivity(), postContentList);
-                contents.setAdapter(postAdapter);
                 databaseReference.addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
-                postAdapter.notifyDataSetChanged();
             }
         });
 
@@ -156,9 +152,6 @@ public class  FreeCommunity extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                postContentList = new ArrayList<>();
-                postAdapter = new PostAdapter(getActivity(), postContentList);
-                contents.setAdapter(postAdapter);
                 databaseReference.addListenerForSingleValueEvent(postsListener);
             }
         }

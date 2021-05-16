@@ -2,6 +2,7 @@ package gachon.termproject.joker.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -44,6 +47,7 @@ public class MyInfoPostAdapter extends RecyclerView.Adapter<MyInfoPostAdapter.Vi
             @Override
             public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
 
@@ -53,6 +57,17 @@ public class MyInfoPostAdapter extends RecyclerView.Adapter<MyInfoPostAdapter.Vi
                         }
                         finishCount++;
                         if (finishCount == 3) {
+                            myInfoPostList.sort(new Comparator<PostContent>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public int compare(PostContent o1, PostContent o2) {
+                                    long o1Id = Long.parseUnsignedLong(o1.getPostId());
+                                    long o2Id = Long.parseUnsignedLong(o2.getPostId());
+
+                                    if (o1Id < o2Id) return 1;
+                                    else return -1;
+                                }
+                            });
                             notifyDataSetChanged();
                             finishCount = 0;
                         }

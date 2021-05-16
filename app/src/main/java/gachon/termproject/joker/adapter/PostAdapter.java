@@ -146,4 +146,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
     public int getItemCount() {
         return postContentList.size();
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }
