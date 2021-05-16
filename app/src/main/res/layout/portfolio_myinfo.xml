@@ -1,16 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/portfolio_myinfo_container">
+    android:id="@+id/portfolio_myinfo_container"
+    android:orientation="vertical">
 
-    <!-- CardView 사용해서 하기 -->
-
-    <TextView
+    <LinearLayout
+        android:id="@+id/information"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Portfolio MyInfo"
-        android:textSize="50dp"
-        android:background="#a1f23d" />
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal" >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="70dp"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="13dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_baseline_yard_24" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingRight="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/myInfoNickname"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="닉네임"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/myInfoLocation"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:text="지역"
+                android:textSize="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingRight="10dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="119dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#FFFFFF"
+                android:gravity="center"
+                android:paddingRight="10dp"
+                android:text="채팅하기"
+                android:textColor="#3CAF5C"
+                android:textSize="13dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.8"
+        android:src="@drawable/basic_image" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:layout_gravity="center"
+        android:gravity="center" >
+
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:backgroundTint="#FFFFFF"
+            android:paddingRight="10dp"
+            android:text="웹 포트폴리오 보러가기"
+            android:textColor="#3CAF5C"
+            android:textSize="12dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="380dp"
+        android:layout_height="1dp"
+        android:layout_gravity="center"
+        android:background="@drawable/portfolio_review_border" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="리뷰  "
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="개수"
+            android:textColor="#3CAF5C"
+            android:textSize="18dp"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8" >
+
+
+    </FrameLayout>
+
+</LinearLayout>
+
+

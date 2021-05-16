@@ -1,16 +1,19 @@
 package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,27 +23,49 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Comment;
+
+import java.io.File;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.fragment.PostMyInfo;
 
 public class MyInfoFrame extends Fragment {
+
     private StorageReference storageReference;
     private View view;
-    private ImageView profileImg;
+    private FragmentManager fm;
     private PostMyInfo post;
     private CommentMyInfo comment;
     private PortfolioMyInfo portfolio;
-    private FragmentManager fm;
-    private TabLayout tabs;
-    private Uri file;
+    private ViewGroup portfolioLayout;
+    TabLayout tabs;
+    Button selectCommunityMode;
+    boolean i = true;
+    Uri file;
+    StorageReference fReference;
+    FirebaseStorage fStore;
+    ImageView profile_Album;
 
 
     // 닉네임 변경 부분
@@ -56,10 +81,26 @@ public class MyInfoFrame extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frame_myinfo, container, false);
+        getFirebaseProfileImage(UserInfo.userId);
+        //getFirebaseProfileImage(UserInfo.profileImg);
 
-        fm = getChildFragmentManager();
+
         tabs = view.findViewById(R.id.myinfo_tabs);
-        profileImg = view.findViewById(R.id.profileImage);
+        tabs.setSelectedTabIndicatorHeight(0);
+        fm = getChildFragmentManager();
+
+        profile_Album = view.findViewById(R.id.go_album);
+        //사진 눌렀을 때, 앨범으로 이동
+        view.findViewById(R.id.go_album).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "사진을 선택하세요."), 0);
+            }
+        });
+
 
         if (post == null) {
             post = new PostMyInfo();
@@ -71,6 +112,7 @@ public class MyInfoFrame extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tabs.getSelectedTabPosition()) {
                     case 0:
+                        // tabs.getChildAt(0).setBackgroundColor(Color.parseColor("#4B3D5A"));
                         if (comment != null) fm.beginTransaction().hide(comment).commit();
                         fm.beginTransaction().show(post).commit();
                         break;
@@ -93,33 +135,6 @@ public class MyInfoFrame extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-
-        // 프사 눌렀을 때 이미지 파일 선택 창으로 이동
-        profileImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "사진을 선택하세요."), 0);
-            }
-        });
-
-        // 닉네임 설정
-        TextView nickname = view.findViewById(R.id.myInfoNickname);
-        nickname.setText(UserInfo.nickname);
-
-        // 지역 설정
-        String locationStr = "";
-        for (String item : UserInfo.location) {
-            locationStr += item + " ";
-        }
-        TextView location = view.findViewById(R.id.myInfoLocation);
-        location.setText(locationStr);
-
-        // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
-        TextView intro = view.findViewById(R.id.myInfoMessage);
-
 
         // 설정 구현되면 설정 안에 이 내용 넣기 - 닉네임 변경
         /*Button changeButton = view.findViewById(R.id.change_nick);
@@ -166,47 +181,104 @@ public class MyInfoFrame extends Fragment {
             }
 
         }); */
+
+        portfolioLayout = view.findViewById(R.id.portfolioLayout);
+        portfolioLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(getContext(), PortfolioMyInfo.class);
+                //startActivity(intent);
+            }
+        });
+
         return view;
+    }
+
+    //profile 이미지 불러오는 method
+    private void downloadImg(String ID) {
+        fStore = FirebaseStorage.getInstance();
+        fReference = fStore.getReference();
+        fReference.child("profile_img/" + "profile" + ID + ".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                String str = uri.toString();
+                Glide.with(getContext()).load(str).into(profile_Album);
+                UserInfo UserInfo = new UserInfo();
+                UserInfo.setProfileImg(str);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
+    }
+
+
+    //프로필 이미지 부르는 햄수(이거쓰세연)
+    private void getFirebaseProfileImage(String ID) {
+        File file = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profile_img");
+
+        if(!file.isDirectory()){
+            file.mkdir();
+        }
+        downloadImg(ID);
+    }
+
+    //이미지 넣는거
+    private void createProfile_Photo(String ID){
+        fStore = FirebaseStorage.getInstance();
+        fReference = fStore.getReference();
+        String filename = "profile" + ID + ".jpg";
+
+        StorageReference riverRef = fReference.child("profile_img/" + filename);
+        UploadTask uploadTask = riverRef.putFile(file);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "업로드 실패", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(getContext(), "프로필 이미지가 설정/변경되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //이미지 삭제하는거를 만들었지만 이미 변경까지 되어버려서 사실상 무쓸모
+    //하지만 혹시 모르니 keep
+    private void profile_delete(String ID){
+        fStore = FirebaseStorage.getInstance();
+        fReference = fStore.getReference();
+
+        StorageReference desertRef = fReference.child("profile_img/" + "profile" + ID + ".jpg");
+
+        desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e){
+            }
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 0 && data != null && data.getData() != null) { // 이미지 파일 선택하였다면
-            file = data.getData();
-            uploadProfileImage();
+        if (requestCode == 0 && data!= null && data.getData()!= null) {
+            file = data.getData(); // 파일 가져옴
+
+            if (file == null) {//파일 선택안한경우
+                Toast.makeText(view.getContext(), "사진을 선택하라고 했잖아요", Toast.LENGTH_SHORT).show();
+            } else { //파일 선택한 경우
+                String ID = UserInfo.userId;
+                createProfile_Photo(ID);
+                profile_Album.setImageURI(file);
+            }
         }
-    }
-
-    // 이미지 넣는거
-    private void uploadProfileImage(){
-        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages/" + UserInfo.userId + "/" + file.getLastPathSegment());
-        storageReference.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-
-                return storageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() { // URL 다운 성공 시
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) { // URL을 포스트 내용 Class(postContent)와 DB에 업데이트
-                    Uri downloadUrl = task.getResult();
-                    String url = downloadUrl.toString();
-                    UserInfo.profileImg = url;
-
-                    profileImg.setBackground(new ShapeDrawable(new OvalShape()));
-                    profileImg.setClipToOutline(true);
-                    Glide.with(getActivity()).load(url).into(profileImg);
-
-                    Toast.makeText(getContext(), "프로필 이미지가 설정/변경되었습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 }
