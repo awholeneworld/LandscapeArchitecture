@@ -16,24 +16,35 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.ChatFragment;
 import gachon.termproject.joker.fragment.CommunityFragment;
 import gachon.termproject.joker.fragment.MainHomeFragment;
+import gachon.termproject.joker.fragment.MatchingExpertFragment;
 import gachon.termproject.joker.fragment.MatchingFragment;
+import gachon.termproject.joker.fragment.MatchingUserFragment;
 import gachon.termproject.joker.fragment.MyInfoFragment;
+import gachon.termproject.joker.UserInfo;
+
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MainHomeFragment home;
     private CommunityFragment community;
-    private MatchingFragment matching;
+    private MatchingUserFragment matchingUser;
+    private MatchingExpertFragment matchingExpert;
     private ChatFragment chat;
     private MyInfoFragment myInfo;
     private int backPressed = 0;
     ActionBar actionBar;
     TextView action_bar_title;
+    Boolean userinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        userinfo = UserInfo.isPublic;
+        System.out.println("ya" + userinfo);
+        System.out.println("ya2" + UserInfo.isPublic);
+
 
         //toolbar~~~~~~~~~~toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.main_toolbar);
@@ -95,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (home != null) fm.beginTransaction().show(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                matching_convert_hide(fm);
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -111,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().show(community).commit();
-                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                matching_convert_hide(fm);
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -121,13 +132,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 2:
-                if (matching == null) {
-                    matching = new MatchingFragment();
-                    fm.beginTransaction().add(R.id.main_frame, matching).commit();
+                if(userinfo){ //user라면
+                    if (matchingUser == null) {
+                        matchingUser = new MatchingUserFragment();
+                        fm.beginTransaction().add(R.id.main_frame, matchingUser).commit();
+                    }
                 }
+                else{
+                    if (matchingExpert == null) {
+                        matchingExpert = new MatchingExpertFragment();
+                        fm.beginTransaction().add(R.id.main_frame, matchingExpert).commit();
+                    }
+                }
+
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                if (matching != null) fm.beginTransaction().show(matching).commit();
+                matching_convert_Show(fm);
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -143,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                matching_convert_hide(fm);
                 if (chat != null) fm.beginTransaction().show(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -159,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                matching_convert_hide(fm);
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().show(myInfo).commit();
 
@@ -181,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 if (home != null) fm.beginTransaction().show(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                if (matching != null) fm.beginTransaction().hide(matching).commit();
+                matching_convert_hide(fm);
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -191,6 +211,25 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void matching_convert_hide(FragmentManager fm){
+        if(userinfo){ //user라면
+            if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
+        }
+        else{
+            if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
+        }
+    }
+
+
+    public void matching_convert_Show(FragmentManager fm){
+        if(userinfo){
+            if (matchingUser != null) fm.beginTransaction().show(matchingUser).commit();
+        }
+        else{
+            if (matchingExpert != null) fm.beginTransaction().show(matchingExpert).commit();
+        }
     }
 
 
