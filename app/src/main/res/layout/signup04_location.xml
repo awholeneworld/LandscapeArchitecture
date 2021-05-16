@@ -181,10 +181,10 @@
             </TableRow>
             <TableRow>
                 <CheckBox
-                    android:id="@+id/signup04_JJ"
+                    android:id="@+id/signup04_SJ"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="제주도"
+                    android:text="세종특별자치시"
                     android:textSize="20sp">
                 </CheckBox>
 
@@ -193,6 +193,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="전라남도"
+                    android:textSize="20sp">
+                </CheckBox>
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_JJ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="제주특별자치도"
                     android:textSize="20sp">
                 </CheckBox>
             </TableRow>

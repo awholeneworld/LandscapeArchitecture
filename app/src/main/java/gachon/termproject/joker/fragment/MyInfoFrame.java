@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -55,6 +58,8 @@ public class MyInfoFrame extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frame_myinfo, container, false);
+
+        setHasOptionsMenu(true); //action bar menu
 
         fm = getChildFragmentManager();
         tabs = view.findViewById(R.id.myinfo_tabs);
@@ -190,6 +195,28 @@ public class MyInfoFrame extends Fragment {
         */
 
         return view;
+    }
+
+    //action bar menu
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.top_setting_app_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        Toast toast = Toast.makeText(getContext(),"", Toast.LENGTH_LONG);
+
+        switch(item.getItemId())
+        {
+            case R.id.setting:
+                toast.setText("Select Menu1");
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
