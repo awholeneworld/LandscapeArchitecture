@@ -42,6 +42,7 @@ public class MyInfoFrame extends Fragment {
     private TabLayout tabs;
     private Uri file;
     private ViewGroup portfolioLayout;
+    private TextView portfolioText;
 
     /* 닉네임 변경 부분
     private CollectionReference collectionReference;
@@ -54,7 +55,6 @@ public class MyInfoFrame extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frame_myinfo, container, false);
-
 
         fm = getChildFragmentManager();
         tabs = view.findViewById(R.id.myinfo_tabs);
@@ -120,11 +120,23 @@ public class MyInfoFrame extends Fragment {
         // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
         TextView intro = view.findViewById(R.id.myInfoMessage);
 
+        /*
+        portfolioText = view.findViewById(R.id.portfolioText);
+        portfolioText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                //startActivity(new Intent(getContext(), PortfolioMyInfo.class));
+            }
+        });
+
+         */
 
         // 포트폴리오 창으로 이동
         portfolioLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
                 //Intent intent = new Intent(getContext(), PortfolioMyInfo.class);
                 //startActivity(intent);
             }

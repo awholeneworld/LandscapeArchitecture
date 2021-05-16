@@ -31,7 +31,7 @@
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="5"
+            android:layout_weight="3.3"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingRight="10dp"
@@ -62,37 +62,11 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/portfolioLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="5dp" >
-
-                <ImageButton
-                    android:id="@+id/portfolioButton"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginLeft="3dp"
-                    android:background="@drawable/ic_baseline_perm_media_24" />
-
-                <TextView
-                    android:id="@+id/portfolioText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="14dp"
-                    android:gravity="center"
-                    android:text="포트폴리오"
-                    android:textSize="13dp"
-                    android:textColor="@color/gray" />
-
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/myInfoLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="35dp"
                 android:text="지역"
@@ -107,6 +81,33 @@
                 android:text="한줄 메시지 (소개)"
                 android:textColor="@color/black"
                 android:textSize="12dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/portfolioLayout"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_baseline_perm_media_24" />
+
+            <Button
+                android:id="@+id/portfolioButton"
+                android:layout_width="100dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:backgroundTint="#FFFFFF"
+                android:gravity="center"
+                android:text="포트폴리오"
+                android:textColor="#3CAF5C"
+                android:textSize="10dp" />
 
         </LinearLayout>
 
