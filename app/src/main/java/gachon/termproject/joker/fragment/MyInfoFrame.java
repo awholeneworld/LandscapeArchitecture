@@ -120,6 +120,7 @@ public class MyInfoFrame extends Fragment {
         // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
         TextView intro = view.findViewById(R.id.myInfoMessage);
 
+
         // 포트폴리오 창으로 이동
         portfolioLayout.setOnClickListener(new View.OnClickListener() {
             @Override
