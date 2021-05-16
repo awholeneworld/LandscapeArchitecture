@@ -60,6 +60,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
     private String nickname = UserInfo.nickname;
     private String postId;
     private int postTime;
+    private String expertId;
     private LinearLayout layout;
     private EditText title, content;
     private TextView location_select;
@@ -280,7 +281,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
+            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -328,7 +329,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
                                 String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
                                 // 포스트할 내용
-                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
+                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId);
 
                                 // Firebase Realtime DB에 글 내용 올리기
                                 databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

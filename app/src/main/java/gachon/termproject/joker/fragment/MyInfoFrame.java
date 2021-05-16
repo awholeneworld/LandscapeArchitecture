@@ -37,12 +37,11 @@ public class MyInfoFrame extends Fragment {
     private ImageView profileImg;
     private PostMyInfo post;
     private CommentMyInfo comment;
-    private PortfolioMyInfo portfolio;
+    private ViewGroup portfolioLayout;
     private FragmentManager fm;
     private TabLayout tabs;
     private Uri file;
-    private ViewGroup portfolioLayout;
-    private TextView portfolioText;
+    static String locationStr;
 
     /* 닉네임 변경 부분
     private CollectionReference collectionReference;
@@ -110,7 +109,7 @@ public class MyInfoFrame extends Fragment {
         nickname.setText(UserInfo.nickname);
 
         // 지역 설정
-        String locationStr = "";
+        locationStr = "";
         for (String item : UserInfo.location) {
             locationStr += item + " ";
         }
@@ -137,8 +136,7 @@ public class MyInfoFrame extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getContext(), PortfolioMyInfo.class);
-                //startActivity(intent);
+                startActivity(new Intent(getContext(), PortfolioMyInfo.class));
             }
         });
 

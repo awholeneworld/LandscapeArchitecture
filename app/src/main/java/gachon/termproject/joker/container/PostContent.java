@@ -11,6 +11,7 @@ public class PostContent {
     public String nickname;
     public String postTime;
     public String postId;
+    public String expertId;
     public ArrayList<String> content;
     public ArrayList<String> images;
 
@@ -18,7 +19,7 @@ public class PostContent {
     public PostContent() {
     }
 
-    public PostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images) {
+    public PostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, String expertId) {
         this.category = category;
         this.userId = userId;
         this.profileImg = profileImg;
@@ -28,6 +29,7 @@ public class PostContent {
         this.postId = postId;
         this.content = content;
         this.images = images;
+        this.expertId = expertId;
     }
 
     public String getCategory() { return category; }
@@ -39,6 +41,7 @@ public class PostContent {
     public String getNickname() { return nickname; }
     public String getPostTime() { return postTime; }
     public String getPostId() { return postId; }
+    public String getExpertId() { return expertId; }
     public ArrayList<String> getContent() { return content; }
     public ArrayList<String> getImages() { return images; }
     public void setCategory() { this.category = category; }
@@ -48,6 +51,7 @@ public class PostContent {
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setPostTime(String postTime) { this.postTime = postTime; }
     public void setPostId(String postId) { this.postId = postId; }
+    public void setExpertId(String expertId) { this.expertId = expertId; }
     public void setContent(ArrayList<String> content) { this.content = content; }
     public void setImages(int index, String image) { this.images.set(index, image); }
 }

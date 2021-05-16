@@ -57,6 +57,7 @@ public class WritePostActivity extends AppCompatActivity {
     private String userId = UserInfo.userId; // 누가 업로드 했는지 알기 위함
     private String nickname = UserInfo.nickname;
     private String postId;
+    private String expertId;
     private LinearLayout layout;
     private EditText title, content;
     private ImageButton imageAddButton;
@@ -89,6 +90,7 @@ public class WritePostActivity extends AppCompatActivity {
         // 어떤 게시판에서 올리려고 하는 글인지 카테고리 정보 가져오기
         Intent intent = getIntent();
         String category = intent.getStringExtra("category");
+        expertId = intent.getStringExtra("expertId");
 
         // 파일 선택
         imageAddButton.setOnClickListener(new View.OnClickListener() {
@@ -184,7 +186,7 @@ public class WritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
+            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -230,7 +232,7 @@ public class WritePostActivity extends AppCompatActivity {
                                     String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl);
+                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId);
 
                                     // Firebase Realtime DB에 글 내용 올리기
                                     databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

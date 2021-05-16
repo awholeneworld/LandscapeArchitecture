@@ -1,48 +1,42 @@
 package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
-import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.bumptech.glide.Glide;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.container.PortfolioMyInfoContent;
-import gachon.termproject.joker.fragment.MyInfoPortfolioAdapter;
+import gachon.termproject.joker.UserInfo;
+
+import static gachon.termproject.joker.fragment.MyInfoFrame.locationStr;
 
 public class PortfolioMyInfo extends AppCompatActivity {
-    private View view;
     private RecyclerView contents;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private ArrayList<PortfolioMyInfoContent> dataSet;
-
+    private TextView numberView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.portfolio_myinfo);
 
-        contents = (RecyclerView)findViewById(R.id.content_portfolio_myinfo);
+        ImageView profileImage= findViewById(R.id.myInfoProfileImage);
+        TextView nickname = findViewById(R.id.myInfoNickname);
+        TextView location = findViewById(R.id.myInfoLocation);
+
+        if (!UserInfo.profileImg.equals("None"))
+            Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
+        nickname.setText(UserInfo.nickname);
+        location.setText(locationStr);
+
+        numberView = findViewById(R.id.number);
+        contents = findViewById(R.id.content_portfolio_myinfo);
+        contents.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         contents.setHasFixedSize(true);
-        contents.setLayoutManager(new GridLayoutManager(getApplication(), 1));
-
-        dataSet = new ArrayList<>();
-        mAdapter = new MyInfoPortfolioAdapter(dataSet);
-        contents.setAdapter(mAdapter);
-
-
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목1"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목2"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목3"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목4"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목5"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목6"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목7"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목8"));
-        dataSet.add(new PortfolioMyInfoContent(R.mipmap.ic_launcher, "제목9"));
+        contents.setAdapter(new MyInfoPortfolioAdapter(getApplicationContext(), numberView));
     }
 }

@@ -50,6 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         String nicknameInPost;
         String timeInPost;
         String postIdInPost;
+        String expertIdOfPost;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
 
@@ -72,6 +73,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
+                    intent.putExtra("expertId", expertIdOfPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     context.startActivity(intent);
@@ -107,12 +109,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         holder.postIdInPost = content.getPostId();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
+        holder.expertIdOfPost = content.getExpertId();
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         if (contentTitle.length() > 15)
             holder.title.setText(contentTitle.substring(0, 16));
         else
             holder.title.setText(contentTitle);
+
         holder.nickname.setText(contentNickname);
         holder.date.setText(contentTime);
 
