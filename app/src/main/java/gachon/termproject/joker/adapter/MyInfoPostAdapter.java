@@ -14,9 +14,11 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -34,40 +36,68 @@ import gachon.termproject.joker.container.PostContent;
 public class MyInfoPostAdapter extends RecyclerView.Adapter<MyInfoPostAdapter.ViewHolder> {
     private Context context;
     private ArrayList<PostContent> myInfoPostList;
+    private long categoryNum;
     private int finishCount = 0;
 
     public MyInfoPostAdapter(Context context) {
         this.context = context;
         myInfoPostList = new ArrayList<>();
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
-        FirebaseDatabase.getInstance().getReference().child("Posts").addChildEventListener(new ChildEventListener() {
+        dbRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                categoryNum = dataSnapshot.getChildrenCount();
+                dbRef.addChildEventListener(new ChildEventListener() {
                     @Override
-                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                    public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                        snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.N)
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
 
-                        for (DataSnapshot item : snapshot.getChildren()) {
-                            PostContent myInfoPostContent = item.getValue(PostContent.class);
-                            myInfoPostList.add(0, myInfoPostContent);
-                        }
-                        finishCount++;
-                        if (finishCount == 3) {
-                            myInfoPostList.sort(new Comparator<PostContent>() {
-                                @RequiresApi(api = Build.VERSION_CODES.O)
-                                @Override
-                                public int compare(PostContent o1, PostContent o2) {
-                                    long o1Id = Long.parseUnsignedLong(o1.getPostId());
-                                    long o2Id = Long.parseUnsignedLong(o2.getPostId());
-
-                                    if (o1Id < o2Id) return 1;
-                                    else return -1;
+                                for (DataSnapshot item : snapshot.getChildren()) {
+                                    PostContent myInfoPostContent = item.getValue(PostContent.class);
+                                    myInfoPostList.add(0, myInfoPostContent);
                                 }
-                            });
-                            notifyDataSetChanged();
-                            finishCount = 0;
-                        }
+                                finishCount++;
+                                if (finishCount == categoryNum) {
+                                    myInfoPostList.sort(new Comparator<PostContent>() {
+                                        @RequiresApi(api = Build.VERSION_CODES.O)
+                                        @Override
+                                        public int compare(PostContent o1, PostContent o2) {
+                                            long o1Id = Long.parseUnsignedLong(o1.getPostId());
+                                            long o2Id = Long.parseUnsignedLong(o2.getPostId());
+
+                                            if (o1Id < o2Id) return 1;
+                                            else return -1;
+                                        }
+                                    });
+                                    notifyDataSetChanged();
+                                    finishCount = 0;
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
                     }
 
                     @Override
@@ -75,26 +105,6 @@ public class MyInfoPostAdapter extends RecyclerView.Adapter<MyInfoPostAdapter.Vi
 
                     }
                 });
-            }
-
-            @Override
-            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
             }
         });
     }

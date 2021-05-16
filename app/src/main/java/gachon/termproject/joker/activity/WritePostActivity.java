@@ -110,6 +110,7 @@ public class WritePostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (title.length() > 0 && content.length() > 0) {
+                    register.setEnabled(false);
                     post(category);
                 } else if (title.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();

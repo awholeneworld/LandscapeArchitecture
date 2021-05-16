@@ -43,9 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         // 이미 로그인한 경우 로그인 상태 유지
         fAuth = FirebaseAuth.getInstance();
         if (fAuth.getCurrentUser() != null){
-            setUserInfo();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-            finish();
+            logIn();
         }
 
         //login버튼을 눌럿을때
@@ -63,10 +61,7 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        setUserInfo();
-                                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                        finish();
+                                        logIn();
                                     } else if (task.getException() != null)
                                         Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
                                 }
@@ -99,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    // 나중에 쓸 일 많은 유저 고유 아이디, 닉네임, 프로필 사진 Url 정보 미리 저장
-    public void setUserInfo() {
+    // 나중에 쓸 일 많은 유저 고유 아이디, 닉네임, 프로필 사진 Url 정보 등 미리 저장 후 로그인
+    public void logIn() {
         UserInfo.userId = fAuth.getCurrentUser().getUid();
         documentReference = FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId);
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -114,6 +109,10 @@ public class LoginActivity extends AppCompatActivity {
                         UserInfo.profileImg = document.getString("profileUrl");
                         UserInfo.isPublic = document.getBoolean("isPublic");
                         UserInfo.location = (List<String>) document.get("location");
+
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 }
             }

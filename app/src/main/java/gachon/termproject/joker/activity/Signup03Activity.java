@@ -24,8 +24,6 @@ import java.util.List;
 import gachon.termproject.joker.R;
 
 public class Signup03Activity extends AppCompatActivity {
-    private FirebaseFirestore fStore;
-    private CollectionReference collectionReference;
     public static String nickname; // 회원가입을 위한 전역변수
 
     @Override
@@ -50,31 +48,32 @@ public class Signup03Activity extends AppCompatActivity {
                 //닉네임을 입력받음
                 String temp = nicknameText.getText().toString();
 
-                //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
-                fStore = FirebaseFirestore.getInstance();
-                collectionReference = fStore.collection("users");
-                collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot querySnapshot = task.getResult();
-                            List<DocumentSnapshot> list = querySnapshot.getDocuments();
+                if (temp.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                } else { //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
+                    FirebaseFirestore.getInstance().collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                QuerySnapshot querySnapshot = task.getResult();
+                                List<DocumentSnapshot> list = querySnapshot.getDocuments();
 
-                            for (int i = 0; i < list.size(); i++) {
-                                DocumentSnapshot snapshot = list.get(i);
-                                String nicknameCheck = snapshot.getString("nickname");
-                                if (temp.compareTo(nicknameCheck) == 0) {
-                                    Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
-                                    break;
-                                } else if (i == list.size() - 1) {
-                                    // 닉네임 설정 후 다음 페이지로 이동
-                                    nickname = temp;
-                                    startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
+                                for (int i = 0; i < list.size(); i++) {
+                                    DocumentSnapshot snapshot = list.get(i);
+                                    String nicknameCheck = snapshot.getString("nickname");
+                                    if (temp.compareTo(nicknameCheck) == 0) {
+                                        Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    } else if (i == list.size() - 1) {
+                                        // 닉네임 설정 후 다음 페이지로 이동
+                                        nickname = temp;
+                                        startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
