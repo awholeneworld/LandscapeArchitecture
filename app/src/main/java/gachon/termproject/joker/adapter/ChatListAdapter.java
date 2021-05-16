@@ -48,26 +48,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     private Context context;
     private ArrayList<ChatMessageContent> chatList;
 
-    public ChatListAdapter(Context context) {
+    public ChatListAdapter(Context context, ArrayList<ChatMessageContent> chatList) {
         this.context = context;
-        chatList = new ArrayList<>();
-        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chatList.clear();
-                for (DataSnapshot item : snapshot.getChildren()) {
-                    ChatMessageContent chatMessageContent = item.getValue(ChatMessageContent.class);
-                    if (chatMessageContent.users.containsKey(UserInfo.userId))
-                        chatList.add(0, chatMessageContent);
-                }
-                notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        this.chatList = chatList;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
@@ -130,31 +113,20 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 String lastMessageKey = (String) messages.keySet().toArray()[0];
                 holder.lastMessage.setText(content.messages.get(lastMessageKey).message);
             }
-
-
-        /*
-        // 비동기식이라 업데이트 못따라감 수정 필요
-        FirebaseFirestore.getInstance().collection("users").document(holder.opponentUid).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                holder.opponentNickname = documentSnapshot.getString("nickname");
-                holder.opponentProfileImg = documentSnapshot.getString("profileUrl");
-                holder.roomName.setText(holder.opponentNickname);
-                if (!holder.opponentProfileImg.equals("None"))
-                    Glide.with(context).load(holder.opponentProfileImg).override(1000).thumbnail(0.1f).into(holder.profileImg);
-
-                Map<String, ChatMessageContent.Message> messages = new TreeMap<>(Collections.reverseOrder());
-                messages.putAll(content.messages);
-
-                String lastMessageKey = (String) messages.keySet().toArray()[0];
-                holder.lastMessage.setText(content.messages.get(lastMessageKey).message);
-            }
-        });
-         */
     }
 
     @Override
     public int getItemCount() {
         return chatList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

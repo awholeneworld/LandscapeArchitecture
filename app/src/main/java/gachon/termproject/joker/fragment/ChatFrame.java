@@ -13,9 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -27,10 +28,8 @@ import gachon.termproject.joker.container.ChatMessageContent;
 public class ChatFrame extends Fragment {
     private View view;
     private RecyclerView recyclerView;
-    private ChatMessageContent chatMessageContent;
     private ArrayList<ChatMessageContent> chatList;
     private ChatListAdapter chatListAdapter;
-    private DatabaseReference databaseReference;
 
     @Nullable
     @Override
@@ -40,9 +39,28 @@ public class ChatFrame extends Fragment {
         recyclerView = view.findViewById(R.id.roomList);
 
         chatList = new ArrayList<>();
+        chatListAdapter = new ChatListAdapter(getActivity(), chatList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(new ChatListAdapter(getActivity()));
+        recyclerView.setAdapter(chatListAdapter);
+
+        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                chatList.clear();
+                for (DataSnapshot item : snapshot.getChildren()) {
+                    ChatMessageContent chatMessageContent = item.getValue(ChatMessageContent.class);
+                    if (chatMessageContent.users.containsKey(UserInfo.userId))
+                        chatList.add(0, chatMessageContent);
+                }
+                chatListAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
 
         return view;
     }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,14 +13,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.auth.User;
+
+import org.jetbrains.annotations.NotNull;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -34,6 +36,7 @@ public class ChatActivity extends AppCompatActivity {
     private ImageView sendButton;
     private EditText messageArea;
     private String opponentUserId;
+    private String message;
     private boolean send = false;
 
     @Override
@@ -56,6 +59,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!messageArea.getText().toString().equals("")) {
+                    message = messageArea.getText().toString();
+                    messageArea.setText("");
                     if (chatRoomId == null) { // 채팅방 생성
                         ChatMessageContent chatMessageContent = new ChatMessageContent();
                         ChatMessageContent.User user = new ChatMessageContent.User();
@@ -114,14 +119,14 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMsgToDB() {
-        ChatMessageContent.Message message = new ChatMessageContent.Message();
-        message.userId = UserInfo.userId;
-        message.message = messageArea.getText().toString();
-        message.timestamp = ServerValue.TIMESTAMP;
-        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+        ChatMessageContent.Message messageToSend = new ChatMessageContent.Message();
+        messageToSend.userId = UserInfo.userId;
+        messageToSend.message = message;
+        messageToSend.timestamp = ServerValue.TIMESTAMP;
+        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onSuccess(Void aVoid) {
-                messageArea.setText("");
+            public void onFailure(@NonNull @NotNull Exception e) {
+                Toast.makeText(getApplicationContext(), "메시지 전송 실패", Toast.LENGTH_SHORT).show();
             }
         });
     }
