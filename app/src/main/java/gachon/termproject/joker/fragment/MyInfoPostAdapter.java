@@ -160,4 +160,3 @@ public class MyInfoPostAdapter extends RecyclerView.Adapter<MyInfoPostAdapter.Vi
     @Override
     public int getItemCount() { return myInfoPostList.size(); }
 }
-

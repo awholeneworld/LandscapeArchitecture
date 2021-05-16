@@ -1,6 +1,5 @@
 package gachon.termproject.joker.adapter;
 
-
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
