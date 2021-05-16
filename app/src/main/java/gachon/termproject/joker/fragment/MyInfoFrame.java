@@ -33,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.SettingActivity;
 
 public class MyInfoFrame extends Fragment {
     private StorageReference storageReference;
@@ -212,7 +213,7 @@ public class MyInfoFrame extends Fragment {
         switch(item.getItemId())
         {
             case R.id.setting:
-                toast.setText("Select Menu1");
+                getActivity().startActivity(new Intent(getContext(), SettingActivity.class));
                 break;
         }
 

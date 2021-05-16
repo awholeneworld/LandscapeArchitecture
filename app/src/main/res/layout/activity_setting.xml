@@ -1,36 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
+    android:id="@+id/activity_setting"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <!-- <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" > -->
+
     <ImageView
+        android:id="@+id/setting_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/basic_image"
-        android:layout_gravity="center" />
+        android:src="@drawable/basic_image2"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="프로필 변경"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:gravity="center" />
 
     <LinearLayout
-        android:layout_width="340dp"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_below="@id/setting_image"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="20dp">
 
         <TextView
             android:id="@+id/setting_email"
-            android:layout_width="35dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="3.5dp"
+            android:layout_marginLeft="3.8dp"
             android:layout_gravity="left"
             android:text="Email"
+            android:textSize="16dp"
             android:textColor="#509664" />
 
         <EditText
             android:id="@+id/setting_email_text"
-            android:layout_width="340dp"
+            android:layout_width="360dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:textSize="18dp"
@@ -42,12 +59,13 @@
 
         <TextView
             android:id="@+id/setting_nickname"
-            android:layout_width="77dp"
+            android:layout_width="360dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="3.5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="3.8dp"
             android:layout_gravity="left"
             android:text="Nickname"
+            android:textSize="16dp"
             android:textColor="#509664" />
 
         <LinearLayout
@@ -57,7 +75,7 @@
 
             <EditText
                 android:id="@+id/setting_nickname_text"
-                android:layout_width="245dp"
+                android:layout_width="265dp"
                 android:layout_height="40dp"
                 android:layout_gravity="left"
                 android:textSize="18dp"
@@ -76,7 +94,7 @@
                 android:gravity="center"
                 android:text="중복체크"
                 android:textColor="#3CAF5C"
-                android:textSize="10dp" />
+                android:textSize="12dp" />
 
         </LinearLayout>
 
@@ -85,20 +103,259 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginLeft="3.5dp"
+            android:layout_marginLeft="3.8dp"
             android:layout_gravity="left"
             android:text="Location"
+            android:textSize="16dp"
             android:textColor="#509664" />
 
         <TextView
-            android:layout_width="335dp"
+            android:layout_width="360dp"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
             android:layout_gravity="center"
             android:background="#509664" />
 
 
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="4dp"
+            android:orientation="horizontal"
+            android:stretchColumns="0, 1">
 
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_SU"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="서울특별시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_GG"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="경기도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_IC"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="인천광역시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_GW"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="강원도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_DJ"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="대전광역시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_CB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="충청북도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_GJ"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="광주광역시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_CN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="충청남도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_DG"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="대구광역시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_GB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="경상북도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_US"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="울산광역시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_GN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="경상남도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_BS"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="부산광역시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_JB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="전라북도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_SJ"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="세종특별자치시"
+                    android:textSize="15sp">
+                </CheckBox>
+                <CheckBox
+                    android:id="@+id/signup04_JN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="전라남도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    android:id="@+id/signup04_JJ"
+                    android:layout_width="140dp"
+                    android:layout_height="30dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="제주특별자치도"
+                    android:textSize="15sp">
+                </CheckBox>
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:layout_width="360dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
+            android:background="#509664" />
+
+        <TextView
+            android:id="@+id/setting_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="3.8dp"
+            android:layout_gravity="left"
+            android:text="Message"
+            android:textSize="16dp"
+            android:textColor="#509664" />
+
+        <EditText
+            android:id="@+id/setting_message_text"
+            android:layout_width="360dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:textSize="18dp"
+            android:hint="한줄 메시지"
+            android:enabled="false"
+            android:inputType="textEmailAddress"
+            android:singleLine="true"
+            android:backgroundTint="@color/mainGreen" />
+
+        <Button
+            android:id="@+id/setting_save_button"
+            android:layout_width="360dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="5dp"
+            android:backgroundTint="#FFFFFF"
+            android:gravity="center"
+            android:text="설정 저장"
+            android:textColor="#3CAF5C"
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/setting_password_button"
+            android:layout_width="360dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="5dp"
+            android:backgroundTint="#FFFFFF"
+            android:gravity="center"
+            android:text="비밀번호 변경"
+            android:textColor="#3CAF5C"
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/setting_logout_button"
+            android:layout_width="360dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="5dp"
+            android:backgroundTint="#FFFFFF"
+            android:gravity="center"
+            android:text="로그아웃"
+            android:textColor="#3CAF5C"
+            android:textSize="13dp" />
     </LinearLayout>
 
-</LinearLayout>
+    <!-- </ScrollView> -->
+
+</RelativeLayout>
