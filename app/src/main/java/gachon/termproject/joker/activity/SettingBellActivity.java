@@ -27,7 +27,7 @@ public class SettingBellActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                startActivity(new Intent(getApplicationContext(), SettingMyInfoActivity.class));
             }
         });
 
