@@ -16,9 +16,8 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.ChatFragment;
 import gachon.termproject.joker.fragment.CommunityFragment;
 import gachon.termproject.joker.fragment.MainHomeFragment;
-import gachon.termproject.joker.fragment.MatchingExpertFragment;
-import gachon.termproject.joker.fragment.MatchingFragment;
-import gachon.termproject.joker.fragment.MatchingUserFragment;
+import gachon.termproject.joker.fragment.MatchingExpertViewFragment;
+import gachon.termproject.joker.fragment.MatchingUserViewFragment;
 import gachon.termproject.joker.fragment.MyInfoFragment;
 import gachon.termproject.joker.UserInfo;
 
@@ -27,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MainHomeFragment home;
     private CommunityFragment community;
-    private MatchingUserFragment matchingUser;
-    private MatchingExpertFragment matchingExpert;
+    private MatchingUserViewFragment matchingUser;
+    private MatchingExpertViewFragment matchingExpert;
     private ChatFragment chat;
     private MyInfoFragment myInfo;
     private int backPressed = 0;
@@ -40,11 +39,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        userinfo = UserInfo.isPublic;
-        System.out.println("ya" + userinfo);
-        System.out.println("ya2" + UserInfo.isPublic);
-
 
         //toolbar~~~~~~~~~~toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.main_toolbar);
@@ -132,22 +126,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 2:
-                if(userinfo){ //user라면
+                if(UserInfo.isPublic){ //user라면
                     if (matchingUser == null) {
-                        matchingUser = new MatchingUserFragment();
+                        matchingUser = new MatchingUserViewFragment();
                         fm.beginTransaction().add(R.id.main_frame, matchingUser).commit();
                     }
                 }
                 else{
                     if (matchingExpert == null) {
-                        matchingExpert = new MatchingExpertFragment();
+                        matchingExpert = new MatchingExpertViewFragment();
                         fm.beginTransaction().add(R.id.main_frame, matchingExpert).commit();
                     }
                 }
 
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                matching_convert_Show(fm);
+                matching_convert_show(fm);
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -214,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void matching_convert_hide(FragmentManager fm){
-        if(userinfo){ //user라면
+        if (UserInfo.isPublic) { //user라면
             if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
         }
         else{
@@ -223,8 +217,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void matching_convert_Show(FragmentManager fm){
-        if(userinfo){
+    public void matching_convert_show(FragmentManager fm){
+        if (UserInfo.isPublic) {
             if (matchingUser != null) fm.beginTransaction().show(matchingUser).commit();
         }
         else{
