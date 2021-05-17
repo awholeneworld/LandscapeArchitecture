@@ -23,6 +23,7 @@ import com.google.android.material.tabs.TabLayout;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.CheckPasswordActivity;
+import gachon.termproject.joker.activity.SettingActivity;
 
 public class MyInfoFragment extends Fragment {
     private View view;
@@ -188,7 +189,7 @@ public class MyInfoFragment extends Fragment {
     {
         switch(item.getItemId()) {
             case R.id.setting:
-                getActivity().startActivity(new Intent(getContext(), CheckPasswordActivity.class));
+                getActivity().startActivity(new Intent(getContext(), SettingActivity.class));
                 break;
         }
 

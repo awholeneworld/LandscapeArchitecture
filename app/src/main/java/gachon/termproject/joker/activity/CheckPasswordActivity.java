@@ -11,7 +11,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.fragment.MyInfoFragment;
 
 public class CheckPasswordActivity extends AppCompatActivity {
 
@@ -43,7 +42,7 @@ public class CheckPasswordActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "비밀번호 확인", Toast.LENGTH_SHORT).show();
                 // 비밀번호 확인하는 로직 넣어주세요
                 // 맞으면 화면 넘어가도록!!
-                startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                startActivity(new Intent(getApplicationContext(), SettingMyInfoActivity.class));
             }
         });
 
