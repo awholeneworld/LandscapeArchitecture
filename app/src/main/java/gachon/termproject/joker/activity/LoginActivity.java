@@ -26,7 +26,7 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 
 public class LoginActivity extends AppCompatActivity {
-    private FirebaseAuth fAuth;
+    private FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private DocumentReference documentReference;
 
     @Override
@@ -34,27 +34,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Button button_login = findViewById(R.id.login_button);
-        TextView forgetPW = findViewById(R.id.login_text04_forgetPW);
-        TextView toSignup = findViewById(R.id.login_text06_signup);
         EditText id = findViewById(R.id.login_editText_ID);
         EditText pw = findViewById(R.id.login_editText_PW);
-
-        // 이미 로그인한 경우 로그인 상태 유지
-        fAuth = FirebaseAuth.getInstance();
-        if (fAuth.getCurrentUser() != null){
-            logIn();
-        }
-
-        //login버튼을 눌럿을때
-        button_login.setOnClickListener(new View.OnClickListener() {
+        TextView toSignup = findViewById(R.id.login_text06_signup);
+        TextView forgetPW = findViewById(R.id.login_text04_forgetPW);
+        Button button_login = findViewById(R.id.login_button);
+        button_login.setOnClickListener(new View.OnClickListener() { // login 버튼 눌렀을때
             @Override
             public void onClick(View v) {
                 //editText에서 아이디 비번 받아오기
                 String ID = id.getText().toString().trim();
                 String PW = pw.getText().toString().trim();
 
-                // 아이디 비번 맞는지 확인하는 절차 코드 작성해야함
+                // 아이디 비번 맞는지 확인하는 절차 코드
                 if (ID.length() > 0 && PW.length() > 0) {
                     fAuth.signInWithEmailAndPassword(ID, PW)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
