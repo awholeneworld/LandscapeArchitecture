@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +26,6 @@ import static gachon.termproject.joker.fragment.MyInfoFragment.locationStr;
 
 public class MyInfoExpertPortfolioFragment extends AppCompatActivity {
     private RecyclerView contents;
-    private ImageButton backButton;
     private Button change_main_image;
     private Button connect_link;
     private TextView numberView;
@@ -34,15 +35,13 @@ public class MyInfoExpertPortfolioFragment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myinfo_expert_portfolio);
 
-        backButton = (ImageButton)findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // MyInfo로 가도록!
-                // intent 넣어주기
-                // startActivity(new Intent(getApplicationContext(), MyInfoFragment.class));
-            }
-        });
+        //toolbar를 activity bar로 지정!
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
+        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
         ImageView profileImage= findViewById(R.id.myInfoProfileImage);
         TextView nickname = findViewById(R.id.myInfoNickname);

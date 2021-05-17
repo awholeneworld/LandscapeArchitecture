@@ -1,6 +1,8 @@
 package gachon.termproject.joker.activity;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +16,6 @@ import gachon.termproject.joker.R;
 
 public class SettingBellActivity extends AppCompatActivity {
 
-    private ImageButton backButton;
     private Switch bell_switch1;
     private Switch bell_switch2;
 
@@ -23,13 +24,13 @@ public class SettingBellActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_bell);
 
-        backButton = (ImageButton)findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SettingMyInfoActivity.class));
-            }
-        });
+        //toolbar를 activity bar로 지정!
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
+        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
         bell_switch1 = (Switch)findViewById(R.id.bell_switch1);
         bell_switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

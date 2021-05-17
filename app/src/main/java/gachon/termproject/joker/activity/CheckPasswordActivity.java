@@ -23,16 +23,6 @@ public class CheckPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_password);
 
-        backButton = (ImageButton)findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // MyInfo로 가도록!
-                // intent 넣어주기
-                // startActivity(new Intent(getApplicationContext(), MyInfoFragment.class));
-            }
-        });
-
         check_password_text = (EditText)findViewById(R.id.check_password_text);
 
         check_password_button = (Button)findViewById(R.id.check_password_button);
