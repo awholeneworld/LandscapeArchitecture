@@ -123,8 +123,7 @@ public class Signup04Activity extends AppCompatActivity {
                                     user.put("location", location);
                                     user.put("isPublic", true);
                                     user.put("profileUrl", "None"); // 프로필 이미지 url
-                                    user.put("posts", 0); // 게시물 수
-                                    user.put("match", 0); // 매칭 게시물 수
+                                    user.put("introduction", ""); // 자기소개 메시지
 
                                     documentReference.set(user); // 데이터베이스에 정보 저장
 

@@ -23,7 +23,6 @@ import com.google.android.material.tabs.TabLayout;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.CheckPasswordActivity;
-import gachon.termproject.joker.activity.SettingActivity;
 
 public class MyInfoFragment extends Fragment {
     private View view;
@@ -67,8 +66,7 @@ public class MyInfoFragment extends Fragment {
 
         // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
         TextView intro = view.findViewById(R.id.myInfoMessage);
-
-
+        intro.setText(UserInfo.introduction);
 
         // 포트폴리오 창 설정
         portfolioLayout = view.findViewById(R.id.portfolioLayout);

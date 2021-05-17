@@ -95,7 +95,7 @@ public class ChatAreaAdapter extends RecyclerView.Adapter<ChatAreaAdapter.ViewHo
                 Glide.with(holder.itemView.getContext()).load(opponentProfileImg).into(holder.profileImg);
             holder.nickname.setText(opponentNickname);
             holder.message.setText(messageList.get(position).message);
-            holder.message.setBackgroundResource(R.drawable.leftbubble); // 이부분 수정
+            holder.message.setBackgroundResource(R.drawable.leftbubble);
             holder.messagebox.setGravity(Gravity.LEFT);
         }
 

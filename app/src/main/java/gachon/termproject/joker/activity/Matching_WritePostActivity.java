@@ -86,7 +86,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.matching_user_write_post);
+        setContentView(R.layout.matching_user_view_write_post);
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
