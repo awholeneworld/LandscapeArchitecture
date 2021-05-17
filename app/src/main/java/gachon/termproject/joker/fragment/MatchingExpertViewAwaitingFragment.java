@@ -2,6 +2,7 @@ package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
@@ -34,6 +37,7 @@ import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.container.PostContent;
 
 import static android.app.Activity.RESULT_OK;
+import static gachon.termproject.joker.UserInfo.userId;
 
 public class MatchingExpertViewAwaitingFragment extends Fragment {
     private View view;
@@ -56,7 +60,7 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_expert_view_await, container, false);
 
-        category = "free";
+        category = "matching";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
@@ -110,24 +114,54 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
             }
         });
         */
-        postsListener = new ValueEventListener() {
+        String url = "Posts/matching";
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference(url);
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postContentList.clear();
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postContent = snapshot.getValue(PostContent.class);
-                    postContentList.add(0, postContent);
+                    String tempUrl = url;
+                    tempUrl += "/" + snapshot.getKey();
+                    DatabaseReference tempDatabaseReference;
+                    tempDatabaseReference = firebaseDatabase.getReference(tempUrl);
+                    Log.e("a", snapshot.getValue().toString());
+                    tempDatabaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot1) {
+                            for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
+                                if (ssnapshot.getKey().equals("expertBool") && ssnapshot.getValue().toString().equals("false")) {
+                                    //자기거만 넣음
+                                    postContent = snapshot.getValue(PostContent.class);
+                                    postContentList.add(0, postContent);
+                                    postAdapter.notifyDataSetChanged();
+                                }
+                            }
+
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
+
+
                 }
-                postAdapter.notifyDataSetChanged();
+
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError error) {
 
             }
-        };
+        });
 
-        databaseReference.addListenerForSingleValueEvent(postsListener);
+
+        //databaseReference.addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -141,7 +175,7 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "free");
+                intent.putExtra("category", "matching"); //intent.putExtra("cateory", "free");
                 startActivityForResult(intent, 1);
             }
         });

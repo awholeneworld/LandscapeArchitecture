@@ -2,6 +2,7 @@ package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
@@ -31,6 +34,7 @@ import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.container.PostContent;
 
 import static android.app.Activity.RESULT_OK;
+import static gachon.termproject.joker.UserInfo.userId;
 
 public class MatchingOnProgressFragment extends Fragment {
     private View view;
@@ -40,6 +44,7 @@ public class MatchingOnProgressFragment extends Fragment {
     private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    DatabaseReference ddatabaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
     PostAdapter postAdapter;
@@ -53,7 +58,7 @@ public class MatchingOnProgressFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_on_progress, container, false);
 
-        category = "free";
+        category = "matching";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
@@ -107,6 +112,7 @@ public class MatchingOnProgressFragment extends Fragment {
             }
         });
         */
+        /*
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -123,8 +129,56 @@ public class MatchingOnProgressFragment extends Fragment {
 
             }
         };
+        */
 
-        databaseReference.addListenerForSingleValueEvent(postsListener);
+
+        String url = "Posts/matching";
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        ddatabaseReference = firebaseDatabase.getReference(url);
+        ddatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String tempUrl = url;
+                    tempUrl += "/" + snapshot.getKey();
+                    DatabaseReference tempDatabaseReference;
+                    tempDatabaseReference = firebaseDatabase.getReference(tempUrl);
+                    tempDatabaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot1) {
+                            for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
+                                if (ssnapshot.getKey().equals("userId") && ssnapshot.getValue().toString().equals(userId)) {
+                                    //자기거만 넣음
+                                    postContent = snapshot.getValue(PostContent.class);
+                                    postContentList.add(0, postContent);
+                                    postAdapter.notifyDataSetChanged();
+                                }
+                            }
+
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+
+            }
+        });
+
+
+        //databaseReference.addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -138,7 +192,7 @@ public class MatchingOnProgressFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "free");
+                intent.putExtra("category", "matching");
                 startActivityForResult(intent, 1);
             }
         });

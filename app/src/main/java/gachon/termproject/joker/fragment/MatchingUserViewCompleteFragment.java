@@ -2,6 +2,7 @@ package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
@@ -29,8 +32,10 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.WritePostActivity;
 import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.databinding.ItemPortfolioMyinfoBinding;
 
 import static android.app.Activity.RESULT_OK;
+import static gachon.termproject.joker.UserInfo.userId;
 
 public class MatchingUserViewCompleteFragment extends Fragment {
     private View view;
@@ -40,6 +45,7 @@ public class MatchingUserViewCompleteFragment extends Fragment {
     private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    DatabaseReference tempDatabaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
     PostAdapter postAdapter;
@@ -53,7 +59,7 @@ public class MatchingUserViewCompleteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_user_view_complete, container, false);
 
-        category = "free";
+        category = "matching";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
@@ -61,6 +67,7 @@ public class MatchingUserViewCompleteFragment extends Fragment {
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Posts/" + category);
+
 
         postContentList = new ArrayList<>();
         postAdapter = new PostAdapter(getActivity(), postContentList);
@@ -107,24 +114,65 @@ public class MatchingUserViewCompleteFragment extends Fragment {
             }
         });
         */
-        postsListener = new ValueEventListener() {
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /*postsListener = new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postContentList.clear();
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        };*/
+        String url = "Posts/matching";
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference(url);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postContent = snapshot.getValue(PostContent.class);
-                    postContentList.add(0, postContent);
+                    String tempUrl = url;
+                    tempUrl += "/" + snapshot.getKey();
+                    DatabaseReference tempDatabaseReference;
+                    tempDatabaseReference = firebaseDatabase.getReference(tempUrl);
+                    tempDatabaseReference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot1) {
+                            for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
+                                if (ssnapshot.getKey().equals("userId") && ssnapshot.getValue().toString().equals(userId)) {
+                                    //자기거만 넣음
+                                    postContent = snapshot.getValue(PostContent.class);
+                                    postContentList.add(0, postContent);
+                                    postAdapter.notifyDataSetChanged();
+                                }
+                            }
+
+                        }
+
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
+
+
                 }
-                postAdapter.notifyDataSetChanged();
+
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(DatabaseError error) {
 
             }
-        };
+        });
 
-        databaseReference.addListenerForSingleValueEvent(postsListener);
+
+        //databaseReference.addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -138,7 +186,7 @@ public class MatchingUserViewCompleteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "free");
+                intent.putExtra("category", "matching");
                 startActivityForResult(intent, 1);
             }
         });
