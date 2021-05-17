@@ -2,6 +2,8 @@ package gachon.termproject.joker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -146,4 +148,25 @@ public class ChatActivity extends AppCompatActivity {
         super.onBackPressed();
         chatRoomId = null;
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.chatting_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int curId = item.getItemId();
+        switch(curId){
+            case R.id.show_profile:
+                Toast.makeText(this, "프로필 보기", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.decelerate:
+                Toast.makeText(this, "신고", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
