@@ -1,37 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:layout_marginLeft="5dp"
-    android:orientation="horizontal">
+    android:layout_height="100dp" >
 
     <ImageView
         android:id="@+id/profileImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="22dp"
         android:src="@drawable/ic_launcher_background" />
 
-    <LinearLayout
+    <!-- 안 읽은 메시지가 있을 때 띄우는 것!!! -->
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="63dp"
+        android:layout_alignTop="@+id/profileImage"
+        android:src="@drawable/chatting_new_message" />
+
+    <RelativeLayout
+        android:id="@+id/text_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/profileImage" >
 
         <TextView
             android:id="@+id/roomName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="방이름"
-            android:textSize="20sp" />
+            android:paddingRight="58dp"
+            android:text="상대방 이름"
+            android:textSize="20sp"
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/lastMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingRight="58dp"
             android:text="마지막 메시지"
-            android:textSize="10sp" />
+            android:layout_below="@+id/roomName"
+            android:textSize="18sp" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</LinearLayout>
+    <!-- 알림 켜진건 bell_on 이미지 쓰면 되고 꺼진건 bell_off 이미지 쓰면 된다! -->
+    <ImageView
+        android:id="@+id/bellButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/bell_on"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp" />
+
+</RelativeLayout>

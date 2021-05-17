@@ -25,30 +25,35 @@
 
     <LinearLayout
         android:id="@+id/messageToSend"
-        android:layout_width="match_parent"
+        android:layout_width="380dp"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="5dp"
-        android:background="#00574B"
-        android:orientation="horizontal">
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:background="@drawable/send_chatting_boarder">
 
         <EditText
             android:id="@+id/messageArea"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="#CFD8DC"
-            android:textColorHint="#CFD8DC"
+            android:layout_weight="6"
+            android:layout_marginLeft="10dp"
+            android:textColor="#000000"
+            android:textColorHint="#797979"
             android:hint="메시지를 입력해주세요..."
             android:maxHeight="80dp" />
 
         <ImageView
             android:id="@+id/sendButton"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:padding="4dp"
-            android:src="@android:drawable/ic_menu_send" />
+            android:layout_weight="0.5"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_baseline_near_me_24"
+            android:layout_gravity="center" />
 
     </LinearLayout>
 

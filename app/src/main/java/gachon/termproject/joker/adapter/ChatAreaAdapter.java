@@ -86,7 +86,7 @@ public class ChatAreaAdapter extends RecyclerView.Adapter<ChatAreaAdapter.ViewHo
             //나의 말풍선 오른쪽으로
             holder.sender.setVisibility(View.INVISIBLE);
             holder.message.setText(messageList.get(position).message);
-            holder.message.setBackgroundResource(R.drawable.rightbubble);
+            holder.message.setBackgroundResource(R.drawable.rightbubble); // 이부분 수정
             holder.messagebox.setGravity(Gravity.RIGHT);
         } else {
             //상대방 말풍선 왼쪽
@@ -95,7 +95,7 @@ public class ChatAreaAdapter extends RecyclerView.Adapter<ChatAreaAdapter.ViewHo
                 Glide.with(holder.itemView.getContext()).load(opponentProfileImg).into(holder.profileImg);
             holder.nickname.setText(opponentNickname);
             holder.message.setText(messageList.get(position).message);
-            holder.message.setBackgroundResource(R.drawable.leftbubble);
+            holder.message.setBackgroundResource(R.drawable.leftbubble); // 이부분 수정
             holder.messagebox.setGravity(Gravity.LEFT);
         }
 
