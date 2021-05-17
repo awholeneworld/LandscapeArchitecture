@@ -162,7 +162,7 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                // 백스택에 있는 모든 액티비티 지우는 코드 필요함
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 이전 액티비티들을 모두 kill
                 startActivity(intent);
                 finish();
             }

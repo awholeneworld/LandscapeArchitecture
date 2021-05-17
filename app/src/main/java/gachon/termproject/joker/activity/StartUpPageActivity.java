@@ -39,22 +39,23 @@ public class StartUpPageActivity extends AppCompatActivity {
         fAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull @NotNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null)
-                    logIn();
-                else {
-                    StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
-                        @Override
-                        public void handleMessage(Message msg) {
-                            if (msg.what == 1) {
-                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                                finish();
-                            }
-                        }
-                    });
-                    thread.start();
-                }
             }
         });
+
+        if (fAuth.getCurrentUser() != null) {
+            logIn();
+        } else {
+            StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message msg) {
+                    if (msg.what == 1) {
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
+                    }
+                }
+            });
+            thread.start();
+        }
     }
 
     // 나중에 쓸 일 많은 유저 고유 아이디, 닉네임, 프로필 사진 Url 정보 등 미리 저장 후 로그인
