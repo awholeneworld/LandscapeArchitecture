@@ -22,7 +22,6 @@ import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.activity.CheckPasswordActivity;
 import gachon.termproject.joker.activity.SettingActivity;
 
 public class MyInfoFragment extends Fragment {
@@ -34,19 +33,13 @@ public class MyInfoFragment extends Fragment {
     private TabLayout tabs;
     static String locationStr;
 
-    /* 닉네임 변경 부분
-    private CollectionReference collectionReference;
-    private FirebaseFirestore fStore;
-    private FirebaseAuth fAuth;
-    private String userId = UserInfo.userId;
-     */
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_myinfo, container, false);
 
-        setHasOptionsMenu(true); //action bar menu
+        //action bar menu
+        setHasOptionsMenu(true);
 
         // 프사 설정
         ImageView profileImg = view.findViewById(R.id.profileImage);
@@ -67,8 +60,7 @@ public class MyInfoFragment extends Fragment {
 
         // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
         TextView intro = view.findViewById(R.id.myInfoMessage);
-
-
+        intro.setText(UserInfo.introduction);
 
         // 포트폴리오 창 설정
         portfolioLayout = view.findViewById(R.id.portfolioLayout);
@@ -80,15 +72,15 @@ public class MyInfoFragment extends Fragment {
             }
         });
 
-        // 탭 설정
+        // 마이인포 탭 첫 화면
         fm = getChildFragmentManager();
-        tabs = view.findViewById(R.id.myinfo_tabs);
-
         if (post == null) {
             post = new MyInfoPostFragment();
             fm.beginTransaction().add(R.id.myinfo_frame, post).commit();
         }
 
+        // 탭 설정
+        tabs = view.findViewById(R.id.myinfo_tabs);
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -117,64 +109,6 @@ public class MyInfoFragment extends Fragment {
             }
         });
 
-        /*
-        portfolioText = view.findViewById(R.id.portfolioText);
-        portfolioText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
-                //startActivity(new Intent(getContext(), PortfolioMyInfo.class));
-            }
-        });
-
-         */
-        /* 설정 구현되면 설정 안에 이 내용 넣기 - 닉네임 변경
-        Button changeButton = view.findViewById(R.id.change_nick);
-        EditText nicknameText = view.findViewById(R.id.text_change_nick);
-
-        changeButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                //닉네임 입력 받기 + firebase 중복 확인 + 변경완료
-
-
-                String temp = nicknameText.getText().toString();
-
-                fStore = FirebaseFirestore.getInstance();
-                collectionReference = fStore.collection("users");
-                collectionReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @RequiresApi(api = Build.VERSION_CODES.N)
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            QuerySnapshot querySnapshot = task.getResult();
-                            List<DocumentSnapshot> list = querySnapshot.getDocuments();
-
-                            DocumentReference documentReference = fStore.collection("users").document(userId);
-                            //LoginActivity에 있는 setUserInfo 의 documentReference를가져와야함.
-
-                            Map<String, Object> user = new HashMap<>();
-                            user.put("nickname", temp);
-                            documentReference.update(user);
-
-                            for (int i = 0; i < list.size(); i++) {
-                                DocumentSnapshot snapshot = list.get(i);
-                                String nicknameCheck = snapshot.getString("nickname");
-                                if (temp.compareTo(nicknameCheck) == 0) {
-                                    Toast.makeText(view.getContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-        });
-        */
-
         return view;
     }
 
@@ -190,7 +124,7 @@ public class MyInfoFragment extends Fragment {
     {
         switch(item.getItemId()) {
             case R.id.setting:
-                getActivity().startActivity(new Intent(getContext(), CheckPasswordActivity.class));
+                getActivity().startActivity(new Intent(getContext(), SettingActivity.class));
                 break;
         }
 

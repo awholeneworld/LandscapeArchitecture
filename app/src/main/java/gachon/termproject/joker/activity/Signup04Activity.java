@@ -27,7 +27,7 @@ import java.util.Map;
 import gachon.termproject.joker.R;
 
 public class Signup04Activity extends AppCompatActivity {
-    public static List<String> location; // 회원가입을 위한 전역변수(전문가 회원가입을 위해 static으로 설정)
+    public static List<String> location; // 전문가 회원가입을 위한 전역변수
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
 
     @Override
@@ -42,27 +42,6 @@ public class Signup04Activity extends AppCompatActivity {
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
-
-        //일단 지역 데이터 처리는 리스트로 만들어서 추가했는데
-        //나중에 처리하면서 더 좋은 아이디어 있으면 바꿔도 됨
-        //아래의 순서로 구성됨
-        //서울 SU
-        //인천 IC
-        //대전 DJ
-        //광주 GJ
-        //대구 DG
-        //울산 US
-        //부산 BS
-        //제주 JJ
-        //경기 GG
-        //강원 GW
-        //충북 CB
-        //충남 CN
-        //경북 GB
-        //경남 GN
-        //전북 JB
-        //전남 JN
-        //세종 SJ
 
         SU = findViewById(R.id.signup04_SU);
         IC = findViewById(R.id.signup04_IC);
@@ -82,16 +61,16 @@ public class Signup04Activity extends AppCompatActivity {
         JN = findViewById(R.id.signup04_JN);
         SJ = findViewById(R.id.signup04_SJ);
 
+        // 다음 버튼 누르면
         Button nextButton = findViewById(R.id.signup04_button01);
-
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //어떤 버튼이 눌렸는지 체크!
+                //어떤 박스가 체크 되었는지 확인!
                 List<String> locationSelected = checklocation();
 
-                if (!locationSelected.isEmpty()) { //하나라도 체크가 되었다면
-                    location = locationSelected;
+                if (!locationSelected.isEmpty()) { //하나라도 체크가 되어있다면
+                    location = locationSelected; // 전역변수에 담고
 
                     // 회원가입 완료 페이지로 이동~ 하기 전에!!!
                     // 회원가입 맨 처음 창에서 입력한 일반인/전문가 정보에 따라서
@@ -123,8 +102,7 @@ public class Signup04Activity extends AppCompatActivity {
                                     user.put("location", location);
                                     user.put("isPublic", true);
                                     user.put("profileUrl", "None"); // 프로필 이미지 url
-                                    user.put("posts", 0); // 게시물 수
-                                    user.put("match", 0); // 매칭 게시물 수
+                                    user.put("introduction", ""); // 자기소개 메시지
 
                                     documentReference.set(user); // 데이터베이스에 정보 저장
 
@@ -142,7 +120,7 @@ public class Signup04Activity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), Signup06Activity.class));
                     }
                 }
-                else {//체크가 하나도 안되어있다면
+                else { //체크가 하나도 안되어있다면
                     Toast.makeText(getApplicationContext(), "하나 이상의 지역을 선택해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -150,26 +128,26 @@ public class Signup04Activity extends AppCompatActivity {
     }
 
     public List<String> checklocation() {
-        //선택된 지역 약어를 저장할 리스트 location
+        //선택된 지역을 저장할 리스트
         List<String> location = new ArrayList<>();
 
-        if(SU.isChecked()) location.add("SU");
-        if(IC.isChecked()) location.add("IC");
-        if(DJ.isChecked()) location.add("DJ");
-        if(GJ.isChecked()) location.add("GJ");
-        if(DG.isChecked()) location.add("DG");
-        if(US.isChecked()) location.add("US");
-        if(BS.isChecked()) location.add("BS");
-        if(JJ.isChecked()) location.add("JJ");
-        if(GG.isChecked()) location.add("GG");
-        if(GW.isChecked()) location.add("GW");
-        if(CB.isChecked()) location.add("CB");
-        if(CN.isChecked()) location.add("CN");
-        if(GB.isChecked()) location.add("GB");
-        if(GN.isChecked()) location.add("GN");
-        if(JB.isChecked()) location.add("JB");
-        if(JN.isChecked()) location.add("JN");
-        if(SJ.isChecked()) location.add("SJ");
+        if(SU.isChecked()) location.add("서울");
+        if(IC.isChecked()) location.add("인천");
+        if(DJ.isChecked()) location.add("대전");
+        if(GJ.isChecked()) location.add("광주");
+        if(DG.isChecked()) location.add("대구");
+        if(US.isChecked()) location.add("울산");
+        if(BS.isChecked()) location.add("부산");
+        if(JJ.isChecked()) location.add("제주");
+        if(GG.isChecked()) location.add("경기");
+        if(GW.isChecked()) location.add("강원");
+        if(CB.isChecked()) location.add("충북");
+        if(CN.isChecked()) location.add("충남");
+        if(GB.isChecked()) location.add("경북");
+        if(GN.isChecked()) location.add("경남");
+        if(JB.isChecked()) location.add("전북");
+        if(JN.isChecked()) location.add("전남");
+        if(SJ.isChecked()) location.add("세종");
 
         return location;
     }

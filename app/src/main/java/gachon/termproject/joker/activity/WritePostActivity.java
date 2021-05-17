@@ -182,7 +182,7 @@ public class WritePostActivity extends AppCompatActivity {
         if (imagesList.size() == 0) {// 사진이 없다면? 바로 글쓰기
             // 포스트 시간 설정
             Date currentTime = new Date();
-            String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
+            String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
             postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic,UserInfo.location);

@@ -30,7 +30,7 @@ public class Signup05Activity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish(); // 자신을 죽이고 로그인 페이지로 이동
             }
         });

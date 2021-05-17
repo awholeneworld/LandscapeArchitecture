@@ -128,15 +128,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         for (int i = 0; i < contentsList.size(); i++) {
             String writings = contentsList.get(i);
 
-            if (inputLetters <= 15 && writings.length() > 0){
+            if (writings.contains("\n")) {
+                contents += writings.substring(0, writings.indexOf("\n")) + "...";
+                inputLetters = 16;
+            } else if (inputLetters <= 15 && writings.length() > 0){
                 int writingsLength = writings.length();
-                if (inputLetters + writingsLength > 15) {
+
+                if (inputLetters + writingsLength > 15)
                     contents += (" " + writings.substring(0, 15 - inputLetters) + "...");
-                    inputLetters += writingsLength;
-                } else {
+                else
                     contents += (" " + writings);
-                    inputLetters += writingsLength;
-                }
+
+                inputLetters += writingsLength;
             } else if (inputImage == 0 && writings.length() == 0){
                 Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
                 inputImage++;

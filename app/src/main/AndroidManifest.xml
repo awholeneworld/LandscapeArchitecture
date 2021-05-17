@@ -13,16 +13,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Joker">
-
-        <activity android:name=".activity.StartUpPageActivity"
+        <activity android:name=".activity.SettingActivity"></activity>
+        <activity android:name=".activity.ExpertPortfolioLinkActivity"></activity>
+        <activity
+            android:name=".activity.StartUpPageActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ChangePasswordActivity" />
-        <activity android:name=".activity.CheckPasswordActivity" />
         <activity
             android:name=".activity.WriteReviewPostExpertListActivity"
             android:noHistory="true"
@@ -39,14 +40,17 @@
         <activity
             android:name=".activity.WritePostActivity"
             android:configChanges="screenSize|orientation">
+
             <!-- ^화면 회전 시 상태 및 데이터 초기화 방지^ -->
         </activity>
         <activity android:name=".activity.SeePostActivity" />
         <activity android:name=".activity.ChatActivity" />
         <activity android:name=".fragment.MyInfoPortfolioFragment" />
         <activity android:name=".activity.FindPasswordActivity" />
-        <activity android:name=".activity.SettingActivity" />
-
+        <activity android:name=".activity.SettingMyInfoActivity" />
+        <activity android:name=".activity.ChangePasswordActivity" />
+        <activity android:name=".activity.CheckPasswordActivity" />
+        <activity android:name=".activity.SettingBellActivity" />
     </application>
 
 </manifest>

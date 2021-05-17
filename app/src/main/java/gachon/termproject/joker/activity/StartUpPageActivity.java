@@ -34,9 +34,9 @@ public class StartUpPageActivity extends AppCompatActivity {
 
         // 이미 로그인한 경우 로그인 상태 유지
         fAuth = FirebaseAuth.getInstance();
-        if (fAuth.getCurrentUser() != null)
+        if (fAuth.getCurrentUser() != null) {
             logIn();
-        else {
+        } else {
             StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
@@ -60,9 +60,11 @@ public class StartUpPageActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // 사용자 닉네임, 프로필 사진 Url 가져오기
+                        // 사용자 닉네임, 프로필 사진 Url 등 가져오기
+                        UserInfo.email = document.getString("ID");
                         UserInfo.nickname = document.getString("nickname");
                         UserInfo.profileImg = document.getString("profileUrl");
+                        UserInfo.introduction = document.getString("introduction");
                         UserInfo.isPublic = document.getBoolean("isPublic");
                         UserInfo.location = (List<String>) document.get("location");
 

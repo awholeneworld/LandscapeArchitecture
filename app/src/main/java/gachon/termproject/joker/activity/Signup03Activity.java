@@ -58,16 +58,22 @@ public class Signup03Activity extends AppCompatActivity {
                                 QuerySnapshot querySnapshot = task.getResult();
                                 List<DocumentSnapshot> list = querySnapshot.getDocuments();
 
-                                for (int i = 0; i < list.size(); i++) {
-                                    DocumentSnapshot snapshot = list.get(i);
-                                    String nicknameCheck = snapshot.getString("nickname");
-                                    if (temp.compareTo(nicknameCheck) == 0) {
-                                        Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
-                                        break;
-                                    } else if (i == list.size() - 1) {
-                                        // 닉네임 설정 후 다음 페이지로 이동
-                                        nickname = temp;
-                                        startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
+                                if (list.size() == 0) {
+                                    // 닉네임 설정 후 다음 페이지로 이동
+                                    nickname = temp;
+                                    startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
+                                } else {
+                                    for (int i = 0; i < list.size(); i++) {
+                                        DocumentSnapshot snapshot = list.get(i);
+                                        String nicknameCheck = snapshot.getString("nickname");
+                                        if (temp.compareTo(nicknameCheck) == 0) {
+                                            Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
+                                            break;
+                                        } else if (i == list.size() - 1) {
+                                            // 닉네임 설정 후 다음 페이지로 이동
+                                            nickname = temp;
+                                            startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
+                                        }
                                     }
                                 }
                             }

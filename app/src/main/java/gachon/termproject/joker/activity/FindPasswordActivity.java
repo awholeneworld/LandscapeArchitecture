@@ -21,14 +21,6 @@ public class FindPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_password);
 
-        //toolbar를 activity bar로 지정!
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
-        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
-
         Button findButton = findViewById(R.id.find_password_button01);
         EditText email = findViewById(R.id.find_password_edittext01);
 

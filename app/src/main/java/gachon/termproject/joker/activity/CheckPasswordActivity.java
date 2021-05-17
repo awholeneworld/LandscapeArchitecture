@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import gachon.termproject.joker.R;
 
 public class CheckPasswordActivity extends AppCompatActivity {
 
+    private ImageButton backButton;
     private EditText check_password_text;
     private Button check_password_button;
 
@@ -30,7 +32,8 @@ public class CheckPasswordActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "비밀번호 확인", Toast.LENGTH_SHORT).show();
                 // 비밀번호 확인하는 로직 넣어주세요
                 // 맞으면 화면 넘어가도록!!
-                startActivity(new Intent(getApplicationContext(), SettingActivity.class));
+                startActivity(new Intent(getApplicationContext(), SettingMyInfoActivity.class));
+                finish();
             }
         });
 
