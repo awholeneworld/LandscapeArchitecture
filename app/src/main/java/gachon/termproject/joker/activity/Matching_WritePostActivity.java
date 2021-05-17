@@ -59,6 +59,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
     private String postId;
     private int postTime;
     private String expertId;
+    private Boolean expertBool;
     private LinearLayout layout;
     private EditText title, content;
     private TextView location_select;
@@ -176,7 +177,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
                     //표에서 뭐뭐 선택했는지 얻어내서
                     //대충 어딘가 저장ㅇ해두고
                     //지역선택 text를 만약 선택한 갯수로 나타내자,,,, "n개 지역"
-                   locationSelected = checklocation();
+                   locationSelected = checklocation(); //locationSelected에 지역정보가 저장되어있는상태
 
                    if(locationSelected.isEmpty()){
                        location_select.setText("지역선택");
@@ -279,7 +280,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId);
+            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, UserInfo.location);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -327,7 +328,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
                                 String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
                                 // 포스트할 내용
-                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId);
+                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, UserInfo.location);
 
                                 // Firebase Realtime DB에 글 내용 올리기
                                 databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
