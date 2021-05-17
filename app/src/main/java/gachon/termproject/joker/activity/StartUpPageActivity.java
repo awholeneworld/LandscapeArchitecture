@@ -18,6 +18,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import gachon.termproject.joker.R;
@@ -34,20 +36,25 @@ public class StartUpPageActivity extends AppCompatActivity {
 
         // 이미 로그인한 경우 로그인 상태 유지
         fAuth = FirebaseAuth.getInstance();
-        if (fAuth.getCurrentUser() != null)
-            logIn();
-        else {
-            StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message msg) {
-                    if (msg.what == 1) {
-                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        finish();
-                    }
+        fAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull @NotNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() != null)
+                    logIn();
+                else {
+                    StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
+                        @Override
+                        public void handleMessage(Message msg) {
+                            if (msg.what == 1) {
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                finish();
+                            }
+                        }
+                    });
+                    thread.start();
                 }
-            });
-            thread.start();
-        }
+            }
+        });
     }
 
     // 나중에 쓸 일 많은 유저 고유 아이디, 닉네임, 프로필 사진 Url 정보 등 미리 저장 후 로그인
