@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ import gachon.termproject.joker.UserInfo;
 public class SettingActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private List<String> location;
+    private ImageButton bell_screen;
     private ImageView profileImg;
     private EditText nickname;
     private Uri file;
@@ -59,6 +61,15 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
+        bell_screen = (ImageButton)findViewById(R.id.bell_screen);
+        bell_screen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "알림 설정 창으로!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), SettingBellActivity.class));
+            }
+        });
 
         profileImg = findViewById(R.id.profileImage);
         TextView profileImgSet = findViewById(R.id.setting_image);
