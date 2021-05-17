@@ -11,12 +11,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" > -->
 
+    <!--toolbar-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" >
+
+        <TextView
+            android:id="@+id/check_password_toolbar_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="설정"
+            android:textColor="@color/mainGreen"
+            android:textSize="20sp">
+        </TextView>
+
+        <ImageButton
+            android:id="@+id/bell_screen"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_baseline_notifications_24"
+            android:background="@color/white"
+            android:layout_gravity="right"
+            android:layout_marginRight="6dp" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/toolbar_bottom_boarder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/whitegray"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginBottom="20dp" />
+
     <ImageView
         android:id="@+id/setting_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/basic_image2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/toolbar_bottom_boarder"/>
 
     <TextView
         android:id="@+id/setting_changeImage"
@@ -25,7 +60,8 @@
         android:text="프로필 변경"
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:layout_below="@+id/toolbar_bottom_boarder" />
 
     <LinearLayout
         android:layout_width="360dp"

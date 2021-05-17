@@ -21,8 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.ChangePasswordActivity" />
-        <activity android:name=".activity.CheckPasswordActivity" />
         <activity
             android:name=".activity.WriteReviewPostExpertListActivity"
             android:noHistory="true"
@@ -46,6 +44,9 @@
         <activity android:name=".fragment.MyInfoPortfolioFragment" />
         <activity android:name=".activity.FindPasswordActivity" />
         <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.ChangePasswordActivity" />
+        <activity android:name=".activity.CheckPasswordActivity" />
+        <activity android:name=".activity.SettingBellActivity" />
 
     </application>
 

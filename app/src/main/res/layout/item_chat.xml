@@ -59,4 +59,11 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp" />
 
+    <TextView
+        android:id="@+id/toolbar_bottom_boarder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/whitegray" />
+
 </RelativeLayout>

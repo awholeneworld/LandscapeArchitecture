@@ -1,15 +1,21 @@
 package gachon.termproject.joker.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,6 +38,7 @@ import gachon.termproject.joker.R;
 public class SettingActivity extends AppCompatActivity {
 
     private ScrollView scrollView;
+    private ImageButton bell_screen;
     private ImageView setting_image;
     private TextView setting_changeImage;
     private EditText setting_email_text;
@@ -47,14 +54,24 @@ public class SettingActivity extends AppCompatActivity {
     int flag_location = 0; // 기본상태
     int flag_message = 0; // 한줄메시지를 수정하지 않았을 때
 
+    ActionBar actionBar;
+    TextView action_bar_title;
 
     //////////////// 기존에 선택되어 있던 location 불러오는 부분 로직 넣어야해요!! //////////////////////////
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
+        bell_screen = (ImageButton)findViewById(R.id.bell_screen);
+        bell_screen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "알림 설정 창으로!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), SettingBellActivity.class));
+            }
+        });
 
         setting_image = (ImageView)findViewById(R.id.setting_image);
 
@@ -235,4 +252,13 @@ public class SettingActivity extends AppCompatActivity {
 
         return location;
     }
+
+    /*
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        startActivity(new Intent(getApplicationContext(), SettingBellActivity.class));
+        return super.onOptionsItemSelected(item);
+    }
+     */
+
 }

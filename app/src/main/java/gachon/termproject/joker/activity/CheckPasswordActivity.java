@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.fragment.MyInfoFragment;
 
 public class CheckPasswordActivity extends AppCompatActivity {
 
+    private ImageButton backButton;
     private EditText check_password_text;
     private Button check_password_button;
 
@@ -20,6 +23,16 @@ public class CheckPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_password);
+
+        backButton = (ImageButton)findViewById(R.id.backButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // MyInfo로 가도록!
+                // intent 넣어주기
+                // startActivity(new Intent(getApplicationContext(), MyInfoFragment.class));
+            }
+        });
 
         check_password_text = (EditText)findViewById(R.id.check_password_text);
 

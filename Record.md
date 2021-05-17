@@ -207,6 +207,10 @@ setting 부분 디자인
 
 setting 부분 디자인 완료
 
+**2. Setting Activity **
+
+setting 알림 설정하는 부분 연결 완료
+
 <br>
 <br>
 <br>
