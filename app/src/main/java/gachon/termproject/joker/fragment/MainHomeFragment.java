@@ -23,16 +23,6 @@ public class MainHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // 임시 로그아웃 버튼
-        Button button = view.findViewById(R.id.logOut);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                getActivity().finish();
-            }
-        });
-
         return view;
     }
 

@@ -34,9 +34,9 @@ public class StartUpPageActivity extends AppCompatActivity {
 
         // 이미 로그인한 경우 로그인 상태 유지
         fAuth = FirebaseAuth.getInstance();
-        if (fAuth.getCurrentUser() != null)
+        if (fAuth.getCurrentUser() != null) {
             logIn();
-        else {
+        } else {
             StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
