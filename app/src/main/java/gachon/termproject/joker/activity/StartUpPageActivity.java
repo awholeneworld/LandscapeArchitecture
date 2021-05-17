@@ -18,8 +18,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import gachon.termproject.joker.R;
@@ -36,12 +34,6 @@ public class StartUpPageActivity extends AppCompatActivity {
 
         // 이미 로그인한 경우 로그인 상태 유지
         fAuth = FirebaseAuth.getInstance();
-        fAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull @NotNull FirebaseAuth firebaseAuth) {
-            }
-        });
-
         if (fAuth.getCurrentUser() != null) {
             logIn();
         } else {
