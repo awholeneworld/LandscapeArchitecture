@@ -166,7 +166,7 @@ public class SeePostActivity extends AppCompatActivity {
                 EditText commentContent = findViewById(R.id.see_post_comment_text);
                 String comment = commentContent.getText().toString();
                 Date currentTime = new Date();
-                String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
+                String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
                 String commentId = String.valueOf(System.currentTimeMillis());
                 PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment);
 
