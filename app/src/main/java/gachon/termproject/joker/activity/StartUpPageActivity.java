@@ -60,9 +60,11 @@ public class StartUpPageActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        // 사용자 닉네임, 프로필 사진 Url 가져오기
+                        // 사용자 닉네임, 프로필 사진 Url 등 가져오기
+                        UserInfo.email = document.getString("ID");
                         UserInfo.nickname = document.getString("nickname");
                         UserInfo.profileImg = document.getString("profileUrl");
+                        UserInfo.introduction = document.getString("introduction");
                         UserInfo.isPublic = document.getBoolean("isPublic");
                         UserInfo.location = (List<String>) document.get("location");
 

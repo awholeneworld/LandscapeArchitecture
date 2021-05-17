@@ -1,26 +1,36 @@
 package gachon.termproject.joker.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,21 +38,15 @@ import java.util.List;
 import java.util.Map;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.UserInfo;
 
 public class SettingActivity extends AppCompatActivity {
-
-    private ScrollView scrollView;
-    private ImageView setting_image;
-    private TextView setting_changeImage;
-    private EditText setting_email_text;
-    private EditText setting_nickname_text;
-    private Button setting_nickname_button;
-    public static List<String> location; // 회원가입을 위한 전역변수(전문가 회원가입을 위해 static으로 설정)
+    private StorageReference storageReference;
+    private List<String> location;
+    private ImageView profileImg;
+    private EditText nickname;
+    private Uri file;
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
-    private EditText setting_message_text;
-    private Button setting_save_button;
-    private Button setting_password_button;
-    private Button setting_logout_button;
     int flag_nickname_check = 0; // 닉네임이 중복되지 않을 때 (기본 상태)
     int flag_location = 0; // 기본상태
     int flag_message = 0; // 한줄메시지를 수정하지 않았을 때
@@ -56,50 +60,105 @@ public class SettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        setting_image = (ImageView)findViewById(R.id.setting_image);
+        profileImg = findViewById(R.id.profileImage);
+        TextView profileImgSet = findViewById(R.id.setting_image);
+        EditText email = findViewById(R.id.setting_email);
+        nickname = findViewById(R.id.setting_nickname);
+        EditText introMsg = findViewById(R.id.setting_message);
+        Button checkNickname = findViewById(R.id.duplicateCheck);
+        Button save = findViewById(R.id.setting_save_button);
+        Button resetPwd = findViewById(R.id.setting_password_button);
+        Button logOut = findViewById(R.id.setting_logout_button);
 
-        setting_changeImage = (TextView)findViewById(R.id.setting_changeImage);
-        setting_changeImage.setOnClickListener(new View.OnClickListener() {
+        // 프사 설정
+        if (!UserInfo.profileImg.equals("None"))
+            Glide.with(getApplicationContext()).load(UserInfo.profileImg).into(profileImg);
+
+        // 이메일 설정
+        email.setText(UserInfo.email);
+        email.setTextColor(Color.parseColor("#000000"));
+
+        // 닉네임 설정
+        nickname.setText(UserInfo.nickname);
+
+        // 프사 눌렀을 때 이미지 파일 선택 창으로 이동
+        profileImgSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 누르면 사진 변환할 수 있도록 해주기!
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "사진을 선택하세요."), 0);
             }
         });
 
-        setting_email_text = (EditText)findViewById(R.id.setting_email_text);
-        // 자신의 기존 이메일 불러서 여기 넣어주세용
-        setting_email_text.setText("기존의 이메일");
-        setting_email_text.setTextColor(Color.parseColor("#000000"));
-
-        setting_nickname_text = (EditText)findViewById(R.id.setting_nickname_text);
-        // 자신의 기존 닉네임 불러서 여기 넣어주세용
-        setting_nickname_text.setText("기존의 닉네임");
-        setting_nickname_text.setOnClickListener(new View.OnClickListener() {
+        // 닉네임 창 눌렀을 때
+        nickname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 왜 여러번 눌러야 1로 바뀔까요 쩜쩜쩜...
-                flag_nickname_check = 1;
+                nickname.setEnabled(true);
             }
         });
 
-        setting_nickname_button = (Button)findViewById(R.id.setting_nickname_button);
-        setting_nickname_button.setOnClickListener(new View.OnClickListener() {
+        // 닉네임 중복체크 버튼 눌렀을 때
+        checkNickname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "중복체크해주세요", Toast.LENGTH_SHORT).show();
-                // 중복 체크하는 로직 넣어주세용
+                //닉네임을 입력받음
+                String temp = nickname.getText().toString();
 
-                // if (중복이라면) {
-                // Toast.makeText(getApplicationContext(), "중복된 닉네임입니다", Toast.LENGTH_SHORT).show();
-                // flag_nickname_check = 2; }
-                // else if (중복이 아니라면) {
-                flag_nickname_check = 3;
-                // Toast.makeText(getApplicationContext(), "사용가능한 닉네임입니다", Toast.LENGTH_SHORT).show(); }
+                if (temp.length() == 0)
+                    Toast.makeText(getApplicationContext(), "변경할 닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                else if (temp.equals(UserInfo.nickname))
+                    Toast.makeText(getApplicationContext(), "본인의 닉네임입니다.", Toast.LENGTH_SHORT).show();
+                else { //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
+                    FirebaseFirestore.getInstance().collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                QuerySnapshot querySnapshot = task.getResult();
+                                List<DocumentSnapshot> list = querySnapshot.getDocuments();
 
-                // 마지막 설정 저장 부분에서 중복이라고 했는데 저장하는 경우 저장 안되도록 설정해놨습니당
+                                for (int i = 0; i < list.size(); i++) {
+                                    DocumentSnapshot snapshot = list.get(i);
+                                    String nicknameCheck = snapshot.getString("nickname");
+                                    if (temp.compareTo(nicknameCheck) == 0) {
+                                        Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    } else if (i == list.size() - 1) {
+                                        // 닉네임 설정 후 다음 페이지로 이동
+                                        nickname.setText(temp);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
         });
 
+        // 비밀번호 변경 눌렀을 때
+        resetPwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ChangePasswordActivity.class));
+            }
+        });
+
+        // 로그아웃 버튼 눌렀을 때 -> 아직 앱 종료가 안됨
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                // 백스택에 있는 모든 액티비티 지우는 코드 필요함
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
+        /*
         //일단 지역 데이터 처리는 리스트로 만들어서 추가했는데
         //나중에 처리하면서 더 좋은 아이디어 있으면 바꿔도 됨
         //아래의 순서로 구성됨
@@ -138,16 +197,6 @@ public class SettingActivity extends AppCompatActivity {
         JB = findViewById(R.id.signup04_JB);
         JN = findViewById(R.id.signup04_JN);
         SJ = findViewById(R.id.signup04_SJ);
-
-        setting_message_text = (EditText)findViewById(R.id.setting_message_text);
-        // 자신의 기존 닉네임 불러서 여기 넣어주세용
-        setting_message_text.setText("기존의 한줄메시지");
-        setting_message_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flag_message = 1;
-            }
-        });
 
         setting_save_button = (Button)findViewById(R.id.setting_save_button);
         setting_save_button.setOnClickListener(new View.OnClickListener() {
@@ -189,27 +238,19 @@ public class SettingActivity extends AppCompatActivity {
                 }
             }
         });
-
-        setting_password_button = (Button)findViewById(R.id.setting_password_button);
-        setting_password_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "비밀번호 변경 창으로!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), ChangePasswordActivity.class));
-                // 비밀번호 변경하는 창으로 넘어가도록!
-            }
-        });
-
-        setting_logout_button = (Button)findViewById(R.id.setting_logout_button);
-        setting_logout_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "로그아웃", Toast.LENGTH_SHORT).show();
-                // 로그아웃 부분 넣어주세요
-            }
-        });
-
+        */
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 0 && data != null && data.getData() != null) { // 이미지 파일 선택하였다면
+            file = data.getData();
+            uploadProfileImage();
+        }
+    }
+
 
     public List<String> checklocation() {
         //선택된 지역 약어를 저장할 리스트 location
@@ -234,5 +275,36 @@ public class SettingActivity extends AppCompatActivity {
         if(SJ.isChecked()) location.add("SJ");
 
         return location;
+    }
+
+    // 이미지 넣는거
+    private void uploadProfileImage(){
+        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages/" + UserInfo.userId + "/" + file.getLastPathSegment());
+        storageReference.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                return storageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() { // URL 다운 성공 시
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) { // URL을 포스트 내용 Class(postContent)와 DB에 업데이트
+                    Uri downloadUrl = task.getResult();
+                    String url = downloadUrl.toString();
+                    UserInfo.profileImg = url;
+
+                    profileImg.setBackground(new ShapeDrawable(new OvalShape()));
+                    profileImg.setClipToOutline(true);
+                    Glide.with(getApplicationContext()).load(url).into(profileImg);
+
+                    Toast.makeText(getApplicationContext(), "프로필 이미지가 설정/변경되었습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
