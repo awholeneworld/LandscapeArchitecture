@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import gachon.termproject.joker.R;
 
 public class SettingActivity extends AppCompatActivity {
@@ -46,11 +48,16 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
+        // 로그아웃 버튼 눌렀을 때 -> 로그인 페이지로 이동
         logoutText = findViewById(R.id.logoutText);
         logoutText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 로그아웃 되도록
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 이전 액티비티들을 모두 kill
+                startActivity(intent);
+                finish();
             }
         });
     }

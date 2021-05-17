@@ -33,6 +33,7 @@ public class CheckPasswordActivity extends AppCompatActivity {
                 // 비밀번호 확인하는 로직 넣어주세요
                 // 맞으면 화면 넘어가도록!!
                 startActivity(new Intent(getApplicationContext(), SettingMyInfoActivity.class));
+                finish();
             }
         });
 
