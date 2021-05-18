@@ -1,9 +1,11 @@
 package gachon.termproject.joker.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,14 @@ public class MatchingUserViewFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_matching_user_view, container, false);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Button location_update = view.findViewById(R.id.select_location); //지역선택버튼 만들면 id = select_location 으로 해주세연
+        location_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //matching_user_view_see로 이동,
+            }
+        });
 
         fm = getChildFragmentManager();
         tabs = view.findViewById(R.id.tabs);

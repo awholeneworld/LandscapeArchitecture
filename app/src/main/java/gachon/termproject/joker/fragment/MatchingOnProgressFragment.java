@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.WritePostActivity;
+import gachon.termproject.joker.adapter.MatchingPostAdapter;
 import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.container.PostContent;
 
@@ -47,7 +48,7 @@ public class MatchingOnProgressFragment extends Fragment {
     DatabaseReference ddatabaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
-    PostAdapter postAdapter;
+    MatchingPostAdapter matchingpostAdapter;
     ValueEventListener postsListener;
     String category;
     Boolean topScrolled;
@@ -68,12 +69,12 @@ public class MatchingOnProgressFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("Posts/" + category);
 
         postContentList = new ArrayList<>();
-        postAdapter = new PostAdapter(getActivity(), postContentList);
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList);
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
-        contents.setAdapter(postAdapter);
+        contents.setAdapter(matchingpostAdapter);
         /*
         contents.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -116,7 +117,7 @@ public class MatchingOnProgressFragment extends Fragment {
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postAdapter.notifyDataSetChanged();
+                matchingpostAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -142,11 +143,15 @@ public class MatchingOnProgressFragment extends Fragment {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot1) {
                             for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
+
+                                //ssnapshot.getKey값 중에서 userId의 값과 같은 것이면서, 그 값이 UserInfo.userId의 값과 일치하는지를 확인.
                                 if (ssnapshot.getKey().equals("userId") && ssnapshot.getValue().toString().equals(userId)) {
                                     //자기거만 넣음
                                     postContent = snapshot.getValue(PostContent.class);
                                     postContentList.add(0, postContent);
-                                    //postAdapter.notifyDataSetChanged();
+                                    //Log.e("????????", supertemp + "nice");
+                                    matchingpostAdapter.notifyDataSetChanged();
+
                                 }
                             }
 
@@ -172,7 +177,7 @@ public class MatchingOnProgressFragment extends Fragment {
         });
 
 
-        //databaseReference.addListenerForSingleValueEvent(postsListener);
+        databaseReference.addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -214,7 +219,7 @@ public class MatchingOnProgressFragment extends Fragment {
         @Override
         public void onDelete(PostContent postContent) {
             postContentList.remove(postContent);
-            postAdapter.notifyDataSetChanged();
+            matchingpostAdapter.notifyDataSetChanged();
         }
 
         @Override
