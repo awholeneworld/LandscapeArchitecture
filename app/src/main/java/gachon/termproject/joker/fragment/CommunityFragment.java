@@ -1,9 +1,11 @@
 package gachon.termproject.joker.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,6 +18,9 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.activity.CheckPasswordActivity;
+import gachon.termproject.joker.activity.CommunitySearchActivity;
+import gachon.termproject.joker.activity.SettingActivity;
 
 public class CommunityFragment extends Fragment {
     private View view;
@@ -47,12 +52,12 @@ public class CommunityFragment extends Fragment {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tabs.getSelectedTabPosition()) {
-                    case 0 :
+                    case 0:
                         if (review != null) fm.beginTransaction().hide(review).commit();
                         if (tip != null) fm.beginTransaction().hide(tip).commit();
                         fm.beginTransaction().show(free).commit();
                         break;
-                    case 1 :
+                    case 1:
                         if (review == null) {
                             review = new CommunityReviewFragment();
                             fm.beginTransaction().add(R.id.community_frame, review).commit();
@@ -61,7 +66,7 @@ public class CommunityFragment extends Fragment {
                         fm.beginTransaction().hide(free).commit();
                         fm.beginTransaction().show(review).commit();
                         break;
-                    case 2 :
+                    case 2:
                         if (tip == null) {
                             tip = new CommunityTipFragment();
                             fm.beginTransaction().add(R.id.community_frame, tip).commit();
@@ -93,4 +98,10 @@ public class CommunityFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        getActivity().startActivity(new Intent(getContext(), CommunitySearchActivity.class));
+        return super.onOptionsItemSelected(item);
+    }
 }

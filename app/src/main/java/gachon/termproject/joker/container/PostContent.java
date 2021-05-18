@@ -22,6 +22,24 @@ public class PostContent {
     public PostContent() {
     }
 
+    //일반 포스트용 생성자
+    public PostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, String expertId, boolean expertBool, ArrayList<String> location) {
+        this.category = category;
+        this.userId = userId;
+        this.profileImg = profileImg;
+        this.title = title;
+        this.nickname = nickname;
+        this.postTime = postTime;
+        this.postId = postId;
+        this.content = content;
+        this.images = images;
+        this.expertId = expertId;
+        this.expertBool = expertBool;
+        this.location = location;
+        this.isMatching = false;
+    }
+
+    //매칭 포스트용 생성자
     public PostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, String expertId, boolean expertBool, ArrayList<String> location, boolean isMatching) {
         this.category = category;
         this.userId = userId;
@@ -35,6 +53,7 @@ public class PostContent {
         this.expertId = expertId;
         this.expertBool = expertBool;
         this.location = location;
+        this.isMatching = isMatching;
     }
 
     public String getCategory() { return category; }
@@ -52,6 +71,7 @@ public class PostContent {
     public ArrayList<String> getContent() { return content; }
     public ArrayList<String> getImages() { return images; }
     public ArrayList<String> getLocation(){ return location; }
+
     public void setCategory() { this.category = category; }
     public void setUserId(String id) { this.userId = userId; }
     public void setProfileImg(String url) { this.profileImg = url; }

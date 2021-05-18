@@ -13,8 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Joker">
-        <activity android:name=".activity.SettingActivity"></activity>
-        <activity android:name=".activity.ExpertPortfolioLinkActivity"></activity>
+        <activity android:name=".activity.CommunitySearchActivity"></activity>
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.ExpertPortfolioLinkActivity" />
         <activity
             android:name=".activity.StartUpPageActivity"
             android:label="@string/app_name">

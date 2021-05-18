@@ -56,6 +56,7 @@ public class SeePostActivity extends AppCompatActivity {
     private PostCommentAdapter postCommentAdapter;
     private PostCommentContent postComment;
     private ValueEventListener commentsListener;
+    private Intent intent;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -200,6 +201,23 @@ public class SeePostActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+
+            //자기가 쓴 글일때 - 수정/삭제
+            case R.id.rewrite:
+                startActivity(new Intent(this, ReWritePostActivity.class));
+                break;
+
+            case R.id.delete:
+
+                break;
+
+            //남이 쓴 글일때 - 프로필보기 / 신고
+            case R.id.show_profile:
+                break;
+
+            case R.id.decelerate:
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -207,8 +225,20 @@ public class SeePostActivity extends AppCompatActivity {
     @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
+        //내가 쓴글이면 my post menu, 남이 쓴 글이면 other post menu가 보이도록 합니다
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.others_post_menu,menu);
+
+        System.out.println("why" + UserInfo.userId);
+        System.out.println("why2" + intent.getStringExtra("userId"));
+
+
+        if(UserInfo.userId.equals(intent.getStringExtra("userId"))){
+            inflater.inflate(R.menu.my_post_menu,menu);
+        }
+        else{
+            inflater.inflate(R.menu.others_post_menu,menu);
+
+        }
 
         // To display icon on overflow menu
         if (menu instanceof MenuBuilder){
