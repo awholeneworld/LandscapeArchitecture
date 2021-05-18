@@ -211,6 +211,39 @@ setting 부분 디자인 완료
 
 setting 알림 설정하는 부분 연결 완료
 
+
+## 0519
+### 김수현
+**1. search **
+
+일단 community search design만 구현해둠
+
+file : CommunitySearchActivity, CommunityFragment, activity_search_community.xml, search.xml
+
+
+**2. 수정(Rewrite) **
+
+일단 post id 불러오는 문제가 해결되어야 더 진행 가능...
+
+file : ReWritePostActivity, SeePostActivity (menu 선택 부분), activity_rewrite_post.xml, my_post_menu.xml
+
+
+**3. Main home **
+
+일단 community부분은 완성. 전문가 후기 부분은 see post 안되는 문제 해결되면 그 다음에 할 예정.
+
+file : HomePostAdapter, MainHomeFragment
+
+
+**4. matching 게시판 **
+
+이거 올리고 작업할예정,,, 일단 id없어서 에러나서 주석처리해둠
+
+file : MatchingUserViewFragment
+
+
+
+
 <br>
 <br>
 <br>
