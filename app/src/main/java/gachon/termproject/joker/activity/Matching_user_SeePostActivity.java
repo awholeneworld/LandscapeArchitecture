@@ -265,10 +265,6 @@ public class Matching_user_SeePostActivity extends AppCompatActivity {
             Log.e("aaaaa", e.toString());
         }
 
-
-
-
-
     }
 
     //위에 메뉴 관련
