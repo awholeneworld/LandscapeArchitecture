@@ -51,6 +51,9 @@
         <activity android:name=".activity.ChangePasswordActivity" />
         <activity android:name=".activity.CheckPasswordActivity" />
         <activity android:name=".activity.SettingBellActivity" />
+        <activity android:name=".activity.Matching_user_SeePostActivity"/>
+        <activity android:name=".activity.Matching_expert_SeePostActivity"/>
+
     </application>
 
 </manifest>
