@@ -20,13 +20,13 @@
             android:id="@+id/tab1"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="매칭중" />
+            android:text="매칭필요" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab2"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="매칭대기" />
+            android:text="매칭중" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab3"
@@ -38,7 +38,7 @@
             android:id="@+id/tab4"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="전문가 리스트" />
+            android:text="전문가 목록" />
 
     </com.google.android.material.tabs.TabLayout>
 

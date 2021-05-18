@@ -2,6 +2,9 @@ package gachon.termproject.joker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -28,6 +31,9 @@ import gachon.termproject.joker.UserInfo;
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private DocumentReference documentReference;
+    private TextView toSignup;
+    private TextView forgetPW;
+    private Button button_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +42,14 @@ public class LoginActivity extends AppCompatActivity {
 
         EditText id = findViewById(R.id.login_editText_ID);
         EditText pw = findViewById(R.id.login_editText_PW);
-        TextView toSignup = findViewById(R.id.login_text06_signup);
-        TextView forgetPW = findViewById(R.id.login_text04_forgetPW);
-        Button button_login = findViewById(R.id.login_button);
+        toSignup = findViewById(R.id.login_text06_signup);
+        forgetPW = findViewById(R.id.login_text04_forgetPW);
+        button_login = findViewById(R.id.login_button);
         button_login.setOnClickListener(new View.OnClickListener() { // login 버튼 눌렀을때
             @Override
             public void onClick(View v) {
+                button_login.setEnabled(false);
+
                 //editText에서 아이디 비번 받아오기
                 String ID = id.getText().toString().trim();
                 String PW = pw.getText().toString().trim();
@@ -54,16 +62,22 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         logIn();
-                                    } else if (task.getException() != null)
+                                    } else if (task.getException() != null) {
                                         Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                        button_login.setEnabled(true);
+                                    }
                                 }
                             });
                 } else if (ID.length() == 0) {
                     Toast.makeText(getApplicationContext(), "이메일을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                    button_login.setEnabled(true);
                 } else if (PW.length() == 0) {
                     Toast.makeText(getApplicationContext(), "비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
-                } else
+                    button_login.setEnabled(true);
+                } else {
                     Toast.makeText(getApplicationContext(), "이메일 또는 비밀번호를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                    button_login.setEnabled(true);
+                }
             }
         });
 
@@ -71,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
         //비밀번호 까묵엇을때
         forgetPW.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                forgetPW.setEnabled(false);
                 Intent intent = new Intent(getApplicationContext(), FindPasswordActivity.class);
                 startActivity(intent);
             }
@@ -80,10 +95,18 @@ public class LoginActivity extends AppCompatActivity {
         //대망의 회원가입!!!
         toSignup.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                toSignup.setEnabled(false);
                 startActivity(new Intent(getApplicationContext(), Signup00Activity.class));//액티비티 이동
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        forgetPW.setEnabled(true);
+        toSignup.setEnabled(true);
     }
 
     // 나중에 쓸 일 많은 유저 고유 아이디, 닉네임, 프로필 사진 Url 정보 등 미리 저장 후 로그인
@@ -99,14 +122,26 @@ public class LoginActivity extends AppCompatActivity {
                         // 사용자 닉네임, 프로필 사진 Url 등 가져오기
                         UserInfo.email = document.getString("ID");
                         UserInfo.nickname = document.getString("nickname");
-                        UserInfo.profileImg = document.getString("profileUrl");
+                        UserInfo.profileImg = document.getString("profileImg");
                         UserInfo.introduction = document.getString("introduction");
                         UserInfo.isPublic = document.getBoolean("isPublic");
-                        UserInfo.location = (List<String>) document.get("location");
+                        UserInfo.location = (ArrayList<String>) document.get("location");
+                        if (!UserInfo.isPublic) {
+                            UserInfo.portfolioImg = document.getString("portfolioImg");
+                            UserInfo.portfolioWeb = document.getString("portfolioWeb");
+                        }
 
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
-                        finish();
+                        LoginActivity.StartUpPageThread thread = new LoginActivity.StartUpPageThread(new Handler(Looper.getMainLooper()) {
+                            @Override
+                            public void handleMessage(Message msg) {
+                                if (msg.what == 1) {
+                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }
+                        });
+                        thread.start();
                     }
                 }
             }
@@ -116,5 +151,23 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public class StartUpPageThread extends Thread {
+        private Handler handler;
+
+        public StartUpPageThread(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(2000);
+                handler.sendEmptyMessage(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

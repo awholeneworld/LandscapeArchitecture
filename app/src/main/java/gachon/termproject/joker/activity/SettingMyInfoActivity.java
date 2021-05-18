@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +24,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -47,8 +45,8 @@ import gachon.termproject.joker.UserInfo;
 public class SettingMyInfoActivity extends AppCompatActivity {
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
     private StorageReference storageReference;
-    private List<String> locationSelected;
-    private List<String> location;
+    private ArrayList<String> locationSelected;
+    private ArrayList<String> location;
     private ImageView profileImg;
     private EditText nickname;
     private Uri file;
@@ -326,9 +324,9 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         if (location.contains("세종")) SJ.setChecked(true);
     }
 
-    public List<String> checkLocation() {
+    public ArrayList<String> checkLocation() {
         //선택된 지역을 저장할 리스트
-        List<String> location = new ArrayList<>();
+        ArrayList<String> location = new ArrayList<>();
 
         if(SU.isChecked()) location.add("서울");
         if(IC.isChecked()) location.add("인천");

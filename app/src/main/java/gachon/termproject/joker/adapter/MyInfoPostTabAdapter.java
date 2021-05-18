@@ -33,13 +33,13 @@ import gachon.termproject.joker.activity.SeePostActivity;
 import gachon.termproject.joker.container.PostContent;
 
 
-public class MyInfoPostAdapter extends RecyclerView.Adapter<MyInfoPostAdapter.ViewHolder> {
+public class MyInfoPostTabAdapter extends RecyclerView.Adapter<MyInfoPostTabAdapter.ViewHolder> {
     private Context context;
     private ArrayList<PostContent> myInfoPostList;
     private long categoryNum;
     private int finishCount = 0;
 
-    public MyInfoPostAdapter(Context context) {
+    public MyInfoPostTabAdapter(Context context) {
         this.context = context;
         myInfoPostList = new ArrayList<>();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Posts");

@@ -9,7 +9,7 @@ public class ChatMessageContent {
 
     public static class User {
         public String nickname;
-        public String profileUrl;
+        public String profileImg;
     }
 
     public static class Message {

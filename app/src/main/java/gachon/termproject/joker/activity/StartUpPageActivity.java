@@ -18,7 +18,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -32,10 +32,20 @@ public class StartUpPageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_up_page);
 
-        // 이미 로그인한 경우 로그인 상태 유지
         fAuth = FirebaseAuth.getInstance();
+
+        // 이미 로그인한 경우 로그인 상태 유지
         if (fAuth.getCurrentUser() != null) {
-            logIn();
+            StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message msg) {
+                    if (msg.what == 1) {
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        finish();
+                    }
+                }
+            });
+            thread.start();
         } else {
             StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
                 @Override
@@ -63,10 +73,14 @@ public class StartUpPageActivity extends AppCompatActivity {
                         // 사용자 닉네임, 프로필 사진 Url 등 가져오기
                         UserInfo.email = document.getString("ID");
                         UserInfo.nickname = document.getString("nickname");
-                        UserInfo.profileImg = document.getString("profileUrl");
+                        UserInfo.profileImg = document.getString("profileImg");
                         UserInfo.introduction = document.getString("introduction");
                         UserInfo.isPublic = document.getBoolean("isPublic");
-                        UserInfo.location = (List<String>) document.get("location");
+                        UserInfo.location = (ArrayList<String>) document.get("location");
+                        if (!UserInfo.isPublic) {
+                            UserInfo.portfolioImg = document.getString("portfolioImg");
+                            UserInfo.portfolioWeb = document.getString("portfolioWeb");
+                        }
 
                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();

@@ -32,7 +32,6 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.WritePostActivity;
 import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.container.PostContent;
-import gachon.termproject.joker.databinding.ItemPortfolioMyinfoBinding;
 
 import static android.app.Activity.RESULT_OK;
 import static gachon.termproject.joker.UserInfo.userId;

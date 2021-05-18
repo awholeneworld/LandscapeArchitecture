@@ -12,10 +12,10 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 
-public class MyInfoCommentAdapter extends RecyclerView.Adapter<MyInfoCommentAdapter.ViewHolder> {
+public class MyInfoCommentTabAdapter extends RecyclerView.Adapter<MyInfoCommentTabAdapter.ViewHolder> {
     private ArrayList<String> dataSet;
 
-    public MyInfoCommentAdapter() { this.dataSet = dataSet; }
+    public MyInfoCommentTabAdapter() { this.dataSet = dataSet; }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView comment;

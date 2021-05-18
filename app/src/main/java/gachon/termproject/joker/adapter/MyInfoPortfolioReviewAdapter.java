@@ -24,11 +24,11 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.container.PostContent;
 
-public class MyInfoPortfolioAdapter  extends RecyclerView.Adapter<MyInfoPortfolioAdapter.ViewHolder> {
+public class MyInfoPortfolioReviewAdapter extends RecyclerView.Adapter<MyInfoPortfolioReviewAdapter.ViewHolder> {
     private Context context;
     private ArrayList<PostContent> contentList;
 
-    public MyInfoPortfolioAdapter(Context context, TextView numberView) {
+    public MyInfoPortfolioReviewAdapter(Context context, TextView numberView) {
         this.context = context;
         contentList = new ArrayList<>();
 
@@ -64,13 +64,13 @@ public class MyInfoPortfolioAdapter  extends RecyclerView.Adapter<MyInfoPortfoli
 
     @NonNull
     @Override
-    public MyInfoPortfolioAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_portfolio_myinfo, parent, false);
-        return new MyInfoPortfolioAdapter.ViewHolder(view);
+    public MyInfoPortfolioReviewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_view_portfolio, parent, false);
+        return new MyInfoPortfolioReviewAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyInfoPortfolioAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyInfoPortfolioReviewAdapter.ViewHolder holder, int position) {
         PostContent content = contentList.get(position);
 
         ArrayList<String> imagesList = content.getImages();

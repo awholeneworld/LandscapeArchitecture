@@ -30,8 +30,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import gachon.termproject.joker.R;
@@ -138,7 +138,7 @@ public class Signup06Activity extends AppCompatActivity {
         // 회원가입을 위한 전역변수 가져오기
         String PW = Signup02Activity.password;
         String nickname = Signup03Activity.nickname;
-        List<String> locations = Signup04Activity.location;
+        ArrayList<String> locations = Signup04Activity.location;
 
         fAuth.createUserWithEmailAndPassword(ID, PW).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -152,9 +152,10 @@ public class Signup06Activity extends AppCompatActivity {
                     user.put("nickname", nickname);
                     user.put("location", locations);
                     user.put("isPublic", false);
-                    user.put("profileUrl", "None"); // 프로필 이미지 url
-                    user.put("posts", 0); // 게시물 수
-                    user.put("match", 0); // 매칭 게시물 수
+                    user.put("profileImg", "None"); // 프로필 이미지 url
+                    user.put("introduction", ""); // 자기소개 메시지
+                    user.put("portfolioImg", "None");
+                    user.put("portfolioWeb", "None");
 
                     documentReference.set(user);
 

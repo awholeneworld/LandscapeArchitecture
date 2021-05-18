@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -64,16 +63,6 @@ public class SeePostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_post);
 
-        Intent intent = getIntent();
-        String category = intent.getStringExtra("category");
-        String postId = intent.getStringExtra("postId");
-        String profileImg = intent.getStringExtra("profileImg");
-        ArrayList<String> content = intent.getStringArrayListExtra("content");
-        ArrayList<String> images = intent.getStringArrayListExtra("images");
-
-        //
-        UserInfo UserInfo = new UserInfo();
-
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -81,6 +70,14 @@ public class SeePostActivity extends AppCompatActivity {
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
+
+        // 인텐트 데이터 가져오기
+        Intent intent = getIntent();
+        String category = intent.getStringExtra("category");
+        String postId = intent.getStringExtra("postId");
+        String profileImg = intent.getStringExtra("profileImg");
+        ArrayList<String> content = intent.getStringArrayListExtra("content");
+        ArrayList<String> images = intent.getStringArrayListExtra("images");
 
         // 제목, 닉네임, 작성시간 세팅
         TextView title = findViewById(R.id.title);
@@ -97,22 +94,22 @@ public class SeePostActivity extends AppCompatActivity {
         if (!profileImg.equals("None"))
             Glide.with(this).load(profileImg).into(profile);
 
-
-
         // 포스트 내용 넣을 공간 지정
         container = findViewById(R.id.seepost_content);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        //TextView 생성
+        //TextView 생성 후 layout_width, layout_height, gravity, 내용 등 설정
         TextView text_content = new TextView(SeePostActivity.this);
-        //layout_width, layout_height, gravity, 내용 등 설정
         text_content.setLayoutParams(lp);
         text_content.setText(content.get(0));
         text_content.setTextSize(dpToPx(7));
         text_content.setTextColor(Color.BLACK);
+
+        // 글 넣기
         container.addView(text_content);
 
-        if (images != null) { //img 넣기
+        // 이미지 있으면 넣기
+        if (images != null) {
             LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
             layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
@@ -180,7 +177,6 @@ public class SeePostActivity extends AppCompatActivity {
                     return;
                 }
 
-
                 // DB에 올리기
                 databaseReference.child(commentId).setValue(postCommentContent)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -193,8 +189,6 @@ public class SeePostActivity extends AppCompatActivity {
 
                 //댓창 깨끗하게
                 commentContent.setText("");
-
-
             }
         });
     }
@@ -233,5 +227,4 @@ public class SeePostActivity extends AppCompatActivity {
     public static int dpToPx(int dp){
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
-
 }

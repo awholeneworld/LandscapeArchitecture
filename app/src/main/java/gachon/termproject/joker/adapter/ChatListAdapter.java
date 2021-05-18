@@ -101,7 +101,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             if (!user.equals(UserInfo.userId)) {
                 holder.opponentUid = user;
                 holder.opponentNickname = content.users.get(user).nickname;
-                holder.opponentProfileImg = content.users.get(user).profileUrl;
+                holder.opponentProfileImg = content.users.get(user).profileImg;
                 holder.roomName.setText(holder.opponentNickname);
 
                 if (!holder.opponentProfileImg.equals("None"))

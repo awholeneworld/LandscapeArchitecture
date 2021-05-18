@@ -8,8 +8,8 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,8 +21,8 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.ChatActivity;
 import gachon.termproject.joker.container.ExpertListContent;
+import gachon.termproject.joker.fragment.ExpertPortfolioFragment;
 
 public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.ViewHolder>{
     private Context context;
@@ -34,30 +34,36 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
+        LinearLayout seePortfolio;
         TextView nickname;
         ImageView profileImg;
-        Button chatBtn;
         String expertUserId;
         String expertNickname;
         String expertProfileImg;
+        String expertPortfolioImg;
+        String expertPortfolioWeb;
+        ArrayList<String> expertLocation;
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         ViewHolder(View itemView) {
             super(itemView);
             nickname = itemView.findViewById(R.id.expert_nickname);
             profileImg = itemView.findViewById(R.id.expert_image);
-            chatBtn = itemView.findViewById(R.id.chat);
+            seePortfolio = itemView.findViewById(R.id.seePortfolio);
 
             profileImg.setBackground(new ShapeDrawable(new OvalShape()));
             profileImg.setClipToOutline(true);
 
-            chatBtn.setOnClickListener(new View.OnClickListener() {
+            seePortfolio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ChatActivity.class);
+                    Intent intent = new Intent(context, ExpertPortfolioFragment.class);
                     intent.putExtra("userId", expertUserId);
                     intent.putExtra("nickname", expertNickname);
                     intent.putExtra("profileImg", expertProfileImg);
+                    intent.putExtra("portfolioImg", expertPortfolioImg);
+                    intent.putExtra("portfolioWeb", expertPortfolioWeb);
+                    intent.putStringArrayListExtra("location", expertLocation);
                     context.startActivity(intent);
                 }
             });
@@ -77,13 +83,15 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ExpertListContent content = expertList.get(position);
 
-        String contentUserId = content.getUserId();
         String contentNickname = content.getNickname();
         String contentProfileImg = content.getProfileImg();
 
-        holder.expertUserId = contentUserId;
+        holder.expertUserId = content.getUserId();
         holder.expertNickname = contentNickname;
         holder.expertProfileImg = contentProfileImg;
+        holder.expertPortfolioImg = content.getPortfolioImg();
+        holder.expertPortfolioWeb = content.getPortfolioWeb();
+        holder.expertLocation = content.getLocation();
 
         holder.nickname.setText(contentNickname);
         if (!contentProfileImg.equals("None"))

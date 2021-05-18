@@ -1,6 +1,5 @@
 package gachon.termproject.joker.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +50,10 @@ public class WriteReviewPostExpertListActivity extends AppCompatActivity {
                         String userId = snapshot.getId();
                         if (!isPublic && !userId.equals(UserInfo.userId)) {
                             String nickname = snapshot.getString("nickname");
-                            String profileImg = snapshot.getString("profileUrl");
-                            expertList.add(new ExpertListContent(userId, nickname, profileImg));
+                            String profileImg = snapshot.getString("profileImg");
+                            String portfolioImg = snapshot.getString("portfolioImg");
+                            String portfolioWeb = snapshot.getString("portfolioWeb");
+                            expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, new ArrayList<>()));
                         }
                     }
                     expertListAdapter.notifyDataSetChanged();

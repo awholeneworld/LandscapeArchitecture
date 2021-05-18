@@ -65,8 +65,11 @@ public class MatchingExpertListFragment extends Fragment {
                         String userId = snapshot.getId();
                         if (!isPublic && !userId.equals(UserInfo.userId)) {
                             String nickname = snapshot.getString("nickname");
-                            String profileImg = snapshot.getString("profileUrl");
-                            expertList.add(new ExpertListContent(userId, nickname, profileImg));
+                            String profileImg = snapshot.getString("profileImg");
+                            String portfolioImg = snapshot.getString("portfolioImg");
+                            String portfolioWeb = snapshot.getString("portfolioWeb");
+                            ArrayList<String> location = (ArrayList<String>) snapshot.get("location");
+                            expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, location));
                         }
                     }
                     expertListAdapter.notifyDataSetChanged();

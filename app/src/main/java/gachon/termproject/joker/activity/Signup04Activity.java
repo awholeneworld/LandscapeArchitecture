@@ -21,13 +21,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import gachon.termproject.joker.R;
 
 public class Signup04Activity extends AppCompatActivity {
-    public static List<String> location; // 전문가 회원가입을 위한 전역변수
+    public static ArrayList<String> location; // 전문가 회원가입을 위한 전역변수
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
 
     @Override
@@ -67,7 +66,7 @@ public class Signup04Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //어떤 박스가 체크 되었는지 확인!
-                List<String> locationSelected = checklocation();
+                ArrayList<String> locationSelected = checklocation();
 
                 if (!locationSelected.isEmpty()) { //하나라도 체크가 되어있다면
                     location = locationSelected; // 전역변수에 담고
@@ -101,7 +100,7 @@ public class Signup04Activity extends AppCompatActivity {
                                     user.put("nickname", nickname);
                                     user.put("location", location);
                                     user.put("isPublic", true);
-                                    user.put("profileUrl", "None"); // 프로필 이미지 url
+                                    user.put("profileImg", "None"); // 프로필 이미지 url
                                     user.put("introduction", ""); // 자기소개 메시지
 
                                     documentReference.set(user); // 데이터베이스에 정보 저장
@@ -127,9 +126,9 @@ public class Signup04Activity extends AppCompatActivity {
         });
     }
 
-    public List<String> checklocation() {
+    public ArrayList<String> checklocation() {
         //선택된 지역을 저장할 리스트
-        List<String> location = new ArrayList<>();
+        ArrayList<String> location = new ArrayList<>();
 
         if(SU.isChecked()) location.add("서울");
         if(IC.isChecked()) location.add("인천");

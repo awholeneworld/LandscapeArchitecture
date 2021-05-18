@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/seePortfolio"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:orientation="horizontal"
@@ -39,18 +40,6 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp" />
-
-            <Button
-                android:id="@+id/chat"
-                android:layout_width="0dp"
-                android:layout_weight="1.5"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/black"
-                android:text="채팅하기"
-                android:textSize="12dp"
-                android:layout_gravity="center_vertical" />
-
 
         </LinearLayout>
 

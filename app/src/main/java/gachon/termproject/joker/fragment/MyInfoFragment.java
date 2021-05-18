@@ -41,6 +41,21 @@ public class MyInfoFragment extends Fragment {
         //action bar menu
         setHasOptionsMenu(true);
 
+        // 포트폴리오 창 설정
+        portfolioLayout = view.findViewById(R.id.portfolioLayout);
+
+        if (UserInfo.isPublic) {
+            portfolioLayout.setVisibility(View.GONE);
+        } else {
+            portfolioLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getContext(), MyInfoPortfolioFragment.class));
+                }
+            });
+        }
+
         // 프사 설정
         ImageView profileImg = view.findViewById(R.id.profileImage);
         if (!UserInfo.profileImg.equals("None"))
@@ -61,16 +76,6 @@ public class MyInfoFragment extends Fragment {
         // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
         TextView intro = view.findViewById(R.id.myInfoMessage);
         intro.setText(UserInfo.introduction);
-
-        // 포트폴리오 창 설정
-        portfolioLayout = view.findViewById(R.id.portfolioLayout);
-        portfolioLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getContext(), MyInfoPortfolioFragment.class));
-            }
-        });
 
         // 마이인포 탭 첫 화면
         fm = getChildFragmentManager();

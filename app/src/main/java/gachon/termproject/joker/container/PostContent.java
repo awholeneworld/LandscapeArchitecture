@@ -1,8 +1,6 @@
 package gachon.termproject.joker.container;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 // 게시할 글에 들어가는 정보들을 모아주는 클래스
 public class PostContent {
@@ -66,5 +64,4 @@ public class PostContent {
     public void setContent(ArrayList<String> content) { this.content = content; }
     public void setImages(int index, String image) { this.images.set(index, image); }
     public void setLocation(ArrayList<String> location){this.location = location;}
-    public void setIsMatching(boolean isMatching){ this.isMatching = isMatching; }
 }

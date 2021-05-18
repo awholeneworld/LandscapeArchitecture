@@ -79,12 +79,12 @@ public class ChatActivity extends AppCompatActivity {
                         ChatMessageContent.User opponent = new ChatMessageContent.User();
                         // 나의 정보
                         user.nickname = UserInfo.nickname;
-                        user.profileUrl = UserInfo.profileImg;
+                        user.profileImg = UserInfo.profileImg;
                         chatMessageContent.users.put(UserInfo.userId, user);
 
                         // 상대방 정보
                         opponent.nickname = opponentNickname;
-                        opponent.profileUrl = opponentProfileImg;
+                        opponent.profileImg = opponentProfileImg;
                         chatMessageContent.users.put(opponentUserId, opponent);
 
                         sendButton.setEnabled(false);

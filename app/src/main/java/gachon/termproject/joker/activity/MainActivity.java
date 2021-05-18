@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         if (UserInfo.isPublic) { //user라면
             if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
         }
-        else{
+        else {
             if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
         }
     }

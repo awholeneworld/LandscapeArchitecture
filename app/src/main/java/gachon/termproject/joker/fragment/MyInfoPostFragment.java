@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.adapter.MyInfoPostAdapter;
+import gachon.termproject.joker.adapter.MyInfoPostTabAdapter;
 
 public class MyInfoPostFragment extends Fragment {
     private View view;
@@ -28,7 +28,7 @@ public class MyInfoPostFragment extends Fragment {
 
         contents.setLayoutManager(new GridLayoutManager(getContext(), numberOfColumns));
         contents.setHasFixedSize(true);
-        contents.setAdapter(new MyInfoPostAdapter(getActivity()));
+        contents.setAdapter(new MyInfoPostTabAdapter(getActivity()));
 
         return view;
     }
