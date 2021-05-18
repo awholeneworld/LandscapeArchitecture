@@ -115,19 +115,18 @@ public class MatchingUserViewCompleteFragment extends Fragment {
         });
         */
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*postsListener = new ValueEventListener() {
+        postsListener = new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        };*/
+        };
         String url = "Posts/matching";
-
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference(url);
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -172,7 +171,7 @@ public class MatchingUserViewCompleteFragment extends Fragment {
         });
 
 
-        //databaseReference.addListenerForSingleValueEvent(postsListener);
+        databaseReference.addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

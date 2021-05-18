@@ -112,15 +112,10 @@ public class MatchingOnProgressFragment extends Fragment {
             }
         });
         */
-        /*
+
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postContentList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postContent = snapshot.getValue(PostContent.class);
-                    postContentList.add(0, postContent);
-                }
                 postAdapter.notifyDataSetChanged();
             }
 
@@ -129,11 +124,10 @@ public class MatchingOnProgressFragment extends Fragment {
 
             }
         };
-        */
+
 
 
         String url = "Posts/matching";
-
         firebaseDatabase = FirebaseDatabase.getInstance();
         ddatabaseReference = firebaseDatabase.getReference(url);
         ddatabaseReference.addValueEventListener(new ValueEventListener() {
@@ -152,7 +146,7 @@ public class MatchingOnProgressFragment extends Fragment {
                                     //자기거만 넣음
                                     postContent = snapshot.getValue(PostContent.class);
                                     postContentList.add(0, postContent);
-                                    postAdapter.notifyDataSetChanged();
+                                    //postAdapter.notifyDataSetChanged();
                                 }
                             }
 

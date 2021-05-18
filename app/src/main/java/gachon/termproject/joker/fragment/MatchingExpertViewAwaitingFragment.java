@@ -114,6 +114,17 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
             }
         });
         */
+        postsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
         String url = "Posts/matching";
 
         firebaseDatabase = FirebaseDatabase.getInstance();
