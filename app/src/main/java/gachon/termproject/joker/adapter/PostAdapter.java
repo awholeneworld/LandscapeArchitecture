@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.container.PostContent;
@@ -53,6 +54,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         String expertIdOfPost;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
+        ArrayList<String> locationPost;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -76,6 +78,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     intent.putExtra("expertId", expertIdOfPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
+                    intent.putStringArrayListExtra("location", locationPost);
                     context.startActivity(intent);
                 }
             });
@@ -110,6 +113,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
+        holder.locationPost = content.getLocation();
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         if (contentTitle.length() > 15)
