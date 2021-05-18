@@ -61,6 +61,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             itemView.findViewById(R.id.comment_movevert).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //memu 나오도록.,,,, => 근데 이제 그 구분해서 (내가쓴건지 아닌지)
 
                 }
             });
@@ -70,7 +71,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
     @NonNull
     @Override
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.primary_comment_see_post, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_1_comment_see_post, parent,false);
 
         return new CommentViewHolder(view);
     }
