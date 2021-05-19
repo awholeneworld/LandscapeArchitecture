@@ -51,7 +51,7 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_user_view_complete, container, false);
+        view = inflater.inflate(R.layout.matching_expert_view_complete, container, false);
 
         category = "expertMatchComplete";
         contents = view.findViewById(R.id.content_community);

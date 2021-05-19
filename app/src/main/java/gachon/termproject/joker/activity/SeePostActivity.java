@@ -48,6 +48,8 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
 import gachon.termproject.joker.container.PostCommentContent;
 
+import static gachon.termproject.joker.activity.StartUpPageActivity.autoLogin;
+
 public class SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
     private RecyclerView commentSection;
@@ -56,7 +58,7 @@ public class SeePostActivity extends AppCompatActivity {
     private PostCommentAdapter postCommentAdapter;
     private PostCommentContent postComment;
     private ValueEventListener commentsListener;
-    private Intent intent;
+    private boolean isWriter;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -73,12 +75,18 @@ public class SeePostActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
 
         // 인텐트 데이터 가져오기
-        intent = getIntent();
+        Intent intent = getIntent();
         String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
+
+        // 작성자 본인 확인
+        for (String myPostId : autoLogin ? StartUpPageActivity.userPostsIdList : LoginActivity.userPostsIdList) {
+            if (postId.equals(myPostId))
+                isWriter = true;
+        }
 
         // 제목, 닉네임, 작성시간 세팅
         TextView title = findViewById(R.id.title);
@@ -226,7 +234,7 @@ public class SeePostActivity extends AppCompatActivity {
         //내가 쓴글이면 my post menu, 남이 쓴 글이면 other post menu가 보이도록 합니다
         MenuInflater inflater = getMenuInflater();
 
-        if (UserInfo.userId.equals(intent.getStringExtra("userId")))
+        if (isWriter)
             inflater.inflate(R.menu.my_post_menu, menu);
         else
             inflater.inflate(R.menu.others_post_menu, menu);

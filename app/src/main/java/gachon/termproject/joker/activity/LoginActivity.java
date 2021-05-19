@@ -1,10 +1,8 @@
 package gachon.termproject.joker.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,17 +14,27 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.container.PostContent;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth fAuth = FirebaseAuth.getInstance();
@@ -34,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView toSignup;
     private TextView forgetPW;
     private Button button_login;
+    public static ArrayList<String> userPostsIdList = new ArrayList<>();
+    private int finishCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
+                                        fAuth = FirebaseAuth.getInstance();
                                         logIn();
                                     } else if (task.getException() != null) {
                                         Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
@@ -131,17 +142,52 @@ public class LoginActivity extends AppCompatActivity {
                             UserInfo.portfolioWeb = document.getString("portfolioWeb");
                         }
 
-                        LoginActivity.StartUpPageThread thread = new LoginActivity.StartUpPageThread(new Handler(Looper.getMainLooper()) {
+                        FirebaseDatabase.getInstance().getReference().child("Posts").addChildEventListener(new ChildEventListener() {
                             @Override
-                            public void handleMessage(Message msg) {
-                                if (msg.what == 1) {
-                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                    Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }
+                            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.N)
+                                    @Override
+                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                        for (DataSnapshot item : snapshot.getChildren()) {
+                                            PostContent myInfoPostContent = item.getValue(PostContent.class);
+                                            userPostsIdList.add(0, myInfoPostContent.getPostId());
+                                        }
+                                        finishCount++;
+                                        if (finishCount == 3) {
+                                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                            Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
                             }
                         });
-                        thread.start();
                     }
                 }
             }
@@ -151,23 +197,5 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "유저 정보 가져오기 실패", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    public class StartUpPageThread extends Thread {
-        private Handler handler;
-
-        public StartUpPageThread(Handler handler) {
-            this.handler = handler;
-        }
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(2000);
-                handler.sendEmptyMessage(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

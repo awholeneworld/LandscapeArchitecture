@@ -36,7 +36,6 @@ import com.google.firebase.storage.UploadTask;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import gachon.termproject.joker.FirebaseHelper;
@@ -67,16 +66,11 @@ public class MatchingWritePostActivity extends AppCompatActivity {
     private ImageButton imageAddButton;
     private ArrayList<String> imagesUrl = new ArrayList<>();
     private int uploadFinishCount = 0;
-
-
-    LinearLayout location_table;
+    private LinearLayout location_table;
     private Button register;
-
     private boolean is_location = false;
-    List<String> locationSelected;
-
-    public static List<String> location; // 회원가입을 위한 전역변수(전문가 회원가입을 위해 static으로 설정)
-    private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN;
+    private ArrayList<String> locationSelected;
+    private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
 
 
     //해야 할 일!
@@ -105,8 +99,8 @@ public class MatchingWritePostActivity extends AppCompatActivity {
         title = findViewById(R.id.writepost_title);
         content = findViewById(R.id.writepost_content);
         imageAddButton = findViewById(R.id.writepost_imageAddButton);
+        location_select = findViewById(R.id.writepost_region);
         register = findViewById(R.id.writepost_assign);
-
 
         // 어떤 게시판에서 올리려고 하는 글인지 카테고리 정보 가져오기
         Intent intent = getIntent();
@@ -116,10 +110,10 @@ public class MatchingWritePostActivity extends AppCompatActivity {
         imageAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageAddButton.setEnabled(false);
                 selectFile();
             }
         });
-
 
         //===============> matching에서만 추가된 부분!!!=========================
         // 지역을 선택하는 부분입니다!!!!
@@ -139,15 +133,14 @@ public class MatchingWritePostActivity extends AppCompatActivity {
         GN = findViewById(R.id.signup04_GN);
         JB = findViewById(R.id.signup04_JB);
         JN = findViewById(R.id.signup04_JN);
-
-        //지역 선택 글씨
-        location_select = findViewById(R.id.writepost_region);
+        SJ = findViewById(R.id.signup04_SJ);
 
         //지역선택 버튼을 누르게 되면
         location_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 is_location = true;
+                location_select.setEnabled(false);
 
                 //지역선택하는 화면이 있는 relative layout -> 선택지를 화면 내로 끌고와서 보여줌
                 LinearLayout LL = findViewById(R.id.post_select_location);
@@ -157,36 +150,27 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                 LL.setLayoutParams(lp);
 
                 //잠시 안보이게 가려두기 & 버튼 이름 바꿔주기
-                ImageButton imbnt = findViewById(R.id.writepost_imageAddButton);
-                imbnt.setVisibility(View.INVISIBLE);
+                imageAddButton.setVisibility(View.INVISIBLE);
                 location_select.setVisibility(View.INVISIBLE);
+                location_select.setEnabled(true);
                 register.setText("완료");
-
             }
         });
-
-
-
 
         // 게시글 등록!
         register.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                if(is_location){ //location이 켜져있을 때는 (지역 선택)
+                if (is_location) { //location이 켜져있을 때는 (지역 선택)
                     //지금의 이 버튼은 완료 버튼!
                     //표에서 뭐뭐 선택했는지 얻어내서
                     //대충 어딘가 저장ㅇ해두고
                     //지역선택 text를 만약 선택한 갯수로 나타내자,,,, "n개 지역"
-                   locationSelected = checklocation(); //locationSelected에 지역정보가 저장되어있는상태
+                   locationSelected = checkLocation(); //locationSelected에 지역정보가 저장되어있는상태
 
-                   if(locationSelected.isEmpty()){
-                       location_select.setText("지역선택");
-                   }
-                   else{
+                   if (!locationSelected.isEmpty())
                        location_select.setText(locationSelected.size() + "개 지역");
-                   }
-
 
                     //그리고 숨겼던 사진등록이랑 지역선택 글씨를 보이게 하고
                     //지역선택 뷰를 다시 밑으로 내립니다.
@@ -196,19 +180,16 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                     lp.addRule(RelativeLayout.ABOVE, 0);
                     LL.setLayoutParams(lp);
 
-                    ImageButton imbnt = findViewById(R.id.writepost_imageAddButton);
-                    imbnt.setVisibility(View.VISIBLE);
+                    imageAddButton.setVisibility(View.VISIBLE);
                     location_select.setVisibility(View.VISIBLE);
                     register.setText("등록");
                     is_location = false;
-
                 }
-                else{
+                else {
                     //지금의 이 버튼은 등록 버튼!
                     if (title.length() > 0 && content.length() > 0) {
+                        register.setEnabled(false);
                         post(category);
-                        setResult(RESULT_OK, new Intent()); // 게시판에게 완료됐다는 신호 보내기
-                        finish();
                     } else if (title.length() <= 0){
                         Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
                     } else {
@@ -238,16 +219,13 @@ public class MatchingWritePostActivity extends AppCompatActivity {
 
             PostImage postimage = new PostImage(MatchingWritePostActivity.this, image, layoutParams);
 
-
             layout.addView(postimage);
             imagesList.add(image);
-
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case android.R.id.home:
 
@@ -255,6 +233,12 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        imageAddButton.setEnabled(true);
     }
 
     // 파일선택 함수
@@ -272,19 +256,18 @@ public class MatchingWritePostActivity extends AppCompatActivity {
         postId = String.valueOf(System.currentTimeMillis());
 
         //글넣기
-        String text = ((EditText) findViewById(R.id.writepost_content)).getText().toString();
-        contentList.add(text);
+        contentList.add(content.getText().toString());
 
-        if(imagesList.size() == 0){// 사진이 없다면? 바로 글쓰기
+        if (imagesList.size() == 0) {// 사진이 없다면? 바로 글쓰기
             // 포스트 시간 설정
             Date currentTime = new Date();
-            String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
+            String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, forLocation, false);
+            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, null, false);
 
             // Firebase Realtime DB에 글 내용 올리기
-            databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
+            databaseReference.child("Matching/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
@@ -292,91 +275,91 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                     finish();
                 }
             });
-        }
+        } else { //사진이 있다면 그림넣기
+            for (int i = 0; i < imagesList.size(); i++) {
+                try {
+                    image = imagesList.get(i);
 
-        //사진이 있다면 그림넣기
-        for(int i=0;i<imagesList.size();i++){
-            try {
-                image = imagesList.get(i);
+                    // Firebase Storage에 이미지 업로드
+                    StorageReference imageReference = storageReference.child("matchingImagesPosted/" + category + "/" + userId + "/" + postId + "/" + image.getLastPathSegment());
 
-                // Firebase Storage에 이미지 업로드
-                StorageReference imageReference = storageReference.child("imagesPosted/" + category + "/" + userId + "/" + postId + "/" + image.getLastPathSegment());
-
-                UploadTask uploadTask = imageReference.putFile(image);
-                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                    @Override
-                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                        if (!task.isSuccessful()) {
-                            throw task.getException();
-                        }
-
-                        return imageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
-                    }
-                }).addOnCompleteListener(new OnCompleteListener<Uri>() { // URL 다운 성공 시
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) { // URL을 포스트 내용 Class(postContent)와 DB에 업데이트
-                            Uri downloadUrl = task.getResult();
-                            String url = downloadUrl.toString();
-
-                            imagesUrl.add(url);
-                            contentList.add("");
-                            uploadFinishCount++;
-
-                            if (uploadFinishCount == imagesList.size()) { // 이미지 업로드가 완료되면 글을 최종적으로 업로드
-                                // 포스트 시간 설정
-                                Date currentTime = new Date();
-                                String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
-
-                                // 포스트할 내용
-                                postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, forLocation, false);
-
-                                // Firebase Realtime DB에 글 내용 올리기
-                                databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                        setResult(RESULT_OK, new Intent());
-                                        finish();
-                                    }
-                                });
+                    UploadTask uploadTask = imageReference.putFile(image);
+                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()) {
+                                throw task.getException();
                             }
 
-                            Toast.makeText(MatchingWritePostActivity.this, "등록중 입니다", Toast.LENGTH_SHORT).show();
+                            return imageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
                         }
-                    }
-                });
-            } catch (NullPointerException e) {
-                Toast.makeText(MatchingWritePostActivity.this, "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() { // URL 다운 성공 시
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) { // URL을 포스트 내용 Class(postContent)와 DB에 업데이트
+                                Uri downloadUrl = task.getResult();
+                                String url = downloadUrl.toString();
+
+                                imagesUrl.add(url);
+                                contentList.add("");
+                                uploadFinishCount++;
+
+                                if (uploadFinishCount == imagesList.size()) { // 이미지 업로드가 완료되면 글을 최종적으로 업로드
+                                    // 포스트 시간 설정
+                                    Date currentTime = new Date();
+                                    String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
+
+                                    // 포스트할 내용
+                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, null, false);
+
+                                    // Firebase Realtime DB에 글 내용 올리기
+                                    databaseReference.child("Matching/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                            setResult(RESULT_OK, new Intent());
+                                            finish();
+                                        }
+                                    });
+                                }
+
+                                Toast.makeText(getApplicationContext(), "등록중", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } catch (NullPointerException e) {
+                    Toast.makeText(getApplicationContext(), "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
 
-    public static int dpToPx(int dp){
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
-    }
+    public ArrayList<String> checkLocation() {
+        //선택된 지역을 저장할 리스트
+        ArrayList<String> location = new ArrayList<>();
 
-    public List<String> checklocation() {
-        //선택된 지역 약어를 저장할 리스트 location
-        List<String> location = new ArrayList<>();
-
-        if(SU.isChecked()) location.add("SU");
-        if(IC.isChecked()) location.add("IC");
-        if(DJ.isChecked()) location.add("DJ");
-        if(GJ.isChecked()) location.add("GJ");
-        if(DG.isChecked()) location.add("DG");
-        if(US.isChecked()) location.add("US");
-        if(BS.isChecked()) location.add("BS");
-        if(JJ.isChecked()) location.add("JJ");
-        if(GG.isChecked()) location.add("GG");
-        if(GW.isChecked()) location.add("GW");
-        if(CB.isChecked()) location.add("CB");
-        if(CN.isChecked()) location.add("CN");
-        if(GB.isChecked()) location.add("GB");
-        if(GN.isChecked()) location.add("GN");
-        if(JB.isChecked()) location.add("JB");
-        if(JN.isChecked()) location.add("JN");
+        if(SU.isChecked()) location.add("서울");
+        if(IC.isChecked()) location.add("인천");
+        if(DJ.isChecked()) location.add("대전");
+        if(GJ.isChecked()) location.add("광주");
+        if(DG.isChecked()) location.add("대구");
+        if(US.isChecked()) location.add("울산");
+        if(BS.isChecked()) location.add("부산");
+        if(JJ.isChecked()) location.add("제주");
+        if(GG.isChecked()) location.add("경기");
+        if(GW.isChecked()) location.add("강원");
+        if(CB.isChecked()) location.add("충북");
+        if(CN.isChecked()) location.add("충남");
+        if(GB.isChecked()) location.add("경북");
+        if(GN.isChecked()) location.add("경남");
+        if(JB.isChecked()) location.add("전북");
+        if(JN.isChecked()) location.add("전남");
+        if(SJ.isChecked()) location.add("세종");
 
         return location;
+    }
+
+    public static int dpToPx(int dp){
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 }

@@ -1,9 +1,12 @@
 package gachon.termproject.joker.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,18 +17,29 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.container.PostContent;
 
 public class StartUpPageActivity extends AppCompatActivity {
     private FirebaseAuth fAuth;
     private DocumentReference documentReference;
+    public static ArrayList<String> userPostsIdList = new ArrayList<>();
+    public static boolean autoLogin;
+    private int finishCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +50,10 @@ public class StartUpPageActivity extends AppCompatActivity {
 
         // 이미 로그인한 경우 로그인 상태 유지
         if (fAuth.getCurrentUser() != null) {
-            StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message msg) {
-                    if (msg.what == 1) {
-                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                        finish();
-                    }
-                }
-            });
-            thread.start();
+            autoLogin = true;
+            logIn();
         } else {
+            autoLogin = false;
             StartUpPageThread thread = new StartUpPageThread(new Handler(Looper.getMainLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
@@ -82,9 +89,52 @@ public class StartUpPageActivity extends AppCompatActivity {
                             UserInfo.portfolioWeb = document.getString("portfolioWeb");
                         }
 
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
-                        finish();
+                        FirebaseDatabase.getInstance().getReference().child("Posts").addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.N)
+                                    @Override
+                                    public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                        for (DataSnapshot item : snapshot.getChildren()) {
+                                            PostContent myInfoPostContent = item.getValue(PostContent.class);
+                                            userPostsIdList.add(0, myInfoPostContent.getPostId());
+                                        }
+                                        finishCount++;
+                                        if (finishCount == 3) {
+                                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                            Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
             }
