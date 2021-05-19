@@ -1,7 +1,11 @@
 package gachon.termproject.joker.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.activity.CommunitySearchActivity;
 
 public class MatchingUserViewFragment extends Fragment {
     private FragmentManager fm;
@@ -83,5 +88,19 @@ public class MatchingUserViewFragment extends Fragment {
         });
 
         return view;
+    }
+
+    //action bar menu
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.top_search_app_bar, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        getActivity().startActivity(new Intent(getContext(), CommunitySearchActivity.class));
+        return super.onOptionsItemSelected(item);
     }
 }

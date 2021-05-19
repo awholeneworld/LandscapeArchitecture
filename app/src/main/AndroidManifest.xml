@@ -54,7 +54,7 @@
         <activity android:name=".activity.SettingBellActivity" />
         <activity android:name=".activity.MatchingUserSeePostActivity"/>
         <activity android:name=".activity.MatchingExpertSeePostActivity"/>
-        <activity android:name=".activity.MatchingWritePostActivity"/>
+        <activity android:name=".activity.MatchingUserWritePostActivity"/>
         <activity android:name=".fragment.ExpertPortfolioFragment" />
 
 

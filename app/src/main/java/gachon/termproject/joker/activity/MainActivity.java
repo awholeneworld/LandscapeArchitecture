@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private int backPressed = 0;
     ActionBar actionBar;
     TextView action_bar_title;
-    Boolean userinfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +75,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        FragmentManager fm = getSupportFragmentManager();
+        if (UserInfo.isPublic) { //user라면
+            if (matchingUser == null) {
+                matchingUser = new MatchingUserViewFragment();
+                fm.beginTransaction().add(R.id.main_frame, matchingUser).commit();
+            }
+        }
+        else {
+            if (matchingExpert == null) {
+                matchingExpert = new MatchingExpertViewFragment();
+                fm.beginTransaction().add(R.id.main_frame, matchingExpert).commit();
+            }
+        }
+
         setFrag(0); // 로그인 후 이동하는 첫 화면을 홈으로 설정
     }
 
@@ -116,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().show(community).commit();
-                matching_convert_hide(fm);
+                if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
+                if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -126,22 +140,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case 2:
-                if(UserInfo.isPublic){ //user라면
-                    if (matchingUser == null) {
-                        matchingUser = new MatchingUserViewFragment();
-                        fm.beginTransaction().add(R.id.main_frame, matchingUser).commit();
-                    }
-                }
-                else{
-                    if (matchingExpert == null) {
-                        matchingExpert = new MatchingExpertViewFragment();
-                        fm.beginTransaction().add(R.id.main_frame, matchingExpert).commit();
-                    }
-                }
-
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                matching_convert_show(fm);
+                if (matchingUser != null) fm.beginTransaction().show(matchingUser).commit();
+                if (matchingExpert != null) fm.beginTransaction().show(matchingExpert).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -157,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                matching_convert_hide(fm);
+                if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
+                if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
                 if (chat != null) fm.beginTransaction().show(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -173,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 fm.beginTransaction().hide(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                matching_convert_hide(fm);
+                if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
+                if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().show(myInfo).commit();
 

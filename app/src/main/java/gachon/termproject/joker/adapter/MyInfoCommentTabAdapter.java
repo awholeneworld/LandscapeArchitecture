@@ -45,4 +45,14 @@ public class MyInfoCommentTabAdapter extends RecyclerView.Adapter<MyInfoCommentT
     public int getItemCount() {
         return dataSet.size();
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

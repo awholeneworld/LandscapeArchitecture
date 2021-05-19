@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.OnPostListener;
-import gachon.termproject.joker.container.PostCommentContent;
+import gachon.termproject.joker.Content.PostCommentContent;
 import gachon.termproject.joker.R;
 
 public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.CommentViewHolder>
@@ -107,5 +107,15 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
     @Override
     public int getItemCount() {
         return postCommentList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

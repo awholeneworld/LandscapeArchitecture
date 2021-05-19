@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth fAuth = FirebaseAuth.getInstance();
@@ -71,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        fAuth = FirebaseAuth.getInstance();
                                         logIn();
                                     } else if (task.getException() != null) {
                                         Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();

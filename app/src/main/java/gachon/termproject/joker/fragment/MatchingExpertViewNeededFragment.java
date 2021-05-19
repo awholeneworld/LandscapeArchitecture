@@ -27,9 +27,8 @@ import java.util.ArrayList;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.activity.MatchingWritePostActivity;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
 

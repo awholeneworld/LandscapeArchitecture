@@ -26,8 +26,8 @@ import gachon.termproject.joker.activity.SettingActivity;
 
 public class MyInfoFragment extends Fragment {
     private View view;
-    private MyInfoPostFragment post;
-    private MyInfoCommentFragment comment;
+    private MyInfoTabPostFragment post;
+    private MyInfoTabCommentFragment comment;
     private ViewGroup portfolioLayout;
     private FragmentManager fm;
     private TabLayout tabs;
@@ -80,7 +80,7 @@ public class MyInfoFragment extends Fragment {
         // 마이인포 탭 첫 화면
         fm = getChildFragmentManager();
         if (post == null) {
-            post = new MyInfoPostFragment();
+            post = new MyInfoTabPostFragment();
             fm.beginTransaction().add(R.id.myinfo_frame, post).commit();
         }
 
@@ -96,7 +96,7 @@ public class MyInfoFragment extends Fragment {
                         break;
                     case 1:
                         if (comment == null) {
-                            comment = new MyInfoCommentFragment();
+                            comment = new MyInfoTabCommentFragment();
                             fm.beginTransaction().add(R.id.myinfo_frame, comment).commit();
                         }
                         fm.beginTransaction().hide(post).commit();

@@ -42,31 +42,26 @@ import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.PostImage;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
-public class MatchingWritePostActivity extends AppCompatActivity {
+public class MatchingUserWritePostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private FirebaseHelper firebaseHelper = new FirebaseHelper(this);
     private PostContent postContent;
     private Uri image; // 이미지 저장 변수
     private ArrayList<String> contentList = new ArrayList<>();
-    private ArrayList<String> imagesNumber = new ArrayList<>();
     private ArrayList<Uri> imagesList = new ArrayList<>();
-    private ArrayList<String> forLocation = new ArrayList<>(UserInfo.location);
     private String userId = UserInfo.userId; // 누가 업로드 했는지 알기 위함
     private String nickname = UserInfo.nickname;
     private String postId;
-    private int postTime;
     private String expertId;
-    private Boolean expertBool;
     private LinearLayout layout;
     private EditText title, content;
     private TextView location_select;
     private ImageButton imageAddButton;
     private ArrayList<String> imagesUrl = new ArrayList<>();
     private int uploadFinishCount = 0;
-    private LinearLayout location_table;
     private Button register;
     private boolean is_location = false;
     private ArrayList<String> locationSelected;
@@ -101,10 +96,6 @@ public class MatchingWritePostActivity extends AppCompatActivity {
         imageAddButton = findViewById(R.id.writepost_imageAddButton);
         location_select = findViewById(R.id.writepost_region);
         register = findViewById(R.id.writepost_assign);
-
-        // 어떤 게시판에서 올리려고 하는 글인지 카테고리 정보 가져오기
-        Intent intent = getIntent();
-        String category = intent.getStringExtra("category");
 
         // 파일 선택
         imageAddButton.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +143,6 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                 //잠시 안보이게 가려두기 & 버튼 이름 바꿔주기
                 imageAddButton.setVisibility(View.INVISIBLE);
                 location_select.setVisibility(View.INVISIBLE);
-                location_select.setEnabled(true);
                 register.setText("완료");
             }
         });
@@ -169,7 +159,7 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                     //지역선택 text를 만약 선택한 갯수로 나타내자,,,, "n개 지역"
                    locationSelected = checkLocation(); //locationSelected에 지역정보가 저장되어있는상태
 
-                   if (!locationSelected.isEmpty())
+                   if (locationSelected != null && !locationSelected.isEmpty())
                        location_select.setText(locationSelected.size() + "개 지역");
 
                     //그리고 숨겼던 사진등록이랑 지역선택 글씨를 보이게 하고
@@ -182,20 +172,23 @@ public class MatchingWritePostActivity extends AppCompatActivity {
 
                     imageAddButton.setVisibility(View.VISIBLE);
                     location_select.setVisibility(View.VISIBLE);
+                    location_select.setEnabled(true);
                     register.setText("등록");
                     is_location = false;
-                }
-                else {
+                } else {
                     //지금의 이 버튼은 등록 버튼!
-                    if (title.length() > 0 && content.length() > 0) {
+                    if (title.length() > 0 && content.length() > 0 && locationSelected != null && !locationSelected.isEmpty()) {
                         register.setEnabled(false);
-                        post(category);
-                    } else if (title.length() <= 0){
-                        Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "내용을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
+                        post();
                     }
-
+                    else if (title.length() <= 0)
+                        Toast.makeText(getApplicationContext(), "제목을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
+                    else if (content.length() == 0)
+                        Toast.makeText(getApplicationContext(), "내용을 최소 1자 이상 써주세요.", Toast.LENGTH_SHORT).show();
+                    else if (locationSelected == null)
+                        Toast.makeText(getApplicationContext(), "지역을 최소 1개 이상 선택해주세요.", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getApplicationContext(), "지역을 최소 1개 이상 선택해주세요.", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -217,7 +210,7 @@ public class MatchingWritePostActivity extends AppCompatActivity {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(dpToPx(35),0, dpToPx(35),0);
 
-            PostImage postimage = new PostImage(MatchingWritePostActivity.this, image, layoutParams);
+            PostImage postimage = new PostImage(MatchingUserWritePostActivity.this, image, layoutParams);
 
             layout.addView(postimage);
             imagesList.add(image);
@@ -241,6 +234,26 @@ public class MatchingWritePostActivity extends AppCompatActivity {
         imageAddButton.setEnabled(true);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (is_location) {
+            //그리고 숨겼던 사진등록이랑 지역선택 글씨를 보이게 하고
+            //지역선택 뷰를 다시 밑으로 내립니다.
+            LinearLayout LL = findViewById(R.id.post_select_location);
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
+            lp.addRule(RelativeLayout.BELOW, R.id.layout_post_bottom);
+            lp.addRule(RelativeLayout.ABOVE, 0);
+            LL.setLayoutParams(lp);
+
+            imageAddButton.setVisibility(View.VISIBLE);
+            location_select.setVisibility(View.VISIBLE);
+            location_select.setEnabled(true);
+            register.setText("등록");
+            is_location = false;
+        }
+        else super.onBackPressed();
+
+    }
     // 파일선택 함수
     private void selectFile(){
         Intent intent = new Intent();
@@ -251,7 +264,7 @@ public class MatchingWritePostActivity extends AppCompatActivity {
 
     // 글 올리기 함수
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void post(String category) {
+    private void post() {
         // 포스트 고유 아이디
         postId = String.valueOf(System.currentTimeMillis());
 
@@ -264,10 +277,10 @@ public class MatchingWritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, null, false);
+            postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, false, locationSelected, false);
 
             // Firebase Realtime DB에 글 내용 올리기
-            databaseReference.child("Matching/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
+            databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
@@ -281,7 +294,7 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                     image = imagesList.get(i);
 
                     // Firebase Storage에 이미지 업로드
-                    StorageReference imageReference = storageReference.child("matchingImagesPosted/" + category + "/" + userId + "/" + postId + "/" + image.getLastPathSegment());
+                    StorageReference imageReference = storageReference.child("matchingImagesPosted/userRequests/" + userId + "/" + postId + "/" + image.getLastPathSegment());
 
                     UploadTask uploadTask = imageReference.putFile(image);
                     Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
@@ -307,13 +320,13 @@ public class MatchingWritePostActivity extends AppCompatActivity {
                                 if (uploadFinishCount == imagesList.size()) { // 이미지 업로드가 완료되면 글을 최종적으로 업로드
                                     // 포스트 시간 설정
                                     Date currentTime = new Date();
-                                    String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
+                                    String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, !UserInfo.isPublic, null, false);
+                                    postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, false, locationSelected, false);
 
                                     // Firebase Realtime DB에 글 내용 올리기
-                                    databaseReference.child("Matching/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();

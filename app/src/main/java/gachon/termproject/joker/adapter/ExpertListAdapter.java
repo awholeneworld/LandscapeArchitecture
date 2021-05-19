@@ -21,7 +21,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.container.ExpertListContent;
+import gachon.termproject.joker.Content.ExpertListContent;
 import gachon.termproject.joker.fragment.ExpertPortfolioFragment;
 
 public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.ViewHolder>{
@@ -44,15 +44,11 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
         String expertPortfolioWeb;
         ArrayList<String> expertLocation;
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         ViewHolder(View itemView) {
             super(itemView);
             nickname = itemView.findViewById(R.id.expert_nickname);
             profileImg = itemView.findViewById(R.id.expert_image);
             seePortfolio = itemView.findViewById(R.id.seePortfolio);
-
-            profileImg.setBackground(new ShapeDrawable(new OvalShape()));
-            profileImg.setClipToOutline(true);
 
             seePortfolio.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -79,6 +75,7 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
         return new ViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ExpertListContent content = expertList.get(position);
@@ -94,6 +91,8 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
         holder.expertLocation = content.getLocation();
 
         holder.nickname.setText(contentNickname);
+        holder.profileImg.setBackground(new ShapeDrawable(new OvalShape()));
+        holder.profileImg.setClipToOutline(true);
         if (!contentProfileImg.equals("None"))
             Glide.with(context).load(contentProfileImg).override(1000).thumbnail(0.1f).into(holder.profileImg);
     }
@@ -101,5 +100,15 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
     @Override
     public int getItemCount() {
         return expertList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

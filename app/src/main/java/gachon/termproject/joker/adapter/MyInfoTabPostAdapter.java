@@ -30,20 +30,21 @@ import java.util.Comparator;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.SeePostActivity;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
 
-public class MyInfoPostTabAdapter extends RecyclerView.Adapter<MyInfoPostTabAdapter.ViewHolder> {
+public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdapter.ViewHolder> {
     private Context context;
     private ArrayList<PostContent> myInfoPostList;
     private long categoryNum;
     private int finishCount = 0;
 
-    public MyInfoPostTabAdapter(Context context) {
+    public MyInfoTabPostAdapter(Context context) {
         this.context = context;
         myInfoPostList = new ArrayList<>();
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
+        // 실시간 업데이트
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Posts");
         dbRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
@@ -55,11 +56,11 @@ public class MyInfoPostTabAdapter extends RecyclerView.Adapter<MyInfoPostTabAdap
                             @RequiresApi(api = Build.VERSION_CODES.N)
                             @Override
                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-
                                 for (DataSnapshot item : snapshot.getChildren()) {
                                     PostContent myInfoPostContent = item.getValue(PostContent.class);
                                     myInfoPostList.add(0, myInfoPostContent);
                                 }
+
                                 finishCount++;
                                 if (finishCount == categoryNum) {
                                     myInfoPostList.sort(new Comparator<PostContent>() {
@@ -73,6 +74,7 @@ public class MyInfoPostTabAdapter extends RecyclerView.Adapter<MyInfoPostTabAdap
                                             else return -1;
                                         }
                                     });
+
                                     notifyDataSetChanged();
                                     finishCount = 0;
                                 }
@@ -181,4 +183,14 @@ public class MyInfoPostTabAdapter extends RecyclerView.Adapter<MyInfoPostTabAdap
 
     @Override
     public int getItemCount() { return myInfoPostList.size(); }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

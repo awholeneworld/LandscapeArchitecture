@@ -44,4 +44,14 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
     public int getItemCount() {
         return dataSet.size();
     }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

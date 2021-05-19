@@ -25,7 +25,7 @@ import java.util.List;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ExpertListAdapter;
-import gachon.termproject.joker.container.ExpertListContent;
+import gachon.termproject.joker.Content.ExpertListContent;
 
 public class MatchingExpertListFragment extends Fragment {
     private View view;

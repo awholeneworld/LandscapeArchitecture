@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ChatListAdapter;
-import gachon.termproject.joker.container.ChatMessageContent;
+import gachon.termproject.joker.Content.ChatMessageContent;
 
 public class ChatFragment extends Fragment {
     private View view;

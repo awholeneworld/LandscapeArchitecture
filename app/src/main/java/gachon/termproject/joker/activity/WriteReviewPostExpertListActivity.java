@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ import gachon.termproject.joker.UserInfo;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.adapter.WriteReviewPostExpertListAdapter;
-import gachon.termproject.joker.container.ExpertListContent;
+import gachon.termproject.joker.Content.ExpertListContent;
 
 public class WriteReviewPostExpertListActivity extends AppCompatActivity {
     @Override

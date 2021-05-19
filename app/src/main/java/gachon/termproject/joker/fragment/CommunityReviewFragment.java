@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.activity.WriteReviewPostExpertListActivity;
 import gachon.termproject.joker.adapter.PostAdapter;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 
 import static android.app.Activity.RESULT_OK;

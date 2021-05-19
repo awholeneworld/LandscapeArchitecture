@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import gachon.termproject.joker.R;
 
 
-public class MyInfoCommentFragment extends Fragment {
+public class MyInfoTabCommentFragment extends Fragment {
     private View view;
     private RecyclerView contents;
     private RecyclerView.Adapter mAdapter;

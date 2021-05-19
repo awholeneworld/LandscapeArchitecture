@@ -1,4 +1,4 @@
-package gachon.termproject.joker.container;
+package gachon.termproject.joker.Content;
 
 public class PostCommentContent {
     public String category;

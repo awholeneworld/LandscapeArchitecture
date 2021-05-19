@@ -2,7 +2,6 @@ package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.WritePostActivity;
 import gachon.termproject.joker.adapter.PostAdapter;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
 import static gachon.termproject.joker.UserInfo.userId;
@@ -177,15 +176,6 @@ public class MatchingUserViewCompleteFragment extends Fragment {
             public void onRefresh() {
                 databaseReference.addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "matching");
-                startActivityForResult(intent, 1);
             }
         });
 

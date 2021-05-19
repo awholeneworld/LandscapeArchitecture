@@ -41,107 +41,163 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="5dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="이것은 제목입니다"
-                    android:textColor="@color/black"
-                    android:textSize="25sp"/>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingTop="10dp">
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/postProfile"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_marginRight="12dp"
-                        android:src="@drawable/ic_launcher_background" />
-
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:text="이것은 제목입니다"
+                        android:textColor="@color/black"
+                        android:textSize="25sp"/>
 
-                        <TextView
-                            android:id="@+id/postNickname"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="10dp">
+
+                        <ImageView
+                            android:id="@+id/postProfile"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="12dp"
+                            android:src="@drawable/ic_launcher_background" />
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="nickname"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/postTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0월 0일 오후 0시 00분"
-                            android:textColor="@color/gray"
-                            android:textSize="14sp" />
+                            <TextView
+                                android:id="@+id/postNickname"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="nickname"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/postTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0월 0일 오후 0시 00분"
+                                android:textColor="@color/gray"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/see_post_location_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="지역명 | 지역명"
+                                android:textColor="@color/gray"/>
+
+                        </LinearLayout>
 
                     </LinearLayout>
+
+                    <!--실제 내용-->
+                    <LinearLayout
+                        android:id="@+id/see_post_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="vertical">
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/see_post_imagecontainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/whitegray"
+                        android:layout_marginVertical="5dp"/>
+
                 </LinearLayout>
 
-                <!--실제 내용-->
-                <LinearLayout
-                    android:id="@+id/seepost_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+    <!--              이 버튼에 신청, 취소, 완료가 들어가는건 java에서 제어합니다.-->
+                <Button
+                    android:id="@+id/matching_expert_apply_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="매칭 신청"
+                    android:textSize="15dp"
+                    android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="vertical">
-                </LinearLayout>
+                    android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"/>
 
-                <LinearLayout
-                    android:id="@+id/seepost_imagecontainer"
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/myApplication"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="8dp">
+
+                    <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
+
+                        <LinearLayout
+                            android:id="@+id/matching_item_image_linearlayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_centerVertical="true">
+
+                            <ImageView
+                                android:id="@+id/comment_img"
+                                android:layout_width="45dp"
+                                android:layout_height="45dp"
+                                android:src="@drawable/ic_launcher_background" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="닉네임"
+                            android:layout_toRightOf="@+id/matching_item_image_linearlayout"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="5dp"
+                            android:layout_centerVertical="true"/>
+
+                        <Button
+                            android:id="@+id/matching_apply_item_cancel"
+                            android:layout_width="60dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:text="취소"
+                            android:textSize="13dp"
+                            android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="5dp"/>
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/seepost_location_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="지역명 | 지역명"
-                    android:textColor="@color/gray"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/whitegray"
-                    android:layout_marginVertical="5dp"/>
-
-            </LinearLayout>
-
-<!--              이 버튼에 신청, 취소, 완료가 들어가는건 java에서 제어합니다.-->
-             <Button
-                 android:id="@+id/matching_expert_post_button"
-                 android:layout_width="wrap_content"
-                 android:layout_height="40dp"
-                 android:text="매칭 신청"
-                 android:textSize="15dp"
-                 android:layout_gravity="center"
-                 android:layout_marginTop="20dp"
-                 android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"/>
-
-    </LinearLayout>
+             </LinearLayout>
 
 
-</androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 

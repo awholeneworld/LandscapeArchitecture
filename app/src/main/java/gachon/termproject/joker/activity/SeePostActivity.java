@@ -46,7 +46,7 @@ import java.util.Locale;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
-import gachon.termproject.joker.container.PostCommentContent;
+import gachon.termproject.joker.Content.PostCommentContent;
 
 import static gachon.termproject.joker.activity.StartUpPageActivity.autoLogin;
 

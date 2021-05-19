@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,13 +31,14 @@ import org.jetbrains.annotations.NotNull;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ChatAreaAdapter;
-import gachon.termproject.joker.container.ChatMessageContent;
+import gachon.termproject.joker.Content.ChatMessageContent;
 
 public class ChatActivity extends AppCompatActivity {
     public static String chatRoomId = null;
     public static String opponentNickname;
     public static String opponentProfileImg;
     public static RecyclerView chatArea;
+    private TextView actionBarName;
     private ImageView sendButton;
     private EditText messageArea;
     private String opponentUserId;
@@ -61,10 +63,12 @@ public class ChatActivity extends AppCompatActivity {
         opponentNickname = intent.getStringExtra("nickname");
         opponentProfileImg = intent.getStringExtra("profileImg");
 
+        actionBarName = findViewById(R.id.opponentNickname);
         chatArea = findViewById(R.id.chatArea);
         messageArea = findViewById(R.id.messageArea);
         sendButton = findViewById(R.id.sendButton);
 
+        actionBarName.setText(opponentNickname);
         checkChatRoom();
 
         sendButton.setOnClickListener(new View.OnClickListener() {

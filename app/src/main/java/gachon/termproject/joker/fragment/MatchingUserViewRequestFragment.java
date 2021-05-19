@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.activity.MatchingWritePostActivity;
+import gachon.termproject.joker.activity.MatchingUserWritePostActivity;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -54,14 +54,13 @@ public class MatchingUserViewRequestFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_user_view_request, container, false);
 
-        category = "userRequests";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Matching/" + category);
+        databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
         matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList);
@@ -115,8 +114,8 @@ public class MatchingUserViewRequestFragment extends Fragment {
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(PostContent.class);
-                    if (postContent.userId == UserInfo.userId)
-                    postContentList.add(0, postContent);
+                    if (postContent.getIsMatched() == false)
+                        postContentList.add(0, postContent);
                 }
                 matchingpostAdapter.notifyDataSetChanged();
             }
@@ -140,9 +139,7 @@ public class MatchingUserViewRequestFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MatchingWritePostActivity.class);
-                intent.putExtra("category", category);
-                startActivityForResult(intent, 1);
+                startActivityForResult(new Intent(getActivity(), MatchingUserWritePostActivity.class), 1);
             }
         });
 

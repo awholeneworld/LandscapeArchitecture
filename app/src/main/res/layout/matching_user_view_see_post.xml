@@ -90,13 +90,20 @@
                             android:textColor="@color/gray"
                             android:textSize="14sp" />
 
+                        <TextView
+                            android:id="@+id/see_post_location_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="지역명 | 지역명"
+                            android:textColor="@color/gray"/>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
                 <!--실제 내용-->
                 <LinearLayout
-                    android:id="@+id/seepost_content"
+                    android:id="@+id/see_post_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
@@ -105,20 +112,13 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/seepost_imagecontainer"
+                    android:id="@+id/see_post_imagecontainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/seepost_location_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="지역명 | 지역명"
-                    android:textColor="@color/gray"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -139,7 +139,7 @@
                         android:textColor="@color/gray"/>
 
                     <TextView
-                        android:id="@+id/seepost_request_total_num"
+                        android:id="@+id/see_post_request_total_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
@@ -157,7 +157,7 @@
 
             <!--요청리스트-->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/matching_seepost_request_listview"
+                android:id="@+id/matching_see_post_request_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="20dp"

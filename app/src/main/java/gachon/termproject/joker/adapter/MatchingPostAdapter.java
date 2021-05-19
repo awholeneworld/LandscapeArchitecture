@@ -16,8 +16,10 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
+import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.MatchingExpertSeePostActivity;
 import gachon.termproject.joker.activity.MatchingUserSeePostActivity;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
 
@@ -50,12 +52,11 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         String nicknameInPost;
         String timeInPost;
         String postIdInPost;
-        String expertIdOfPost;
-        boolean expertBoolPost;
-        boolean isMatchingPost;
+        boolean expertBool;
+        boolean isMatched;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
-        ArrayList<String> locationPost;
+        ArrayList<String> locationOfUser;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -68,7 +69,13 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, MatchingUserSeePostActivity.class);
+                    Intent intent;
+
+                    if (UserInfo.isPublic)
+                        intent = new Intent(context, MatchingUserSeePostActivity.class);
+                    else
+                        intent = new Intent(context, MatchingExpertSeePostActivity.class);
+
                     intent.putExtra("category", categoryOfPost);
                     intent.putExtra("userId", userIdInPost);
                     intent.putExtra("profileImg", profileImgInPost);
@@ -76,12 +83,11 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
-                    intent.putExtra("expertId", expertIdOfPost);
-                    intent.putExtra("expertBool", expertBoolPost);
-                    intent.putExtra("isMatching", isMatchingPost);
+                    intent.putExtra("expertBool", expertBool);
+                    intent.putExtra("isMatched", isMatched);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putStringArrayListExtra("location", locationPost);
+                    intent.putStringArrayListExtra("location", locationOfUser);
                     context.startActivity(intent);
                 }
             });
@@ -105,6 +111,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         String contentTime = content.getPostTime();
         ArrayList<String> contentsList = content.getContent();
         ArrayList<String> imagesList = content.getImages();
+        ArrayList<String> locationList = content.getLocation();
 
         // 뷰홀더 클래스의 전역 변수 설정
         holder.categoryOfPost = content.getCategory();
@@ -116,20 +123,25 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         holder.postIdInPost = content.getPostId();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
-        holder.expertIdOfPost = content.getExpertId();
-        holder.expertBoolPost = content.getExpertBool();
-        holder.isMatchingPost = content.getIsMatching();
+        holder.expertBool = content.getExpertBool();
+        holder.isMatched = content.getIsMatched();
+        holder.locationOfUser = locationList;
 
-
-        // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
+        // 목록에 나타나는 글의 제목, 작성자, 지역, 작성 시간 표시
         if (contentTitle.length() > 15)
             holder.title.setText(contentTitle.substring(0, 16));
         else
             holder.title.setText(contentTitle);
 
         holder.nickname.setText(contentNickname);
+        String locationStr = "";
+        for (String item : locationList) {
+            locationStr += item + " | ";
+        }
+        holder.content.setText(locationStr);
         holder.date.setText(contentTime);
 
+        /*
         // 목록에 나타나는 글의 내용 표시
         // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
         int inputLetters = 0;
@@ -157,6 +169,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         }
 
         holder.content.setText(contents);
+         */
     }
 
     @Override

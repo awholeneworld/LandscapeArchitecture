@@ -8,7 +8,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +21,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -31,18 +32,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import gachon.termproject.joker.Content.RequestFromExpertContent;
 import gachon.termproject.joker.R;
-
-import static gachon.termproject.joker.UserInfo.location;
+import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.adapter.MatchingPostRequestAdapter;
 
 public class MatchingUserSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
-    private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
+    private MatchingPostRequestAdapter adapter;
+    private ArrayList<RequestFromExpertContent> requestsList;
     private int count = 0; //매칭 요청한 갯수(정확히는 매칭이 진행중인 갯수)
-    private List<String> LocationArray = new ArrayList<>();
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도 - clear
@@ -57,55 +58,15 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.matching_user_view_see_post);
 
-        String url = "Posts/matching";
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference(url);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String tempUrl = url;
-                    tempUrl += "/" + snapshot.getKey();
-                    DatabaseReference tempDatabaseReference;
-                    tempDatabaseReference = firebaseDatabase.getReference(tempUrl);
-                    tempDatabaseReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot1) {
-                            for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
-
-                                //*본인*의 *매칭 진행중*인 갯수 확인
-                                //Log.e("값", ssnapshot.getValue().toString()); //값
-                                //Log.e("단위", ssnapshot.getKey()); //값의 단위?
-                                //매칭확인 & 유저ID 확인이 동시에 되는 로직이 미완성임.
-                                if(ssnapshot.getKey().equals("isMatching") && ssnapshot.getValue().toString().equals("false")) {
-                                    count++;
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled( DatabaseError error) {
-                        }
-                    });
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
-
-
-
+        // 인텐트 데이터 가져오기
         Intent intent = getIntent();
-        String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
-        ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -115,133 +76,87 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
 
-        // 제목, 닉네임, 작성시간 세팅
+        // 레이아웃 가져오기
+        ImageView profile = findViewById(R.id.postProfile);
         TextView title = findViewById(R.id.title);
         TextView nickname = findViewById(R.id.postNickname);
         TextView time = findViewById(R.id.postTime);
+        TextView location =  findViewById(R.id.see_post_location_name);
+        TextView requestsNum = findViewById(R.id.see_post_request_total_num);
+        RecyclerView requests = findViewById(R.id.matching_see_post_request_listview);
+
+
+        // 제목, 닉네임, 작성시간, 지역 세팅
         title.setText(intent.getStringExtra("title"));
         nickname.setText(intent.getStringExtra("nickname"));
         time.setText(intent.getStringExtra("time"));
-        TextView seepost_location_name =  findViewById(R.id.seepost_location_name);
-        TextView seepost_request_total_num = findViewById(R.id.seepost_request_total_num);
-
-
-
-        Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable()  {
-            public void run() {
-                String str = "";
-                String temp = "";
-                seepost_request_total_num.setText(count + " ");
-                for(int i =0;  i < location.size(); i++){
-                    if(location.get(i) == "SU"){
-                         temp = "서울";
-                    }
-                    else if(location.get(i).equals("IC")){
-                        temp = "인천";
-                    }
-                    else if(location.get(i).equals("JD")){
-                        temp = "대전";
-                    }
-                    else if(location.get(i).equals("GJ")){
-                        temp = "광주";
-                    }
-                    else if(location.get(i).equals("DG")){
-                        temp = "대구";
-                    }
-                    else if(location.get(i).equals("US")){
-                        temp = "울산";
-                    }
-                    else if(location.get(i).equals("BS")){
-                        temp = "부산";
-                    }
-                    else if(location.get(i).equals("JJ")){
-                        temp = "제주도";
-                    }
-                    else if(location.get(i).equals("GG")){
-                        temp = "경기도";
-                    }
-                    else if(location.get(i).equals("GW")){
-                        temp = "강원도";
-                    }
-                    else if(location.get(i).equals("CB")){
-                        temp = "충청북도";
-                    }
-                    else if(location.get(i).equals("CN")){
-                        temp = "충청남도";
-                    }
-                    else if(location.get(i).equals("GB")){
-                        temp = "경상북도";
-                    }
-                    else if(location.get(i).equals("GN")){
-                        temp = "경상남도";
-                    }
-                    else if(location.get(i).equals("JB")){
-                        temp = "전라북도";
-                    }
-                    else if(location.get(i).equals("JN")){
-                        temp = "전라남도";
-                    }
-                    else if(location.get(i).equals("SJ")){
-                        temp = "세종";
-                    }
-                    else{
-                        Log.e("1", location.get(i));
-                        temp = location.get(i);
-                    }
-
-
-                    str += temp + " | ";
-                    Log.e("2", str.substring(0, str.length()-2));
-
-                }
-                seepost_location_name.setText(str.substring(0, str.length()-2));
-            }
-        }, 500);
-
-
-
+        String locationStr = "";
+        for (String item : UserInfo.location) {
+            locationStr += item + " | ";
+        }
+        location.setText(locationStr);
 
         // 프로필 사진 세팅 (oimage 동그랗게)
-        ImageView profile = findViewById(R.id.postProfile);
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
         if (!profileImg.equals("None"))
             Glide.with(this).load(profileImg).into(profile);
 
         // 포스트 내용 넣을 공간 지정
-        container = findViewById(R.id.seepost_content);
+        container = findViewById(R.id.see_post_content);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        //TextView 생성
+        //TextView 생성 후 layout_width, layout_height, gravity, 내용 등 설정
         TextView text_content = new TextView(MatchingUserSeePostActivity.this);
-        //layout_width, layout_height, gravity, 내용 등 설정
         text_content.setLayoutParams(lp);
         text_content.setText(content.get(0));
         text_content.setTextSize(dpToPx(7));
         text_content.setTextColor(Color.BLACK);
+
+        // 글 넣기
         container.addView(text_content);
 
-        //img 넣기
-        LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
-        layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
+        // 이미지 있으면 넣기
+        if (images != null) {
+            LinearLayout imageContainer = findViewById(R.id.see_post_imagecontainer);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
+            layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
 
-        // imageView 채우기
-        try {
+            // imageView 채우기
             for (int i = 0; i < images.size(); i++) {
-                if (images.get(0).compareTo("") == 0) break;
+                if(images.get(0).compareTo("") == 0) break;
 
-                ImageView imageView = new ImageView(MatchingUserSeePostActivity.this);
+                ImageView imageView = new ImageView(getApplicationContext());
                 imageView.setLayoutParams(layoutParams);
                 imageView.setScaleType(ImageView.ScaleType.CENTER);
-                Glide.with(MatchingUserSeePostActivity.this).load(images.get(i)).into(imageView);
+                Glide.with(getApplicationContext()).load(images.get(i)).into(imageView);
                 imageContainer.addView(imageView);
             }
         }
-        catch (Exception e){
-            Log.e("aaaaa", e.toString());
-        }
+
+
+        requestsList = new ArrayList<>();
+        adapter = new MatchingPostRequestAdapter(getApplicationContext(), requestsList);
+
+        requests.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        requests.setHasFixedSize(true);
+        requests.setAdapter(adapter);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Matching/userRequests" + postId + "/requests");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                requestsList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
+                    requestsList.add(content);
+                }
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
 
     }
 

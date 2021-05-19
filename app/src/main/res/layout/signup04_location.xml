@@ -93,10 +93,10 @@
 
             <TableRow>
                 <CheckBox
-                    android:id="@+id/signup04_DJ"
+                    android:id="@+id/signup04_SJ"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="대전광역시"
+                    android:text="세종특별자치시"
                     android:textSize="20sp">
                 </CheckBox>
 
@@ -111,10 +111,10 @@
 
             <TableRow>
                 <CheckBox
-                    android:id="@+id/signup04_GJ"
+                    android:id="@+id/signup04_DJ"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="광주광역시"
+                    android:text="대전광역시"
                     android:textSize="20sp">
                 </CheckBox>
 
@@ -129,10 +129,10 @@
 
             <TableRow>
                 <CheckBox
-                    android:id="@+id/signup04_DG"
+                    android:id="@+id/signup04_GJ"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="대구광역시"
+                    android:text="광주광역시"
                     android:textSize="20sp">
                 </CheckBox>
 
@@ -147,10 +147,10 @@
 
             <TableRow>
                 <CheckBox
-                    android:id="@+id/signup04_US"
+                    android:id="@+id/signup04_DG"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="울산광역시"
+                    android:text="대구광역시"
                     android:textSize="20sp">
                 </CheckBox>
 
@@ -164,10 +164,10 @@
             </TableRow>
             <TableRow>
                 <CheckBox
-                    android:id="@+id/signup04_BS"
+                    android:id="@+id/signup04_US"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="부산광역시"
+                    android:text="울산광역시"
                     android:textSize="20sp">
                 </CheckBox>
 
@@ -181,10 +181,10 @@
             </TableRow>
             <TableRow>
                 <CheckBox
-                    android:id="@+id/signup04_SJ"
+                    android:id="@+id/signup04_BS"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="세종특별자치시"
+                    android:text="부산광역시"
                     android:textSize="20sp">
                 </CheckBox>
 

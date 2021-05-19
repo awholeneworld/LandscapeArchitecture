@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +31,9 @@ import gachon.termproject.joker.R;
 
 public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
+    private LinearLayout applyItem;
+    private Button applyBtn;
+    private Button cancelBtn;
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도
@@ -42,15 +47,7 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_see_post);
-
-        Intent intent = getIntent();
-        String category = intent.getStringExtra("category");
-        String postId = intent.getStringExtra("postId");
-        String profileImg = intent.getStringExtra("profileImg");
-        ArrayList<String> content = intent.getStringArrayListExtra("content");
-        ArrayList<String> images = intent.getStringArrayListExtra("images");
-        ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
+        setContentView(R.layout.matching_expert_view_see_post);
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -60,51 +57,81 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
 
-        // 제목, 닉네임, 작성시간 세팅
+        // 인텐트 데이터 가져오기
+        Intent intent = getIntent();
+        String postId = intent.getStringExtra("postId");
+        String profileImg = intent.getStringExtra("profileImg");
+        ArrayList<String> content = intent.getStringArrayListExtra("content");
+        ArrayList<String> images = intent.getStringArrayListExtra("images");
+        ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
+
+        // 레이아웃 가져오기
+        ImageView profile = findViewById(R.id.postProfile);
         TextView title = findViewById(R.id.title);
         TextView nickname = findViewById(R.id.postNickname);
         TextView time = findViewById(R.id.postTime);
+        container = findViewById(R.id.see_post_content);
+        applyItem = findViewById(R.id.myApplication);
+        applyBtn = findViewById(R.id.matching_expert_apply_button);
+        cancelBtn = findViewById(R.id.matching_apply_item_cancel);
+
+        // 신청 누르면 생기어야 함
+        applyItem.setVisibility(View.INVISIBLE);
+
+        // 제목, 닉네임, 작성시간 세팅
         title.setText(intent.getStringExtra("title"));
         nickname.setText(intent.getStringExtra("nickname"));
         time.setText(intent.getStringExtra("time"));
 
         // 프로필 사진 세팅 (oimage 동그랗게)
-        ImageView profile = findViewById(R.id.postProfile);
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
         if (!profileImg.equals("None"))
             Glide.with(this).load(profileImg).into(profile);
 
-        // 포스트 내용 넣을 공간 지정
-        container = findViewById(R.id.seepost_content);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        //TextView 생성
+        //TextView 생성 후 layout_width, layout_height, gravity, 내용 등 설정
         TextView text_content = new TextView(MatchingExpertSeePostActivity.this);
-        //layout_width, layout_height, gravity, 내용 등 설정
-        text_content.setLayoutParams(lp);
+        text_content.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         text_content.setText(content.get(0));
         text_content.setTextSize(dpToPx(7));
         text_content.setTextColor(Color.BLACK);
+
+        // 글 넣기
         container.addView(text_content);
 
-        //img 넣기
-        LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
-        layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
+        // 이미지 있으면 넣기
+        if (images != null) {
+            LinearLayout imageContainer = findViewById(R.id.see_post_imagecontainer);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
+            layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
 
-        // imageView 채우기
-        for (int i = 0; i < images.size(); i++) {
-            if(images.get(0).compareTo("") == 0) break;
+            // imageView 채우기
+            for (int i = 0; i < images.size(); i++) {
+                if(images.get(0).compareTo("") == 0) break;
 
-            ImageView imageView = new ImageView(MatchingExpertSeePostActivity.this);
-            imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
-            Glide.with(MatchingExpertSeePostActivity.this).load(images.get(i)).into(imageView);
-            imageContainer.addView(imageView);
+                ImageView imageView = new ImageView(getApplicationContext());
+                imageView.setLayoutParams(layoutParams);
+                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                Glide.with(getApplicationContext()).load(images.get(i)).into(imageView);
+                imageContainer.addView(imageView);
+            }
         }
 
+        applyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyBtn.setVisibility(View.INVISIBLE);
+                applyItem.setVisibility(View.VISIBLE);
+            }
+        });
 
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyItem.setVisibility(View.INVISIBLE);
+                applyBtn.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     //위에 메뉴 관련

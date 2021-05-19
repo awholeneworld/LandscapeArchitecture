@@ -29,7 +29,7 @@ import java.util.TimeZone;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.container.ChatMessageContent;
+import gachon.termproject.joker.Content.ChatMessageContent;
 
 import static gachon.termproject.joker.activity.ChatActivity.chatArea;
 import static gachon.termproject.joker.activity.ChatActivity.chatRoomId;
@@ -105,6 +105,16 @@ public class ChatAreaAdapter extends RecyclerView.Adapter<ChatAreaAdapter.ViewHo
     @Override
     public int getItemCount() {
         return messageList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     //채팅 내용 읽어들임

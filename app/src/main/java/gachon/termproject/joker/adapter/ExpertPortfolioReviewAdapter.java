@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
 public class ExpertPortfolioReviewAdapter extends RecyclerView.Adapter<ExpertPortfolioReviewAdapter.ViewHolder> {
     private Context context;

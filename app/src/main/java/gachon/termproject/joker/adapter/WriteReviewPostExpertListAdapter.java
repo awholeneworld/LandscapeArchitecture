@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.WritePostActivity;
-import gachon.termproject.joker.container.ExpertListContent;
+import gachon.termproject.joker.Content.ExpertListContent;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -95,5 +95,15 @@ public class WriteReviewPostExpertListAdapter extends RecyclerView.Adapter<Write
     @Override
     public int getItemCount() {
         return expertList.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 }

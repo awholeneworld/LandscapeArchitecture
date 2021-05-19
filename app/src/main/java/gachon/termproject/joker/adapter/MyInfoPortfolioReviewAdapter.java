@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.container.PostContent;
+import gachon.termproject.joker.Content.PostContent;
 
 public class MyInfoPortfolioReviewAdapter extends RecyclerView.Adapter<MyInfoPortfolioReviewAdapter.ViewHolder> {
     private Context context;
