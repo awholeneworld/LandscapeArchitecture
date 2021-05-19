@@ -73,7 +73,7 @@ public class SeePostActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
 
         // 인텐트 데이터 가져오기
-        Intent intent = getIntent();
+        intent = getIntent();
         String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
@@ -216,8 +216,6 @@ public class SeePostActivity extends AppCompatActivity {
                 break;
 
             case R.id.decelerate:
-                break;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -228,17 +226,10 @@ public class SeePostActivity extends AppCompatActivity {
         //내가 쓴글이면 my post menu, 남이 쓴 글이면 other post menu가 보이도록 합니다
         MenuInflater inflater = getMenuInflater();
 
-        System.out.println("why" + UserInfo.userId);
-        System.out.println("why2" + intent.getStringExtra("userId"));
-
-
-        if(UserInfo.userId.equals(intent.getStringExtra("userId"))){
-            inflater.inflate(R.menu.my_post_menu,menu);
-        }
-        else{
-            inflater.inflate(R.menu.others_post_menu,menu);
-
-        }
+        if (UserInfo.userId.equals(intent.getStringExtra("userId")))
+            inflater.inflate(R.menu.my_post_menu, menu);
+        else
+            inflater.inflate(R.menu.others_post_menu, menu);
 
         // To display icon on overflow menu
         if (menu instanceof MenuBuilder){
