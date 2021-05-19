@@ -52,7 +52,7 @@ public class MatchingExpertViewNeededFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_on_progress, container, false);
+        view = inflater.inflate(R.layout.matching_expert_view_needed, container, false);
 
         category = "matchNeeded";
         contents = view.findViewById(R.id.content_community);

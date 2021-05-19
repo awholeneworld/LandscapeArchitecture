@@ -52,7 +52,7 @@ public class MatchingUserViewRequestFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_on_progress, container, false);
+        view = inflater.inflate(R.layout.matching_user_view_request, container, false);
 
         category = "userRequests";
         contents = view.findViewById(R.id.content_community);
