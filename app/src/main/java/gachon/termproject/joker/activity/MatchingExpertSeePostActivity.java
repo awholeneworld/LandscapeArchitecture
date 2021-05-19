@@ -11,46 +11,23 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.adapter.PostCommentAdapter;
-import gachon.termproject.joker.container.PostCommentContent;
 
-import static gachon.termproject.joker.Util.isStorageUrl;
-
-public class Matching_expert_SeePostActivity extends AppCompatActivity {
+public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
 
     //해야 할 일!
@@ -103,7 +80,7 @@ public class Matching_expert_SeePostActivity extends AppCompatActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
         //TextView 생성
-        TextView text_content = new TextView(Matching_expert_SeePostActivity.this);
+        TextView text_content = new TextView(MatchingExpertSeePostActivity.this);
         //layout_width, layout_height, gravity, 내용 등 설정
         text_content.setLayoutParams(lp);
         text_content.setText(content.get(0));
@@ -120,10 +97,10 @@ public class Matching_expert_SeePostActivity extends AppCompatActivity {
         for (int i = 0; i < images.size(); i++) {
             if(images.get(0).compareTo("") == 0) break;
 
-            ImageView imageView = new ImageView(Matching_expert_SeePostActivity.this);
+            ImageView imageView = new ImageView(MatchingExpertSeePostActivity.this);
             imageView.setLayoutParams(layoutParams);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
-            Glide.with(Matching_expert_SeePostActivity.this).load(images.get(i)).into(imageView);
+            Glide.with(MatchingExpertSeePostActivity.this).load(images.get(i)).into(imageView);
             imageContainer.addView(imageView);
         }
 

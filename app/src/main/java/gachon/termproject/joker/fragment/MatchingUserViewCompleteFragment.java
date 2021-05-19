@@ -58,14 +58,14 @@ public class MatchingUserViewCompleteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_user_view_complete, container, false);
 
-        category = "matching";
+        category = "userMatchComplete";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts/" + category);
+        databaseReference = firebaseDatabase.getReference("Matching/" + category);
 
 
         postContentList = new ArrayList<>();

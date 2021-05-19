@@ -14,13 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import gachon.termproject.joker.OnPostListener;
-import gachon.termproject.joker.activity.Matching_user_SeePostActivity;
+import gachon.termproject.joker.activity.MatchingUserSeePostActivity;
 import gachon.termproject.joker.container.PostContent;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.SeePostActivity;
 import gachon.termproject.joker.FirebaseHelper;
 
 public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapter.ViewHolder>
@@ -70,7 +68,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, Matching_user_SeePostActivity.class);
+                    Intent intent = new Intent(context, MatchingUserSeePostActivity.class);
                     intent.putExtra("category", categoryOfPost);
                     intent.putExtra("userId", userIdInPost);
                     intent.putExtra("profileImg", profileImgInPost);

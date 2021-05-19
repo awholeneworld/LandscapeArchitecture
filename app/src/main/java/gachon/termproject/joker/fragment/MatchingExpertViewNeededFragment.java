@@ -2,22 +2,18 @@ package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,20 +22,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.WritePostActivity;
-import gachon.termproject.joker.adapter.PostAdapter;
+import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.MatchingWritePostActivity;
+import gachon.termproject.joker.adapter.MatchingPostAdapter;
 import gachon.termproject.joker.container.PostContent;
 
 import static android.app.Activity.RESULT_OK;
-import static gachon.termproject.joker.UserInfo.userId;
 
-public class MatchingExpertViewAwaitingFragment extends Fragment {
+public class MatchingExpertViewNeededFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -49,7 +43,7 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
-    PostAdapter postAdapter;
+    MatchingPostAdapter matchingpostAdapter;
     ValueEventListener postsListener;
     String category;
     Boolean topScrolled;
@@ -58,9 +52,9 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_expert_view_await, container, false);
+        view = inflater.inflate(R.layout.matching_on_progress, container, false);
 
-        category = "expertAwaiting";
+        category = "matchNeeded";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
@@ -70,12 +64,12 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("Matching/" + category);
 
         postContentList = new ArrayList<>();
-        postAdapter = new PostAdapter(getActivity(), postContentList);
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList);
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
-        contents.setAdapter(postAdapter);
+        contents.setAdapter(matchingpostAdapter);
         /*
         contents.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -114,10 +108,17 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
             }
         });
         */
+
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postAdapter.notifyDataSetChanged();
+                postContentList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    postContent = snapshot.getValue(PostContent.class);
+                    if (postContent.userId == UserInfo.userId)
+                        postContentList.add(0, postContent);
+                }
+                matchingpostAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -125,54 +126,8 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
 
             }
         };
-        String url = "Posts/matching";
 
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference(url);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String tempUrl = url;
-                    tempUrl += "/" + snapshot.getKey();
-                    DatabaseReference tempDatabaseReference;
-                    tempDatabaseReference = firebaseDatabase.getReference(tempUrl);
-                    Log.e("a", snapshot.getValue().toString());
-                    tempDatabaseReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot1) {
-                            for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
-                                if (ssnapshot.getKey().equals("expertBool") && ssnapshot.getValue().toString().equals("false")) {
-                                    //자기거만 넣음
-                                    postContent = snapshot.getValue(PostContent.class);
-                                    postContentList.add(0, postContent);
-                                    postAdapter.notifyDataSetChanged();
-                                }
-                            }
-
-                        }
-
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                        }
-                    });
-
-
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-
-
-        //databaseReference.addListenerForSingleValueEvent(postsListener);
+        databaseReference.addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -185,8 +140,8 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "matching"); //intent.putExtra("cateory", "free");
+                Intent intent = new Intent(getActivity(), MatchingWritePostActivity.class);
+                intent.putExtra("category", category);
                 startActivityForResult(intent, 1);
             }
         });
@@ -214,7 +169,7 @@ public class MatchingExpertViewAwaitingFragment extends Fragment {
         @Override
         public void onDelete(PostContent postContent) {
             postContentList.remove(postContent);
-            postAdapter.notifyDataSetChanged();
+            matchingpostAdapter.notifyDataSetChanged();
         }
 
         @Override

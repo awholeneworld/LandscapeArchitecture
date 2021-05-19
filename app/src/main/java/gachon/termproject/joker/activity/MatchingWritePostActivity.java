@@ -45,7 +45,7 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.PostImage;
 import gachon.termproject.joker.container.PostContent;
 
-public class Matching_WritePostActivity extends AppCompatActivity {
+public class MatchingWritePostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private FirebaseHelper firebaseHelper = new FirebaseHelper(this);
@@ -236,7 +236,7 @@ public class Matching_WritePostActivity extends AppCompatActivity {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(dpToPx(35),0, dpToPx(35),0);
 
-            PostImage postimage = new PostImage(Matching_WritePostActivity.this, image, layoutParams);
+            PostImage postimage = new PostImage(MatchingWritePostActivity.this, image, layoutParams);
 
 
             layout.addView(postimage);
@@ -342,12 +342,12 @@ public class Matching_WritePostActivity extends AppCompatActivity {
                                 });
                             }
 
-                            Toast.makeText(Matching_WritePostActivity.this, "등록중 입니다", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MatchingWritePostActivity.this, "등록중 입니다", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             } catch (NullPointerException e) {
-                Toast.makeText(Matching_WritePostActivity.this, "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MatchingWritePostActivity.this, "이미지 업로드 실패", Toast.LENGTH_SHORT).show();
             }
         }
     }

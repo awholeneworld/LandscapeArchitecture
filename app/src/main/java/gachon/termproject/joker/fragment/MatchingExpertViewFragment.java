@@ -18,7 +18,7 @@ public class MatchingExpertViewFragment extends Fragment {
     private FragmentManager fm;
     private TabLayout tabs;
     private View view;
-    private MatchingOnProgressFragment onProgress;
+    private MatchingExpertViewNeededFragment matchNeeded;
     private MatchingExpertViewAwaitingFragment awaiting;
     private MatchingExpertViewCompleteFragment complete;
     private MatchingExpertListFragment expertList;
@@ -31,9 +31,9 @@ public class MatchingExpertViewFragment extends Fragment {
         fm = getChildFragmentManager();
         tabs = view.findViewById(R.id.tabs);
 
-        if (onProgress == null) {
-            onProgress = new MatchingOnProgressFragment();
-            fm.beginTransaction().add(R.id.matching_expert_frame, onProgress).commit();
+        if (matchNeeded == null) {
+            matchNeeded = new MatchingExpertViewNeededFragment();
+            fm.beginTransaction().add(R.id.matching_expert_frame, matchNeeded).commit();
         }
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -44,7 +44,7 @@ public class MatchingExpertViewFragment extends Fragment {
                         if (awaiting != null) fm.beginTransaction().hide(awaiting).commit();
                         if (complete != null) fm.beginTransaction().hide(complete).commit();
                         if (expertList != null) fm.beginTransaction().hide(expertList).commit();
-                        fm.beginTransaction().show(onProgress).commit();
+                        fm.beginTransaction().show(matchNeeded).commit();
                         break;
                     case 1:
                         if (awaiting == null) {
@@ -53,7 +53,7 @@ public class MatchingExpertViewFragment extends Fragment {
                         }
                         if (complete != null) fm.beginTransaction().hide(complete).commit();
                         if (expertList != null) fm.beginTransaction().hide(expertList).commit();
-                        fm.beginTransaction().hide(onProgress).commit();
+                        fm.beginTransaction().hide(matchNeeded).commit();
                         fm.beginTransaction().show(awaiting).commit();
                         break;
                     case 2:
@@ -63,7 +63,7 @@ public class MatchingExpertViewFragment extends Fragment {
                         }
                         if (awaiting != null) fm.beginTransaction().hide(awaiting).commit();
                         if (expertList != null) fm.beginTransaction().hide(expertList).commit();
-                        fm.beginTransaction().hide(onProgress).commit();
+                        fm.beginTransaction().hide(matchNeeded).commit();
                         fm.beginTransaction().show(complete).commit();
                         break;
                     case 3:
@@ -73,7 +73,7 @@ public class MatchingExpertViewFragment extends Fragment {
                         }
                         if (awaiting != null) fm.beginTransaction().hide(awaiting).commit();
                         if (complete != null) fm.beginTransaction().hide(complete).commit();
-                        fm.beginTransaction().hide(onProgress).commit();
+                        fm.beginTransaction().hide(matchNeeded).commit();
                         fm.beginTransaction().show(expertList).commit();
                         break;
                 }

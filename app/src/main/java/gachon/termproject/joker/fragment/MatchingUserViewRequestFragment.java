@@ -2,7 +2,6 @@ package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +22,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.WritePostActivity;
+import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.MatchingWritePostActivity;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
-import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.container.PostContent;
 
 import static android.app.Activity.RESULT_OK;
-import static gachon.termproject.joker.UserInfo.userId;
 
-public class MatchingOnProgressFragment extends Fragment {
+public class MatchingUserViewRequestFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -45,7 +41,6 @@ public class MatchingOnProgressFragment extends Fragment {
     private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    DatabaseReference ddatabaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
@@ -59,14 +54,14 @@ public class MatchingOnProgressFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_on_progress, container, false);
 
-        category = "matching";
+        category = "userRequests";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts/" + category);
+        databaseReference = firebaseDatabase.getReference("Matching/" + category);
 
         postContentList = new ArrayList<>();
         matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList);
@@ -117,6 +112,12 @@ public class MatchingOnProgressFragment extends Fragment {
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postContentList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    postContent = snapshot.getValue(PostContent.class);
+                    if (postContent.userId == UserInfo.userId)
+                    postContentList.add(0, postContent);
+                }
                 matchingpostAdapter.notifyDataSetChanged();
             }
 
@@ -125,57 +126,6 @@ public class MatchingOnProgressFragment extends Fragment {
 
             }
         };
-
-
-
-        String url = "Posts/matching";
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        ddatabaseReference = firebaseDatabase.getReference(url);
-        ddatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String tempUrl = url;
-                    tempUrl += "/" + snapshot.getKey();
-                    DatabaseReference tempDatabaseReference;
-                    tempDatabaseReference = firebaseDatabase.getReference(tempUrl);
-                    tempDatabaseReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot1) {
-                            for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
-
-                                //ssnapshot.getKey값 중에서 userId의 값과 같은 것이면서, 그 값이 UserInfo.userId의 값과 일치하는지를 확인.
-                                if (ssnapshot.getKey().equals("userId") && ssnapshot.getValue().toString().equals(userId)) {
-                                    //자기거만 넣음
-                                    postContent = snapshot.getValue(PostContent.class);
-                                    postContentList.add(0, postContent);
-                                    //Log.e("????????", supertemp + "nice");
-                                    matchingpostAdapter.notifyDataSetChanged();
-
-                                }
-                            }
-
-                        }
-
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                        }
-                    });
-
-
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-
 
         databaseReference.addListenerForSingleValueEvent(postsListener);
 
@@ -190,8 +140,8 @@ public class MatchingOnProgressFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "matching");
+                Intent intent = new Intent(getActivity(), MatchingWritePostActivity.class);
+                intent.putExtra("category", category);
                 startActivityForResult(intent, 1);
             }
         });
