@@ -137,15 +137,6 @@ public class MatchingExpertViewNeededFragment extends Fragment {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MatchingWritePostActivity.class);
-                intent.putExtra("category", category);
-                startActivityForResult(intent, 1);
-            }
-        });
-
         return view;
     }
 
