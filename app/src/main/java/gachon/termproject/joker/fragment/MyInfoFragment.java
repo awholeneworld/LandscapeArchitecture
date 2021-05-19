@@ -1,6 +1,8 @@
 package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,6 +60,7 @@ public class MyInfoFragment extends Fragment {
 
         // 프사 설정
         ImageView profileImg = view.findViewById(R.id.profileImage);
+        //profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         if (!UserInfo.profileImg.equals("None"))
             Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
 

@@ -1,9 +1,12 @@
 package gachon.termproject.joker.activity;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +26,14 @@ public class CheckPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_password);
 
+        //toolbar를 activity bar로 지정!
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
+        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
+
         check_password_text = (EditText)findViewById(R.id.check_password_text);
 
         check_password_button = (Button)findViewById(R.id.check_password_button);
@@ -36,6 +47,16 @@ public class CheckPasswordActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -5,11 +5,11 @@
     android:id="@+id/post_myinfo_card_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
     app:cardElevation="0dp"
     app:cardBackgroundColor="@android:color/white">
 
     <ImageView
+        android:background="@drawable/myinfo_post_border"
         android:layout_width="130dp"
         android:layout_height="147dp"
         android:id="@+id/image"/>
