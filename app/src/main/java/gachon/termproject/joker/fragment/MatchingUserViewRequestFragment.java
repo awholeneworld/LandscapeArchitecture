@@ -114,8 +114,8 @@ public class MatchingUserViewRequestFragment extends Fragment {
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(PostContent.class);
-                    if (postContent.getIsMatched() == false)
-                        postContentList.add(0, postContent);
+                    //if (postContent.getIsMatched() == false)
+                        //postContentList.add(0, postContent);
                 }
                 matchingpostAdapter.notifyDataSetChanged();
             }

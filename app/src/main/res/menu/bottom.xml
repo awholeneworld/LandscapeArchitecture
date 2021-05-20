@@ -16,7 +16,7 @@
     <item
         android:id="@+id/matching"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_sync_24"
+        android:icon="@drawable/matching_icon"
         android:title="Matching" />
 
     <item
