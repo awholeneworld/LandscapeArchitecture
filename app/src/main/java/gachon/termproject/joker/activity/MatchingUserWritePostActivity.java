@@ -55,7 +55,6 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
     private String userId = UserInfo.userId; // 누가 업로드 했는지 알기 위함
     private String nickname = UserInfo.nickname;
     private String postId;
-    private String expertId;
     private LinearLayout layout;
     private EditText title, content;
     private TextView location_select;
@@ -277,7 +276,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, false, locationSelected, false);
+            postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, null, locationSelected, false);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -323,7 +322,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                                     String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, false, locationSelected, false);
+                                    postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, null, locationSelected, false);
 
                                     // Firebase Realtime DB에 글 내용 올리기
                                     databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

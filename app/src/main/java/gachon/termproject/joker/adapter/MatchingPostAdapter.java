@@ -1,5 +1,6 @@
 package gachon.termproject.joker.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.UserInfo;
@@ -28,11 +30,13 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
     private Context context;
     private FirebaseHelper firebaseHelper;
     ArrayList<PostContent> postContentList;
+    String category;
 
-    public MatchingPostAdapter(Context context, ArrayList<PostContent> postContentList)
+    public MatchingPostAdapter(Context context, ArrayList<PostContent> postContentList, String category)
     {
         this.context = context;
         this.postContentList = postContentList;
+        this.category = category;
     }
 
     public void setOnPostListener(OnPostListener onPostListener){
@@ -45,14 +49,12 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         TextView date;
         TextView content;
         ImageView image;
-        String categoryOfPost;
         String userIdInPost;
         String profileImgInPost;
         String titleInPost;
         String nicknameInPost;
         String timeInPost;
         String postIdInPost;
-        boolean expertBool;
         boolean isMatched;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
@@ -76,19 +78,18 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
                     else
                         intent = new Intent(context, MatchingExpertSeePostActivity.class);
 
-                    intent.putExtra("category", categoryOfPost);
+                    intent.putExtra("category", category);
                     intent.putExtra("userId", userIdInPost);
                     intent.putExtra("profileImg", profileImgInPost);
                     intent.putExtra("title", titleInPost);
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
-                    intent.putExtra("expertBool", expertBool);
                     intent.putExtra("isMatched", isMatched);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putStringArrayListExtra("location", locationOfUser);
-                    context.startActivity(intent);
+                    ((Activity) context).startActivityForResult(intent, 1);
                 }
             });
         }
@@ -114,7 +115,6 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         ArrayList<String> locationList = content.getLocation();
 
         // 뷰홀더 클래스의 전역 변수 설정
-        holder.categoryOfPost = content.getCategory();
         holder.userIdInPost = content.getUserId();
         holder.profileImgInPost = content.getProfileImg();
         holder.titleInPost = contentTitle;
@@ -123,7 +123,6 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         holder.postIdInPost = content.getPostId();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
-        holder.expertBool = content.getExpertBool();
         holder.isMatched = content.getIsMatched();
         holder.locationOfUser = locationList;
 
@@ -134,11 +133,17 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
             holder.title.setText(contentTitle);
 
         holder.nickname.setText(contentNickname);
-        String locationStr = "";
-        for (String item : locationList) {
-            locationStr += item + " | ";
+
+        if (locationList.size() == 1)
+            holder.content.setText(locationList.get(0));
+        else {
+            String locationStr = "";
+            for (String item : locationList) {
+                locationStr += item + " | ";
+            }
+            holder.content.setText(locationStr);
         }
-        holder.content.setText(locationStr);
+
         holder.date.setText(contentTime);
 
         /*

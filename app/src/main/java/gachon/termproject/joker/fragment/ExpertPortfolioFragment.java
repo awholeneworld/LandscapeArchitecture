@@ -54,10 +54,10 @@ public class ExpertPortfolioFragment extends AppCompatActivity {
         String expertProfileImg = intent.getStringExtra("profileImg");
         String expertPortfolioImg = intent.getStringExtra("portfolioImg");
         String expertPortfolioWeb = intent.getStringExtra("portfolioWeb");
-        ArrayList<String> location = intent.getStringArrayListExtra("location");
+        ArrayList<String> expertLocation = intent.getStringArrayListExtra("location");
 
         // 프로필 이미지 설정
-        if (!UserInfo.profileImg.equals("None"))
+        if (!expertProfileImg.equals("None"))
             Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
 
         // 닉네임 설정
@@ -65,7 +65,7 @@ public class ExpertPortfolioFragment extends AppCompatActivity {
 
         // 지역 설정
         locationStr = "";
-        for (String item : UserInfo.location) {
+        for (String item : expertLocation) {
             locationStr += item + " ";
         }
         locationView.setText(locationStr);

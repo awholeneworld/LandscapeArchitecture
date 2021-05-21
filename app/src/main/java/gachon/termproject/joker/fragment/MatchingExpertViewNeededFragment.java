@@ -16,11 +16,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -37,14 +40,12 @@ public class MatchingExpertViewNeededFragment extends Fragment {
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
     private FirebaseUser user;
-    private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
-    ValueEventListener postsListener;
-    String category;
+    ChildEventListener childEventListener;
     Boolean topScrolled;
     Boolean doUpdate;
 
@@ -53,17 +54,15 @@ public class MatchingExpertViewNeededFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_expert_view_needed, container, false);
 
-        category = "matchNeeded";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Matching/" + category);
+        databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
-        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList);
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "needed");
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -108,30 +107,47 @@ public class MatchingExpertViewNeededFragment extends Fragment {
         });
         */
 
-        postsListener = new ValueEventListener() {
+        childEventListener = new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 postContentList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                if (!snapshot.child("requests/" + UserInfo.userId).exists()) {
                     postContent = snapshot.getValue(PostContent.class);
-                    if (postContent.userId == UserInfo.userId)
-                        postContentList.add(0, postContent);
+                    postContentList.add(0, postContent);
                 }
+
                 matchingpostAdapter.notifyDataSetChanged();
+                databaseReference.removeEventListener(this);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
         };
 
-        databaseReference.addListenerForSingleValueEvent(postsListener);
+        databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
                 refresher.setRefreshing(false);
             }
         });
@@ -145,7 +161,7 @@ public class MatchingExpertViewNeededFragment extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
             }
         }
     }

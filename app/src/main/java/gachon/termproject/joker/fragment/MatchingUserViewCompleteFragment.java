@@ -22,31 +22,27 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.WritePostActivity;
-import gachon.termproject.joker.adapter.PostAdapter;
+import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.MatchingUserWritePostActivity;
+import gachon.termproject.joker.adapter.MatchingPostAdapter;
 import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
-import static gachon.termproject.joker.UserInfo.userId;
 
 public class MatchingUserViewCompleteFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
     private FirebaseUser user;
-    private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    DatabaseReference tempDatabaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
-    PostAdapter postAdapter;
+    MatchingPostAdapter matchingpostAdapter;
     ValueEventListener postsListener;
     String category;
     Boolean topScrolled;
@@ -57,23 +53,20 @@ public class MatchingUserViewCompleteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_user_view_complete, container, false);
 
-        category = "userMatchComplete";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Matching/" + category);
-
+        databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
-        postAdapter = new PostAdapter(getActivity(), postContentList);
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "complete");
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
-        contents.setAdapter(postAdapter);
+        contents.setAdapter(matchingpostAdapter);
         /*
         contents.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -112,11 +105,17 @@ public class MatchingUserViewCompleteFragment extends Fragment {
             }
         });
         */
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                postAdapter.notifyDataSetChanged();
+                postContentList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    postContent = snapshot.getValue(PostContent.class);
+                    if (postContent.getIsMatched())
+                        postContentList.add(0, postContent);
+                }
+                matchingpostAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -124,57 +123,13 @@ public class MatchingUserViewCompleteFragment extends Fragment {
 
             }
         };
-        String url = "Posts/matching";
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference(url);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String tempUrl = url;
-                    tempUrl += "/" + snapshot.getKey();
-                    DatabaseReference tempDatabaseReference;
-                    tempDatabaseReference = firebaseDatabase.getReference(tempUrl);
-                    tempDatabaseReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot1) {
-                            for (DataSnapshot ssnapshot : dataSnapshot1.getChildren()) {
-                                if (ssnapshot.getKey().equals("userId") && ssnapshot.getValue().toString().equals(userId)) {
-                                    //자기거만 넣음
-                                    postContent = snapshot.getValue(PostContent.class);
-                                    postContentList.add(0, postContent);
-                                    postAdapter.notifyDataSetChanged();
-                                }
-                            }
 
-                        }
-
-
-                        @Override
-                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                        }
-                    });
-
-
-                }
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-
-            }
-        });
-
-
-        databaseReference.addListenerForSingleValueEvent(postsListener);
+        databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
             }
         });
@@ -188,7 +143,7 @@ public class MatchingUserViewCompleteFragment extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
             }
         }
     }
@@ -202,7 +157,7 @@ public class MatchingUserViewCompleteFragment extends Fragment {
         @Override
         public void onDelete(PostContent postContent) {
             postContentList.remove(postContent);
-            postAdapter.notifyDataSetChanged();
+            matchingpostAdapter.notifyDataSetChanged();
         }
 
         @Override

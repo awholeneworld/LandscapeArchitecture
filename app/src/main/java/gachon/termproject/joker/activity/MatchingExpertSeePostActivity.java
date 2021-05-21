@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,16 +25,25 @@ import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import gachon.termproject.joker.Content.RequestFromExpertContent;
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.UserInfo;
 
 public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
-    private LinearLayout applyItem;
     private Button applyBtn;
     private Button cancelBtn;
+    private HashMap<String, RequestFromExpertContent> requestsList;
+    private RequestFromExpertContent request;
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도
@@ -59,11 +69,12 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
 
         // 인텐트 데이터 가져오기
         Intent intent = getIntent();
+        String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
-        ArrayList<Integer> order = intent.getIntegerArrayListExtra("order");
+        requestsList = intent.getParcelableExtra("requests");
 
         // 레이아웃 가져오기
         ImageView profile = findViewById(R.id.postProfile);
@@ -71,12 +82,15 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         TextView nickname = findViewById(R.id.postNickname);
         TextView time = findViewById(R.id.postTime);
         container = findViewById(R.id.see_post_content);
-        applyItem = findViewById(R.id.myApplication);
         applyBtn = findViewById(R.id.matching_expert_apply_button);
-        cancelBtn = findViewById(R.id.matching_apply_item_cancel);
+        cancelBtn = findViewById(R.id.matching_expert_cancel_button);
 
-        // 신청 누르면 생기어야 함
-        applyItem.setVisibility(View.INVISIBLE);
+        // 이미 매칭 요청 했는지 확인
+        if (category.equals("awaiting") || category.equals("complete"))
+            applyBtn.setVisibility(View.INVISIBLE);
+        else
+            cancelBtn.setVisibility(View.INVISIBLE);
+
 
         // 제목, 닉네임, 작성시간 세팅
         title.setText(intent.getStringExtra("title"));
@@ -120,16 +134,39 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         applyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applyBtn.setVisibility(View.INVISIBLE);
-                applyItem.setVisibility(View.VISIBLE);
+                applyBtn.setEnabled(false);
+                if (requestsList == null) requestsList = new HashMap<>();
+                if (request == null) request = new RequestFromExpertContent();
+                request.setExpertProfileImg(UserInfo.profileImg);
+                request.setExpertNickname(UserInfo.nickname);
+                request.setExpertPortfolioImg(UserInfo.portfolioImg);
+                request.setExpertPortfolioWeb(UserInfo.portfolioWeb);
+                request.setExpertLocation(UserInfo.location);
+                requestsList.put(UserInfo.userId, request);
+
+                FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests").setValue(requestsList).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                        applyBtn.setVisibility(View.INVISIBLE);
+                        cancelBtn.setVisibility(View.VISIBLE);
+                        cancelBtn.setEnabled(true);
+                    }
+                });
             }
         });
 
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applyItem.setVisibility(View.INVISIBLE);
-                applyBtn.setVisibility(View.VISIBLE);
+                cancelBtn.setEnabled(false);
+                FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.userId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                        cancelBtn.setVisibility(View.INVISIBLE);
+                        applyBtn.setVisibility(View.VISIBLE);
+                        applyBtn.setEnabled(true);
+                    }
+                });
             }
         });
     }
@@ -162,6 +199,7 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        setResult(RESULT_OK);
         finish();
     }
 

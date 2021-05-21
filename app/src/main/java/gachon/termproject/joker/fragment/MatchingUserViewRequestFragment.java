@@ -63,7 +63,7 @@ public class MatchingUserViewRequestFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
-        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList);
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "request");
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -114,8 +114,8 @@ public class MatchingUserViewRequestFragment extends Fragment {
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(PostContent.class);
-                    //if (postContent.getIsMatched() == false)
-                        //postContentList.add(0, postContent);
+                    if (!postContent.getIsMatched())
+                        postContentList.add(0, postContent);
                 }
                 matchingpostAdapter.notifyDataSetChanged();
             }
@@ -126,12 +126,12 @@ public class MatchingUserViewRequestFragment extends Fragment {
             }
         };
 
-        databaseReference.addListenerForSingleValueEvent(postsListener);
+        databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
             }
         });
@@ -152,7 +152,7 @@ public class MatchingUserViewRequestFragment extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
             }
         }
     }

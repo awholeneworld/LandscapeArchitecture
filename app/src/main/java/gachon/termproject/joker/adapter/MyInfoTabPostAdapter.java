@@ -29,6 +29,7 @@ import java.util.Comparator;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.MainActivity;
 import gachon.termproject.joker.activity.SeePostActivity;
 import gachon.termproject.joker.Content.PostContent;
 
@@ -36,19 +37,54 @@ import gachon.termproject.joker.Content.PostContent;
 public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdapter.ViewHolder> {
     private Context context;
     private ArrayList<PostContent> myInfoPostList;
-    private long categoryNum;
+    private ArrayList<String> userPostsIdList;
     private int finishCount = 0;
 
     public MyInfoTabPostAdapter(Context context) {
         this.context = context;
         myInfoPostList = new ArrayList<>();
+        //userPostsIdList = new ArrayList<>();
 
-        // 실시간 업데이트
+        /*
+        for (String myPostId : MainActivity.userPostsIdList) {
+            FirebaseDatabase.getInstance().getReference().child("Posts").orderByChild(myPostId).addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                    if (snapshot.hasChild(myPostId)) {
+                        int i = 0;
+                    }
+                    PostContent myInfoPostContent = snapshot.getValue(PostContent.class);
+                    myInfoPostList.add(0, myInfoPostContent);
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                }
+            });
+        }
+        */
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("Posts");
         dbRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                categoryNum = dataSnapshot.getChildrenCount();
+                final long categoryNum = dataSnapshot.getChildrenCount();
                 dbRef.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
@@ -59,6 +95,7 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
                                 for (DataSnapshot item : snapshot.getChildren()) {
                                     PostContent myInfoPostContent = item.getValue(PostContent.class);
                                     myInfoPostList.add(0, myInfoPostContent);
+                                    userPostsIdList.add(0, myInfoPostContent.getPostId());
                                 }
 
                                 finishCount++;
@@ -75,6 +112,7 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
                                         }
                                     });
 
+                                    MainActivity.userPostsIdList = userPostsIdList;
                                     notifyDataSetChanged();
                                     finishCount = 0;
                                 }

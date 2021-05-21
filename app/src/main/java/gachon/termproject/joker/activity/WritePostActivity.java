@@ -48,11 +48,10 @@ public class WritePostActivity extends AppCompatActivity {
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private FirebaseHelper firebaseHelper = new FirebaseHelper(this);
     private PostContent postContent;
-    private Uri image; // 이미지 저장 변수
+    private Uri image;
     private ArrayList<String> contentList = new ArrayList<>();
     private ArrayList<Uri> imagesList = new ArrayList<>();
-    private ArrayList<String> forLocation = new ArrayList<>(UserInfo.location);
-    private String userId = UserInfo.userId; // 누가 업로드 했는지 알기 위함
+    private String userId = UserInfo.userId;
     private String nickname = UserInfo.nickname;
     private String postId;
     private String expertId;
@@ -79,6 +78,7 @@ public class WritePostActivity extends AppCompatActivity {
         TextView textview = findViewById(R.id.writepost_toolbar_textview);
         textview.setText("게시글 작성");
 
+        // 레이아웃 가져오기
         layout = findViewById(R.id.writepost_layout);
         title = findViewById(R.id.writepost_title);
         content = findViewById(R.id.writepost_content);
@@ -86,6 +86,7 @@ public class WritePostActivity extends AppCompatActivity {
         register = findViewById(R.id.writepost_assign);
 
         // 어떤 게시판에서 올리려고 하는 글인지 카테고리 정보 가져오기
+        // 후기 게시판이면 어떤 전문가에게 후기를 쓸 것인지 전문가 아이디 가져오기
         Intent intent = getIntent();
         String category = intent.getStringExtra("category");
         expertId = intent.getStringExtra("expertId");
@@ -99,7 +100,7 @@ public class WritePostActivity extends AppCompatActivity {
                     selectFile();
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Image는 10장까지 업로드 가능합니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "이미지는 10장까지 업로드 가능합니다", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -120,6 +121,18 @@ public class WritePostActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // 이미지 파일 선택 후 실행되는 액티비티 : 이미지 동적 생성
@@ -150,18 +163,6 @@ public class WritePostActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     // 파일선택 함수
     private void selectFile() {
         Intent intent = new Intent();
@@ -185,12 +186,13 @@ public class WritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, null, null, false);
+            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, null, false);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
+                    MainActivity.userPostsIdList.add(0, postId); // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
                     Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK, new Intent());
                     finish();
@@ -231,12 +233,13 @@ public class WritePostActivity extends AppCompatActivity {
                                     String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, null, null, false);
+                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId, null, false);
 
                                     // Firebase Realtime DB에 글 내용 올리기
                                     databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
+                                            MainActivity.userPostsIdList.add(0, postId); // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
                                             Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                             setResult(RESULT_OK, new Intent());
                                             finish();

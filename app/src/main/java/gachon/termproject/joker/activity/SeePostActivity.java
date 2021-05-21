@@ -48,8 +48,6 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
 import gachon.termproject.joker.Content.PostCommentContent;
 
-import static gachon.termproject.joker.activity.StartUpPageActivity.autoLogin;
-
 public class SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
     private RecyclerView commentSection;
@@ -83,7 +81,7 @@ public class SeePostActivity extends AppCompatActivity {
         ArrayList<String> images = intent.getStringArrayListExtra("images");
 
         // 작성자 본인 확인
-        for (String myPostId : autoLogin ? StartUpPageActivity.userPostsIdList : LoginActivity.userPostsIdList) {
+        for (String myPostId : MainActivity.userPostsIdList) {
             if (postId.equals(myPostId))
                 isWriter = true;
         }

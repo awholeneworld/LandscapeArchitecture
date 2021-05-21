@@ -1,5 +1,6 @@
 package gachon.termproject.joker.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -11,6 +12,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.ChatFragment;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ChatFragment chat;
     private MyInfoFragment myInfo;
     private int backPressed = 0;
+    public static ArrayList<String> userPostsIdList;
     ActionBar actionBar;
     TextView action_bar_title;
 
@@ -75,6 +79,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 자기가 작성한 포스트 아이디 가져오기
+        Intent intent = getIntent();
+        userPostsIdList = intent.getStringArrayListExtra("userPostsIdList");
+
+        // 일반인인지 전문가인지에 따라 매칭 화면 다르게 설정
         FragmentManager fm = getSupportFragmentManager();
         if (UserInfo.isPublic) { //user라면
             if (matchingUser == null) {
@@ -90,6 +99,40 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setFrag(0); // 로그인 후 이동하는 첫 화면을 홈으로 설정
+    }
+
+    //back arrow button 눌렀을 때 무조건 home으로
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager fm = getSupportFragmentManager(); // 프래그먼트 간의 이동을 도와주는 것
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (home != null) fm.beginTransaction().show(home).commit();
+                if (community != null) fm.beginTransaction().hide(community).commit();
+                if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
+                if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
+                if (chat != null) fm.beginTransaction().hide(chat).commit();
+                if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
+
+                action_bar_title.setText("JOKER");
+                actionBar.setDisplayHomeAsUpEnabled(false); //뒤로가기 버튼 없애주깅
+                bottomNavigationView.setSelectedItemId(R.id.home);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // 뒤로가기 한번 누를 시 홈으로 이동
+    // 두번 누를 시 앱 종료
+    @Override
+    public void onBackPressed() {
+        if (backPressed == 0) {
+            setFrag(0);
+            bottomNavigationView.getMenu().getItem(0).setChecked(true);
+            backPressed++;
+        }
+        else finish();
     }
 
     // 하단 내비게이션바에서 누른 버튼 작동 함수
@@ -113,7 +156,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (home != null) fm.beginTransaction().show(home).commit();
                 if (community != null) fm.beginTransaction().hide(community).commit();
-                matching_convert_hide(fm);
+                if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
+                if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
                 if (chat != null) fm.beginTransaction().hide(chat).commit();
                 if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
 
@@ -186,60 +230,5 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
         }
-    }
-
-
-
-    //back arrow button 눌렀을 때 무조건 home으로
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        FragmentManager fm = getSupportFragmentManager(); // 프래그먼트 간의 이동을 도와주는 것
-
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                if (home != null) fm.beginTransaction().show(home).commit();
-                if (community != null) fm.beginTransaction().hide(community).commit();
-                matching_convert_hide(fm);
-                if (chat != null) fm.beginTransaction().hide(chat).commit();
-                if (myInfo != null) fm.beginTransaction().hide(myInfo).commit();
-
-                action_bar_title.setText("JOKER");
-                actionBar.setDisplayHomeAsUpEnabled(false); //뒤로가기 버튼 없애주깅
-                bottomNavigationView.setSelectedItemId(R.id.home);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void matching_convert_hide(FragmentManager fm){
-        if (UserInfo.isPublic) { //user라면
-            if (matchingUser != null) fm.beginTransaction().hide(matchingUser).commit();
-        }
-        else {
-            if (matchingExpert != null) fm.beginTransaction().hide(matchingExpert).commit();
-        }
-    }
-
-
-    public void matching_convert_show(FragmentManager fm){
-        if (UserInfo.isPublic) {
-            if (matchingUser != null) fm.beginTransaction().show(matchingUser).commit();
-        }
-        else{
-            if (matchingExpert != null) fm.beginTransaction().show(matchingExpert).commit();
-        }
-    }
-
-
-    // 뒤로가기 한번 누를 시 홈으로 이동
-    // 두번 누를 시 앱 종료
-    @Override
-    public void onBackPressed() {
-        if (backPressed == 0) {
-            setFrag(0);
-            bottomNavigationView.getMenu().getItem(0).setChecked(true);
-            backPressed++;
-        }
-        else finish();
     }
 }

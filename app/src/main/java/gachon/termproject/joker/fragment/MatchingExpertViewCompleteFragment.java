@@ -13,20 +13,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.adapter.PostAdapter;
+import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.adapter.MatchingPostAdapter;
 import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
@@ -36,14 +38,12 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
     private FirebaseUser user;
-    private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
     PostContent postContent;
-    PostAdapter postAdapter;
-    ValueEventListener postsListener;
-    String category;
+    MatchingPostAdapter matchingpostAdapter;
+    ChildEventListener childEventListener;
     Boolean topScrolled;
     Boolean doUpdate;
 
@@ -52,22 +52,20 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.matching_expert_view_complete, container, false);
 
-        category = "expertMatchComplete";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Matching/" + category);
+        databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
-        postAdapter = new PostAdapter(getActivity(), postContentList);
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "complete");
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
-        contents.setAdapter(postAdapter);
+        contents.setAdapter(matchingpostAdapter);
         /*
         contents.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -106,29 +104,49 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
             }
         });
         */
-        postsListener = new ValueEventListener() {
+
+        childEventListener = new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 postContentList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                DataSnapshot child = snapshot.child("requests/" + UserInfo.userId);
+
+                if (child.exists() && child.child("isMatched").getValue().toString().equals("true")) {
                     postContent = snapshot.getValue(PostContent.class);
                     postContentList.add(0, postContent);
                 }
-                postAdapter.notifyDataSetChanged();
+
+                matchingpostAdapter.notifyDataSetChanged();
+                databaseReference.removeEventListener(this);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
         };
 
-        databaseReference.addListenerForSingleValueEvent(postsListener);
+        databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
                 refresher.setRefreshing(false);
             }
         });
@@ -142,7 +160,7 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
             }
         }
     }
@@ -156,7 +174,7 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
         @Override
         public void onDelete(PostContent postContent) {
             postContentList.remove(postContent);
-            postAdapter.notifyDataSetChanged();
+            matchingpostAdapter.notifyDataSetChanged();
         }
 
         @Override
