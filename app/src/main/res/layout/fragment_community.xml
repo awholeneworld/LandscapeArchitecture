@@ -46,6 +46,14 @@
         android:layout_toRightOf="@+id/tabs"
         android:background="@drawable/ic_baseline_view_list_24"/>
 
+    <!--
+    <TextView
+        android:id="@+id/toolbar_bottom_boarder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/whitegray"
+        android:layout_alignTop="@+id/community_frame" />-->
+
     <FrameLayout
         android:id="@+id/community_frame"
         android:layout_width="match_parent"

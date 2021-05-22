@@ -30,6 +30,14 @@
 
         </androidx.appcompat.widget.Toolbar>
 
+        <TextView
+            android:id="@+id/toolbar_bottom_boarder"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/whitegray"
+            android:layout_below="@+id/toolbar"
+            android:layout_marginBottom="10dp"/>
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/ScrollView1"
             android:layout_width="match_parent"
