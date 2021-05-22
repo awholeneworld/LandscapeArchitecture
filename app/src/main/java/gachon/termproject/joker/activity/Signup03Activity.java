@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.List;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.UserInfo;
 
 public class Signup03Activity extends AppCompatActivity {
     public static String nickname; // 회원가입을 위한 전역변수
@@ -48,9 +49,11 @@ public class Signup03Activity extends AppCompatActivity {
                 //닉네임을 입력받음
                 String temp = nicknameText.getText().toString();
 
-                if (temp.length() == 0) {
+                if (temp.length() == 0)
                     Toast.makeText(getApplicationContext(), "닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                } else { //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
+                else if (temp.length() > 6)
+                    Toast.makeText(getApplicationContext(), "닉네임은 6자이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                else { //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
                     FirebaseFirestore.getInstance().collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -59,7 +62,6 @@ public class Signup03Activity extends AppCompatActivity {
                                 List<DocumentSnapshot> list = querySnapshot.getDocuments();
 
                                 if (list.size() == 0) {
-                                    // 닉네임 설정 후 다음 페이지로 이동
                                     nickname = temp;
                                     startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
                                 } else {
@@ -70,7 +72,6 @@ public class Signup03Activity extends AppCompatActivity {
                                             Toast.makeText(getApplicationContext(), "중복된 닉네임 입니다", Toast.LENGTH_SHORT).show();
                                             break;
                                         } else if (i == list.size() - 1) {
-                                            // 닉네임 설정 후 다음 페이지로 이동
                                             nickname = temp;
                                             startActivity(new Intent(getApplicationContext(), Signup04Activity.class));
                                         }

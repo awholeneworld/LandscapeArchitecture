@@ -31,7 +31,6 @@ public class MatchingExpertListFragment extends Fragment {
     private View view;
     private RecyclerView content;
     private SwipeRefreshLayout refresher;
-    private FirebaseFirestore fStore;
     private CollectionReference collectionReference;
     private ExpertListAdapter expertListAdapter;
     private ArrayList<ExpertListContent> expertList;
@@ -51,9 +50,7 @@ public class MatchingExpertListFragment extends Fragment {
         content.setHasFixedSize(true);
         content.setAdapter(expertListAdapter);
 
-        fStore = FirebaseFirestore.getInstance();
-        collectionReference = fStore.collection("users");
-        collectionReference.limit(50).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        OnCompleteListener onCompleteListener = new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -74,6 +71,17 @@ public class MatchingExpertListFragment extends Fragment {
                     }
                     expertListAdapter.notifyDataSetChanged();
                 }
+            }
+        };
+
+        collectionReference = FirebaseFirestore.getInstance().collection("users");
+        collectionReference.limit(50).get().addOnCompleteListener(onCompleteListener);
+
+        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                collectionReference.limit(50).get().addOnCompleteListener(onCompleteListener);
+                refresher.setRefreshing(false);
             }
         });
 
