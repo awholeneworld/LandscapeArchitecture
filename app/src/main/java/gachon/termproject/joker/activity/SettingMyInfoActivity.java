@@ -150,6 +150,12 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                     nickname.setEnabled(false);
                     checkNickname.setEnabled(false);
                 }
+                else if (temp.length() > 6) {
+                    Toast.makeText(getApplicationContext(), "닉네임은 6자 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
+                    nickname.setText(UserInfo.nickname);
+                    nickname.setEnabled(false);
+                    checkNickname.setEnabled(false);
+                }
                 else if (temp.equals(UserInfo.nickname)) {
                     Toast.makeText(getApplicationContext(), "본인의 닉네임입니다.", Toast.LENGTH_SHORT).show();
                     nickname.setEnabled(false);
@@ -216,7 +222,9 @@ public class SettingMyInfoActivity extends AppCompatActivity {
                 }
 
                 // 한줄 메시지
-                if (introMsg.getText().toString().equals(UserInfo.introduction))
+                if (introMsg.getText().toString().length() > 30)
+                    Toast.makeText(getApplicationContext(), "한줄 메시지는 30자 이하로 작성해주세요.", Toast.LENGTH_SHORT).show();
+                else if (introMsg.getText().toString().equals(UserInfo.introduction))
                     finishCount++;
                 else if (!introMsg.getText().toString().equals(UserInfo.introduction)) {
                     flag_message++;
