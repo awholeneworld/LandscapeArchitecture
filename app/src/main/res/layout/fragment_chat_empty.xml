@@ -12,8 +12,8 @@
 
         <ImageView
             android:id="@+id/empty_chat_img"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/ic_baseline_chat_24"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="250dp"/>
