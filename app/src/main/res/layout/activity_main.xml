@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <!--toolbar-->
     <androidx.appcompat.widget.Toolbar
@@ -20,7 +20,16 @@
             android:textColor="@color/mainGreen"
             android:textSize="20sp">
         </TextView>
+
     </androidx.appcompat.widget.Toolbar>
+
+    <!--
+    <TextView
+        android:id="@+id/toolbar_bottom_boarder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/whitegray"
+        app:layout_constraintBottom_toBottomOf="@+id/main_toolbar" /> -->
 
     <FrameLayout
         android:id="@+id/main_frame"

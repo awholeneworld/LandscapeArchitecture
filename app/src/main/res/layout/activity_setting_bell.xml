@@ -23,6 +23,13 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <TextView
+        android:id="@+id/toolbar_bottom_boarder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/whitegray"
+        android:layout_below="@+id/toolbar" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
