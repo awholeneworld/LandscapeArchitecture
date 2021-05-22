@@ -208,11 +208,7 @@ public class SeePostActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
 
-            //자기가 쓴 글일때 - 수정/삭제
-            case R.id.rewrite:
-                startActivity(new Intent(this, ReWritePostActivity.class));
-                break;
-
+            //자기가 쓴 글일때 - 삭제
             case R.id.delete:
 
                 break;

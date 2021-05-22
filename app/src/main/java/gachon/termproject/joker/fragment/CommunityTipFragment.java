@@ -37,7 +37,6 @@ public class CommunityTipFragment extends Fragment {
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
     private FirebaseUser user;
-    private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
@@ -56,7 +55,6 @@ public class CommunityTipFragment extends Fragment {
         category = "tip";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -133,16 +131,6 @@ public class CommunityTipFragment extends Fragment {
                 refresher.setRefreshing(false);
             }
         });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "tip");
-                startActivityForResult(intent, 1);
-            }
-        });
-
 
         return view;
     }

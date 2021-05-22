@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -65,11 +66,12 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
     private boolean is_location = false;
     private ArrayList<String> locationSelected;
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
+    private RelativeLayout loaderLayout;
 
 
     //해야 할 일!
-//    1. 게시글 저장에 선택 지역 반영하기!
-//    2. 이건 유저별로 저장되어야 하는? 글임 => 그니까 이 글은 해당 일반인 유저랑 전문가들밖에 볼수없음
+    //1. 게시글 저장에 선택 지역 반영하기!
+    //2. 이건 유저별로 저장되어야 하는? 글임 => 그니까 이 글은 해당 일반인 유저랑 전문가들밖에 볼수없음
     // => DB저장 생각하면서 짜기
 
 
@@ -95,6 +97,10 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
         imageAddButton = findViewById(R.id.writepost_imageAddButton);
         location_select = findViewById(R.id.writepost_region);
         register = findViewById(R.id.writepost_assign);
+        loaderLayout = findViewById(R.id.loaderLayout);
+
+        //로딩창쑴기기
+        loaderLayout.setVisibility(View.GONE);
 
         // 파일 선택
         imageAddButton.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +137,9 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 is_location = true;
                 location_select.setEnabled(false);
+
+                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                if(manager != null) manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 //지역선택하는 화면이 있는 relative layout -> 선택지를 화면 내로 끌고와서 보여줌
                 LinearLayout LL = findViewById(R.id.post_select_location);
@@ -177,6 +186,9 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                 } else {
                     //지금의 이 버튼은 등록 버튼!
                     if (title.length() > 0 && content.length() > 0 && locationSelected != null && !locationSelected.isEmpty()) {
+
+                        //로딩창 보여줍니당
+                        loaderLayout.setVisibility(View.VISIBLE);
                         register.setEnabled(false);
                         post();
                     }

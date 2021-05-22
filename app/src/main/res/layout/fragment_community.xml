@@ -17,23 +17,23 @@
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/gray">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab1"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="자유" />
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:id="@+id/tab1"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="자유" />-->
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab2"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="후기" />
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:id="@+id/tab2"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="후기" />-->
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab3"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="조경 팁" />
+<!--        <com.google.android.material.tabs.TabItem-->
+<!--            android:id="@+id/tab3"-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="조경 팁" />-->
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -54,13 +54,36 @@
         android:background="@color/whitegray"
         android:layout_alignTop="@+id/community_frame" />-->
 
-    <FrameLayout
+<!--    <FrameLayout-->
+<!--        android:id="@+id/community_frame"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@id/tabs"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/tabs">-->
+<!--    </FrameLayout>-->
+
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/community_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tabs"
         android:layout_alignParentBottom="true"
         app:layout_constraintTop_toBottomOf="@id/tabs">
-    </FrameLayout>
+    </androidx.viewpager.widget.ViewPager>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_baseline_add_24"
+        app:fabSize="normal"
+        android:backgroundTint="#3CAF5C"
+        app:tint="@null"/>
+
 
 </RelativeLayout>

@@ -37,7 +37,6 @@ public class CommunityFreeFragment extends Fragment {
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
     private FirebaseUser user;
-    private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
@@ -56,7 +55,6 @@ public class CommunityFreeFragment extends Fragment {
         category = "free";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -134,14 +132,7 @@ public class CommunityFreeFragment extends Fragment {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "free");
-                startActivityForResult(intent, 1);
-            }
-        });
+
 
         return view;
     }

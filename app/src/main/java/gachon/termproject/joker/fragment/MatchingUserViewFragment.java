@@ -12,20 +12,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.CommunitySearchActivity;
+import gachon.termproject.joker.adapter.MatchingUserPagerAdapter;
 
 public class MatchingUserViewFragment extends Fragment {
-    private FragmentManager fm;
     private TabLayout tabs;
     private View view;
-    private MatchingUserViewRequestFragment onProgress;
-    private MatchingUserViewCompleteFragment complete;
-    private MatchingExpertListFragment expertList;
+
 
     @Nullable
     @Override
@@ -40,52 +38,20 @@ public class MatchingUserViewFragment extends Fragment {
 //            }
 //        });
         */
-        fm = getChildFragmentManager();
         tabs = view.findViewById(R.id.tabs);
 
-        if (onProgress == null) {
-            onProgress = new MatchingUserViewRequestFragment();
-            fm.beginTransaction().add(R.id.matching_user_frame, onProgress).commit();
-        }
+        tabs.addTab(tabs.newTab().setText("매칭요청"));
+        tabs.addTab(tabs.newTab().setText("매칭완료"));
+        tabs.addTab(tabs.newTab().setText("전문가 목록"));
+        tabs.setTabGravity(tabs.GRAVITY_FILL);
 
-        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tabs.getSelectedTabPosition()) {
-                    case 0 :
-                        if (complete != null) fm.beginTransaction().hide(complete).commit();
-                        if (expertList != null) fm.beginTransaction().hide(expertList).commit();
-                        fm.beginTransaction().show(onProgress).commit();
-                        break;
-                    case 1 :
-                        if (complete == null) {
-                            complete = new MatchingUserViewCompleteFragment();
-                            fm.beginTransaction().add(R.id.matching_user_frame, complete).commit();
-                        }
-                        if (expertList != null) fm.beginTransaction().hide(expertList).commit();
-                        fm.beginTransaction().hide(onProgress).commit();
-                        fm.beginTransaction().show(complete).commit();
-                        break;
-                    case 2 :
-                        if (expertList == null) {
-                            expertList = new MatchingExpertListFragment();
-                            fm.beginTransaction().add(R.id.matching_user_frame, expertList).commit();
-                        }
-                        if (complete != null) fm.beginTransaction().hide(complete).commit();
-                        fm.beginTransaction().hide(onProgress).commit();
-                        fm.beginTransaction().show(expertList).commit();
-                        break;
-                }
-            }
+        //어답터설정
+        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.matching_user_frame);
+        final MatchingUserPagerAdapter myPagerAdapter = new MatchingUserPagerAdapter(getFragmentManager(), 3);
+        viewPager.setAdapter(myPagerAdapter);
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+        tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
 
         return view;
     }

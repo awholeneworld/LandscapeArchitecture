@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -7,7 +8,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/whitegray"/>
+        android:background="@color/whitegray" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -25,26 +26,25 @@
                 android:layout_height="100dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/home_box_border"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_launcher_background"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_launcher_background" />
 
 
                 <TextView
                     android:id="@+id/home_relative_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="10dp"
-                    android:text="오늘의 전문가"
                     android:background="@color/gray"
+                    android:text="오늘의 전문가"
                     android:textColor="@color/white"
-                    android:textSize="20dp"
-                    android:layout_marginHorizontal="20dp"/>
+                    android:textSize="20dp" />
 
 
                 <TextView
@@ -52,13 +52,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/home_relative_1"
+                    android:layout_marginHorizontal="20dp"
                     android:layout_marginTop="10dp"
-                    android:text="홍길동"
                     android:background="@color/gray"
+                    android:text="홍길동"
                     android:textColor="@color/white"
-                    android:textSize="17dp"
-                    android:layout_marginHorizontal="20dp"/>
-
+                    android:textSize="17dp" />
 
 
             </RelativeLayout>
@@ -135,14 +134,13 @@
                     android:textSize="20dp" />
 
 
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/home_expert_review_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingVertical="10dp"
-                    android:orientation="horizontal">
-
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:orientation="horizontal"/>
 
 
             </LinearLayout>

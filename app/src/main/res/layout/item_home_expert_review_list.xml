@@ -8,6 +8,7 @@
     android:layout_marginRight="10dp">
 
     <ImageView
+        android:id="@+id/review_image"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:src="@drawable/ic_launcher_background"

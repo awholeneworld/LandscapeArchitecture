@@ -95,7 +95,7 @@
         android:id="@+id/post_select_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/whitegray"
+        android:background="@color/white"
         android:orientation="vertical"
         android:layout_below="@id/layout_post_bottom">
 
@@ -335,5 +335,21 @@
             android:textSize="15sp" />
 
     </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/loaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="false"
+        android:background="#80000000">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

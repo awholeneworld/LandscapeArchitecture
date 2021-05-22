@@ -37,7 +37,6 @@ public class CommunityReviewFragment extends Fragment {
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
     private FirebaseUser user;
-    private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
@@ -56,7 +55,6 @@ public class CommunityReviewFragment extends Fragment {
         category = "review";
         contents = view.findViewById(R.id.content_community);
         refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -131,13 +129,6 @@ public class CommunityReviewFragment extends Fragment {
             public void onRefresh() {
                 databaseReference.addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(getActivity(), WriteReviewPostExpertListActivity.class), 1);
             }
         });
 

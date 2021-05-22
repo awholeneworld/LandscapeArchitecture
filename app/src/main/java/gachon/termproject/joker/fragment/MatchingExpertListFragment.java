@@ -4,6 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +39,11 @@ public class MatchingExpertListFragment extends Fragment {
     private CollectionReference collectionReference;
     private ExpertListAdapter expertListAdapter;
     private ArrayList<ExpertListContent> expertList;
+    private Button location_btn;
+    private TextView location_tv;
+    private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
+    private Button location_select_OK_btn;
+
 
     @Nullable
     @Override
@@ -49,6 +59,61 @@ public class MatchingExpertListFragment extends Fragment {
         content.setLayoutManager(new LinearLayoutManager(getActivity()));
         content.setHasFixedSize(true);
         content.setAdapter(expertListAdapter);
+
+        location_btn = view.findViewById(R.id.button_location);
+        location_tv = view.findViewById(R.id.textview_location);
+        location_select_OK_btn = view.findViewById(R.id.btn_post_select_location);
+        // 지역을 선택하는 부분입니다!!!!
+        SU = view.findViewById(R.id.signup04_SU);
+        IC = view.findViewById(R.id.signup04_IC);
+        DJ = view.findViewById(R.id.signup04_DJ);
+        GJ = view.findViewById(R.id.signup04_GJ);
+        DG = view.findViewById(R.id.signup04_DG);
+        US = view.findViewById(R.id.signup04_US);
+        BS = view.findViewById(R.id.signup04_BS);
+        JJ = view.findViewById(R.id.signup04_JJ);
+        GG = view.findViewById(R.id.signup04_GG);
+        GW = view.findViewById(R.id.signup04_GW);
+        CB = view.findViewById(R.id.signup04_CB);
+        CN = view.findViewById(R.id.signup04_CN);
+        GB = view.findViewById(R.id.signup04_GB);
+        GN = view.findViewById(R.id.signup04_GN);
+        JB = view.findViewById(R.id.signup04_JB);
+        JN = view.findViewById(R.id.signup04_JN);
+        SJ = view.findViewById(R.id.signup04_SJ);
+
+        location_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //지역선택하는 화면이 있는 relative layout -> 선택지를 화면 내로 끌고와서 보여줌
+                LinearLayout LL = view.findViewById(R.id.post_select_location);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
+                lp.addRule(RelativeLayout.BELOW, 0);
+                LL.setLayoutParams(lp);
+
+
+            }
+        });
+
+        location_select_OK_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //location_tv.setText(locationSelected.size() + "개 지역");
+
+                //지역선택 뷰를 다시 밑으로 내립니다.
+                LinearLayout LL = view.findViewById(R.id.post_select_location);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
+                lp.addRule(RelativeLayout.BELOW, R.id.refresh_layout);
+                lp.addRule(RelativeLayout.ABOVE, 0);
+                LL.setLayoutParams(lp);
+
+                //그리고 다시 query받아서 adapter를 구성해야 하는데,,,, 할수잇을까???
+
+            }
+        });
+
 
         OnCompleteListener onCompleteListener = new OnCompleteListener<QuerySnapshot>() {
             @Override
