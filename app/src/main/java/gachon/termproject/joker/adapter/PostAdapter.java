@@ -26,7 +26,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
     private Context context;
     private FirebaseHelper firebaseHelper;
     ArrayList<PostContent> postContentList;
-    
+
     public PostAdapter(Context context, ArrayList<PostContent> postContentList)
     {
         this.context = context;
@@ -54,6 +54,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationPost;
+        boolean isMatched;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -78,12 +79,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putStringArrayListExtra("location", locationPost);
+                    intent.putExtra("isMatched", isMatched);
                     context.startActivity(intent);
                 }
             });
         }
     }
-    
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -113,6 +115,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
         holder.locationPost = content.getLocation();
+        holder.isMatched = content.getIsMatched();
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         if (contentTitle.length() > 15)

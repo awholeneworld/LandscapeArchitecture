@@ -42,8 +42,10 @@
             android:id="@+id/lastMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="58dp"
+            android:paddingRight="70dp"
             android:text="마지막 메시지"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:layout_below="@+id/roomName"
             android:textSize="18sp" />
 

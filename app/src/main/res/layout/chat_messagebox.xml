@@ -41,6 +41,8 @@
         <TextView
             android:id="@+id/messagebox_msg"
             android:layout_width="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="5dp"
             android:layout_height="wrap_content"
             android:text="message"
             android:textColor="@android:color/black"
@@ -50,7 +52,8 @@
             android:id="@+id/messagebox_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2021.5.7 14:00"
+            android:layout_marginLeft="5dp"
+            android:text="yyyy.mm.dd hh:mm"
             android:textSize="10sp"
             android:textColor="@color/gray" />
 
