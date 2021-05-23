@@ -26,8 +26,11 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.activity.MainActivity;
+import gachon.termproject.joker.adapter.ExpertPortfolioReviewAdapter;
 import gachon.termproject.joker.adapter.HomePostAdapter;
 import gachon.termproject.joker.Content.PostContent;
+import gachon.termproject.joker.adapter.HomePostReviewAdapter;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -57,7 +60,7 @@ public class MainHomeFragment extends Fragment {
 
     HomePostAdapter postAdapter_free;
     HomePostAdapter postAdapter_tip;
-    HomePostAdapter postAdapter_review;
+    HomePostReviewAdapter postAdapter_review;
 
     ValueEventListener postsListener_free;
     ValueEventListener postsListener_tip;
@@ -88,7 +91,7 @@ public class MainHomeFragment extends Fragment {
 
         postAdapter_free = new HomePostAdapter(getActivity(), postContentList_free);
         postAdapter_tip = new HomePostAdapter(getActivity(), postContentList_tip);
-        postAdapter_review = new HomePostAdapter(getActivity(), postContentList_review);
+        postAdapter_review = new HomePostReviewAdapter(getActivity(), postContentList_review);
 
         // postAdapter.setOnPostListener(onPostListener);
 
@@ -100,7 +103,12 @@ public class MainHomeFragment extends Fragment {
         tiplist.setHasFixedSize(true);
         tiplist.setAdapter(postAdapter_tip);
 
-        reviewlist.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getActivity());
+        horizontalLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        reviewlist.setLayoutManager(horizontalLayoutManager);
+
+
+        reviewlist.setLayoutManager(new LinearLayoutManager( getActivity().getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
         reviewlist.setHasFixedSize(true);
         reviewlist.setAdapter(postAdapter_review);
 

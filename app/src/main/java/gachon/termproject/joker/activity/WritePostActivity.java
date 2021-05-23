@@ -42,6 +42,9 @@ import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.fragment.CommunityFreeFragment;
+import gachon.termproject.joker.fragment.CommunityReviewFragment;
+import gachon.termproject.joker.fragment.CommunityTipFragment;
 
 public class WritePostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -61,6 +64,8 @@ public class WritePostActivity extends AppCompatActivity {
     private Button register;
     private ArrayList<String> imagesUrl = new ArrayList<>();
     private int uploadFinishCount = 0;
+    private RelativeLayout loaderLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,10 @@ public class WritePostActivity extends AppCompatActivity {
         textview.setText("게시글 작성");
 
         // 레이아웃 가져오기
+        loaderLayout = findViewById(R.id.loaderLayout);
+        loaderLayout.setVisibility(View.GONE);
+
+
         layout = findViewById(R.id.writepost_layout);
         title = findViewById(R.id.writepost_title);
         content = findViewById(R.id.writepost_content);
@@ -111,7 +120,12 @@ public class WritePostActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                if (title.length() > 0 && content.length() > 0) {
+                if(category.equals("review") && imagesList.size() == 0){
+                    Toast.makeText(getApplicationContext(), "후기에는 사진이 1장 이상 포함되어야 합니다.", Toast.LENGTH_SHORT).show();
+                }
+                else if (title.length() > 0 && content.length() > 0) {
+                    //로딩창
+                    loaderLayout.setVisibility(View.VISIBLE);
                     register.setEnabled(false);
                     post(category);
                 } else if (title.length() <= 0) {
@@ -174,6 +188,9 @@ public class WritePostActivity extends AppCompatActivity {
     // 글 올리기 함수
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void post(String category) {
+        System.out.println("yaa" + loaderLayout);
+
+
         // 포스트 고유 아이디
         postId = String.valueOf(System.currentTimeMillis());
 
@@ -181,8 +198,7 @@ public class WritePostActivity extends AppCompatActivity {
         contentList.add(content.getText().toString());
 
         if (imagesList.size() == 0) {// 사진이 없다면? 바로 글쓰기
-            // 포스트 시간 설정
-            Date currentTime = new Date();
+            Date currentTime = new Date(); // 포스트 시간 설정
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
@@ -192,9 +208,15 @@ public class WritePostActivity extends AppCompatActivity {
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    MainActivity.userPostsIdList.add(0, postId); // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                    // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                    MainActivity.userPostsIdList.add(0, postId);
+
+                    // 글 작성 후 게시판 자동 업데이트
+                    if (category.equals("free")) CommunityFreeFragment.databaseReference.addListenerForSingleValueEvent(CommunityFreeFragment.postsListener);
+                    if (category.equals("review")) CommunityReviewFragment.databaseReference.addListenerForSingleValueEvent(CommunityReviewFragment.postsListener);
+                    if (category.equals("tip")) CommunityTipFragment.databaseReference.addListenerForSingleValueEvent(CommunityTipFragment.postsListener);
+
                     Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK, new Intent());
                     finish();
                 }
             });
@@ -239,9 +261,15 @@ public class WritePostActivity extends AppCompatActivity {
                                     databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            MainActivity.userPostsIdList.add(0, postId); // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                                            // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                                            MainActivity.userPostsIdList.add(0, postId);
+
+                                            // 글 작성 후 게시판 자동 업데이트
+                                            if (category.equals("free")) CommunityFreeFragment.databaseReference.addListenerForSingleValueEvent(CommunityFreeFragment.postsListener);
+                                            if (category.equals("review")) CommunityReviewFragment.databaseReference.addListenerForSingleValueEvent(CommunityReviewFragment.postsListener);
+                                            if (category.equals("tip")) CommunityTipFragment.databaseReference.addListenerForSingleValueEvent(CommunityTipFragment.postsListener);
+
                                             Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                            setResult(RESULT_OK, new Intent());
                                             finish();
                                         }
                                     });

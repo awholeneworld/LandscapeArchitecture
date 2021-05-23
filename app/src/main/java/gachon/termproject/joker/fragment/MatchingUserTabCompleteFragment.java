@@ -15,13 +15,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.jetbrains.annotations.NotNull;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -33,7 +31,7 @@ import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
 
-public class MatchingExpertViewCompleteFragment extends Fragment {
+public class MatchingUserTabCompleteFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -43,16 +41,17 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
     ArrayList<PostContent> postContentList;
     PostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
-    ChildEventListener childEventListener;
+    ValueEventListener postsListener;
+    String category;
     Boolean topScrolled;
     Boolean doUpdate;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_expert_view_complete, container, false);
+        view = inflater.inflate(R.layout.content_matching, container, false);
 
-        contents = view.findViewById(R.id.content_community);
+        contents = view.findViewById(R.id.matchingContent);
         refresher = view.findViewById(R.id.refresh_layout);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -105,48 +104,30 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
         });
         */
 
-        childEventListener = new ChildEventListener() {
+        postsListener = new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList.clear();
-                DataSnapshot child = snapshot.child("requests/" + UserInfo.userId);
-
-                if (child.exists() && child.child("isMatched").getValue().toString().equals("true")) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(PostContent.class);
-                    postContentList.add(0, postContent);
+                    if (postContent.getIsMatched())
+                        postContentList.add(0, postContent);
                 }
-
                 matchingpostAdapter.notifyDataSetChanged();
-                databaseReference.removeEventListener(this);
             }
 
             @Override
-            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
 
-        databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
+        databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
             }
         });
@@ -160,7 +141,7 @@ public class MatchingExpertViewCompleteFragment extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
             }
         }
     }

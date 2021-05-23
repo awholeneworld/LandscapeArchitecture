@@ -7,18 +7,42 @@
     android:orientation="vertical"
     tools:context=".fragment.ChatFragment">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="20">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/roomList"
+        <ImageView
+            android:id="@+id/empty_chat_img"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_baseline_chat_24"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="250dp"/>
+
+        <TextView
+            android:id="@+id/empty_chat_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="아직 시작된 채팅이 없습니다"
+            android:textColor="#80505050"
+            android:textSize="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/empty_chat_img"/>
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="20">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/roomList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </ScrollView>
+            </androidx.recyclerview.widget.RecyclerView>
+
+        </ScrollView>
+
+    </RelativeLayout>
 
 </LinearLayout>

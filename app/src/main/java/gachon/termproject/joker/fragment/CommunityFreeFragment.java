@@ -1,6 +1,5 @@
 package gachon.termproject.joker.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,44 +24,34 @@ import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.activity.WritePostActivity;
-
-import static android.app.Activity.RESULT_OK;
 
 public class CommunityFreeFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
-    private FirebaseUser user;
-    private FloatingActionButton button;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    ArrayList<PostContent> postContentList;
-    PostContent postContent;
-    PostAdapter postAdapter;
-    ValueEventListener postsListener;
-    String category;
+    private ArrayList<PostContent> postContentList;
+    private PostContent postContent;
+    private PostAdapter postAdapter;
+    public static DatabaseReference databaseReference;
+    public static ValueEventListener postsListener;
     Boolean topScrolled;
     Boolean doUpdate;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.community_free, container, false);
+        view = inflater.inflate(R.layout.content_community, container, false);
 
-        category = "free";
-        contents = view.findViewById(R.id.content_community);
+        // 레이아웃 가져오기
+        contents = view.findViewById(R.id.communityContent);
         refresher = view.findViewById(R.id.refresh_layout);
-        button = view.findViewById(R.id.fab);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Posts/" + category);
-
+        // 게시판 글 목록 내용 넣어줄 어레이 리스트와 어댑터 지정
         postContentList = new ArrayList<>();
         postAdapter = new PostAdapter(getActivity(), postContentList);
         // postAdapter.setOnPostListener(onPostListener);
 
+        // 레이아웃 설정
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
         contents.setAdapter(postAdapter);
@@ -107,6 +93,8 @@ public class CommunityFreeFragment extends Fragment {
             }
         });
         */
+
+        // 리스너 설정
         postsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -124,8 +112,11 @@ public class CommunityFreeFragment extends Fragment {
             }
         };
 
+        // DB에 리스너 설정
+        databaseReference = FirebaseDatabase.getInstance().getReference("Posts/free");
         databaseReference.addListenerForSingleValueEvent(postsListener);
 
+        // 새로고침 리스너 설정
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -134,27 +125,7 @@ public class CommunityFreeFragment extends Fragment {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WritePostActivity.class);
-                intent.putExtra("category", "free");
-                startActivityForResult(intent, 1);
-            }
-        });
-
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postsListener);
-            }
-        }
     }
 
     OnPostListener onPostListener = new OnPostListener() {
@@ -173,6 +144,7 @@ public class CommunityFreeFragment extends Fragment {
         public void onModify() {
         }
     };
+
     /*
     private void loadPosts(final boolean clear) {
         doUpdate = true;

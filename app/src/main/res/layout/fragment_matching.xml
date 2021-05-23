@@ -7,7 +7,7 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
-        android:layout_width="330dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/background_light"
         android:elevation="0dp"
@@ -16,34 +16,16 @@
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/gray">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab1"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="매칭요청" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab2"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="매칭완료" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tab3"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:text="전문가 목록" />
-
     </com.google.android.material.tabs.TabLayout>
 
-
-    <FrameLayout
-        android:id="@+id/matching_user_frame"
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/matching_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/tabs"
         android:layout_alignParentBottom="true"
         app:layout_constraintTop_toBottomOf="@id/tabs">
-    </FrameLayout>
+
+    </androidx.viewpager.widget.ViewPager>
 
 </LinearLayout>

@@ -48,7 +48,7 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat_room);
+        setContentView(R.layout.activity_chat);
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);

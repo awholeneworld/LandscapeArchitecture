@@ -1,6 +1,8 @@
 package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,9 +25,12 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.jetbrains.annotations.NotNull;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -44,6 +49,7 @@ public class MyInfoPortfolioFragment extends AppCompatActivity {
     private ImageView mainImg;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +68,8 @@ public class MyInfoPortfolioFragment extends AppCompatActivity {
         TextView location = findViewById(R.id.myInfoLocation);
         mainImg = findViewById(R.id.main_image);
 
+        profileImage.setBackground(new ShapeDrawable(new OvalShape()));
+        profileImage.setClipToOutline(true);
         if (!UserInfo.profileImg.equals("None"))
             Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
         nickname.setText(UserInfo.nickname);
@@ -100,13 +108,13 @@ public class MyInfoPortfolioFragment extends AppCompatActivity {
 
         if (requestCode == 0 && data != null && data.getData() != null) { // 이미지 파일 선택하였다면
             file = data.getData();
-            uploadProfileImage();
+            uploadPortfolioImage();
         }
     }
 
     // 이미지 넣는거
-    private void uploadProfileImage(){
-        storageReference = FirebaseStorage.getInstance().getReference().child("portfolioImages/" + UserInfo.userId + "/" + file.getLastPathSegment());
+    private void uploadPortfolioImage(){
+        storageReference = FirebaseStorage.getInstance().getReference().child("portfolioImages/" + UserInfo.userId);
         storageReference.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -123,11 +131,15 @@ public class MyInfoPortfolioFragment extends AppCompatActivity {
                 if (task.isSuccessful()) { // URL을 포스트 내용 Class(postContent)와 DB에 업데이트
                     Uri downloadUrl = task.getResult();
                     String url = downloadUrl.toString();
-                    UserInfo.profileImg = url;
 
-                    Glide.with(getApplicationContext()).load(url).into(mainImg);
-
-                    Toast.makeText(getApplicationContext(), "포트폴리오 이미지가 설정/변경되었습니다.", Toast.LENGTH_SHORT).show();
+                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("portfolioImg", url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                            UserInfo.portfolioImg = url;
+                            Glide.with(getApplicationContext()).load(url).into(mainImg);
+                            Toast.makeText(getApplicationContext(), "포트폴리오 이미지가 설정/변경되었습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });

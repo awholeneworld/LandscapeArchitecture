@@ -58,7 +58,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.matching_user_view_see_post);
+        setContentView(R.layout.matching_user_see_post);
 
         // 인텐트 데이터 가져오기
         Intent intent = getIntent();
@@ -167,6 +167,9 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+
+            //자기가 쓴 글이므로 - 삭제
+            case R.id.delete:
         }
         return super.onOptionsItemSelected(item);
     }
@@ -175,7 +178,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.others_post_menu,menu);
+        inflater.inflate(R.menu.my_post_menu, menu);
 
         // To display icon on overflow menu
         if (menu instanceof MenuBuilder){

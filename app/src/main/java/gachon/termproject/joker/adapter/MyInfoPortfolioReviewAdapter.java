@@ -1,6 +1,7 @@
 package gachon.termproject.joker.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,9 @@ import java.util.ArrayList;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.Content.PostContent;
+import gachon.termproject.joker.activity.SeePostActivity;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MyInfoPortfolioReviewAdapter extends RecyclerView.Adapter<MyInfoPortfolioReviewAdapter.ViewHolder> {
     private Context context;
@@ -51,21 +55,52 @@ public class MyInfoPortfolioReviewAdapter extends RecyclerView.Adapter<MyInfoPor
         });
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-        TextView textView;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView content;
+        ImageView image;
+        String categoryOfPost;
+        String userIdInPost;
+        String profileImgInPost;
+        String titleInPost;
+        String nicknameInPost;
+        String timeInPost;
+        String postIdInPost;
+        String expertIdOfPost;
+        ArrayList<String> contentInPost;
+        ArrayList<String> imagesInPost;
+        ArrayList<String> locationPost;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.review_image);
-            textView = itemView.findViewById(R.id.review_text);
+            image = itemView.findViewById(R.id.review_image);
+            content = itemView.findViewById(R.id.review_text);
+
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, SeePostActivity.class);
+                    intent.putExtra("category", categoryOfPost);
+                    intent.putExtra("userId", userIdInPost);
+                    intent.putExtra("profileImg", profileImgInPost);
+                    intent.putExtra("title", titleInPost);
+                    intent.putExtra("nickname", nicknameInPost);
+                    intent.putExtra("time", timeInPost);
+                    intent.putExtra("postId", postIdInPost);
+                    intent.putExtra("expertId", expertIdOfPost);
+                    intent.putStringArrayListExtra("content", contentInPost);
+                    intent.putStringArrayListExtra("images", imagesInPost);
+                    intent.putStringArrayListExtra("location", locationPost);
+                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
     @NonNull
     @Override
     public MyInfoPortfolioReviewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_view_portfolio, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_view_expert_review, parent, false);
         return new MyInfoPortfolioReviewAdapter.ViewHolder(view);
     }
 
@@ -73,15 +108,31 @@ public class MyInfoPortfolioReviewAdapter extends RecyclerView.Adapter<MyInfoPor
     public void onBindViewHolder(@NonNull MyInfoPortfolioReviewAdapter.ViewHolder holder, int position) {
         PostContent content = contentList.get(position);
 
-        ArrayList<String> imagesList = content.getImages();
+        String contentTitle = content.getTitle();
+        String contentNickname = content.getNickname();
+        String contentTime = content.getPostTime();
         ArrayList<String> contentsList = content.getContent();
+        ArrayList<String> imagesList = content.getImages();
+
+        // 뷰홀더 클래스의 전역 변수 설정
+        holder.categoryOfPost = content.getCategory();
+        holder.userIdInPost = content.getUserId();
+        holder.profileImgInPost = content.getProfileImg();
+        holder.titleInPost = contentTitle;
+        holder.nicknameInPost = contentNickname;
+        holder.timeInPost = contentTime;
+        holder.postIdInPost = content.getPostId();
+        holder.contentInPost = contentsList;
+        holder.imagesInPost = imagesList;
+        holder.expertIdOfPost = content.getExpertId();
+        holder.locationPost = content.getLocation();
 
         if (imagesList != null)
-            Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.imageView);
+            Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
         if (contentsList.get(0).length() > 30)
-            holder.textView.setText(contentsList.get(0).substring(0, 30));
+            holder.content.setText(contentsList.get(0).substring(0, 30));
         else
-            holder.textView.setText(contentsList.get(0));
+            holder.content.setText(contentsList.get(0));
     }
 
     @Override // DataSet 크기 계산

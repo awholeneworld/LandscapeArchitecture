@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -21,7 +20,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,11 +33,11 @@ import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
 
-public class MatchingExpertViewNeededFragment extends Fragment {
+public class MatchingExpertTabProgressFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
-    private FirebaseUser user;
+    FirebaseUser user;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     ArrayList<PostContent> postContentList;
@@ -52,9 +50,9 @@ public class MatchingExpertViewNeededFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.matching_expert_view_needed, container, false);
+        view = inflater.inflate(R.layout.content_matching, container, false);
 
-        contents = view.findViewById(R.id.content_community);
+        contents = view.findViewById(R.id.matchingContent);
         refresher = view.findViewById(R.id.refresh_layout);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -62,7 +60,7 @@ public class MatchingExpertViewNeededFragment extends Fragment {
         databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
-        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "needed");
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "awaiting");
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -111,8 +109,12 @@ public class MatchingExpertViewNeededFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 postContentList.clear();
+                DataSnapshot child = snapshot.child("requests/" + UserInfo.userId);
 
-                if (!snapshot.child("requests/" + UserInfo.userId).exists()) {
+                if (child.exists() && child.child("isMatched").getValue().toString().equals("false")) {
+                    postContent = snapshot.getValue(PostContent.class);
+                    postContentList.add(0, postContent);
+                } else if (child.exists() && child.child("isMatched").getValue().toString().equals("true")) {
                     postContent = snapshot.getValue(PostContent.class);
                     postContentList.add(0, postContent);
                 }
