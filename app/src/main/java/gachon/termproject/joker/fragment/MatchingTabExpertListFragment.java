@@ -32,7 +32,7 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ExpertListAdapter;
 import gachon.termproject.joker.Content.ExpertListContent;
 
-public class MatchingExpertListFragment extends Fragment {
+public class MatchingTabExpertListFragment extends Fragment {
     private View view;
     private RecyclerView content;
     private SwipeRefreshLayout refresher;

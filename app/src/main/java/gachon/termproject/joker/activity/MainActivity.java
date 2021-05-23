@@ -19,8 +19,8 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.ChatFragment;
 import gachon.termproject.joker.fragment.CommunityFragment;
 import gachon.termproject.joker.fragment.MainHomeFragment;
-import gachon.termproject.joker.fragment.MatchingExpertViewFragment;
-import gachon.termproject.joker.fragment.MatchingUserViewFragment;
+import gachon.termproject.joker.fragment.MatchingExpertFragment;
+import gachon.termproject.joker.fragment.MatchingUserFragment;
 import gachon.termproject.joker.fragment.MyInfoFragment;
 import gachon.termproject.joker.UserInfo;
 
@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private MainHomeFragment home;
     private CommunityFragment community;
-    private MatchingUserViewFragment matchingUser;
-    private MatchingExpertViewFragment matchingExpert;
+    private MatchingUserFragment matchingUser;
+    private MatchingExpertFragment matchingExpert;
     private ChatFragment chat;
     private MyInfoFragment myInfo;
     private int backPressed = 0;
@@ -88,13 +88,13 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         if (UserInfo.isPublic) { //user라면
             if (matchingUser == null) {
-                matchingUser = new MatchingUserViewFragment();
+                matchingUser = new MatchingUserFragment();
                 fm.beginTransaction().add(R.id.main_frame, matchingUser).commit();
             }
         }
         else {
             if (matchingExpert == null) {
-                matchingExpert = new MatchingExpertViewFragment();
+                matchingExpert = new MatchingExpertFragment();
                 fm.beginTransaction().add(R.id.main_frame, matchingExpert).commit();
             }
         }

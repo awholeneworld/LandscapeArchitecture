@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayout;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.adapter.MatchingExpertPagerAdapter;
 
-public class MatchingExpertViewFragment extends Fragment {
+public class MatchingExpertFragment extends Fragment {
     private TabLayout tabs;
     private View view;
 
@@ -23,7 +23,7 @@ public class MatchingExpertViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_matching_expert_view, container, false);
+        view = inflater.inflate(R.layout.fragment_matching, container, false);
 
         tabs = view.findViewById(R.id.tabs);
 
@@ -34,13 +34,12 @@ public class MatchingExpertViewFragment extends Fragment {
         tabs.setTabGravity(tabs.GRAVITY_FILL);
 
         //어답터설정
-        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.matching_expert_frame);
-        final MatchingExpertPagerAdapter myPagerAdapter = new MatchingExpertPagerAdapter(getFragmentManager(), 4);
+        final ViewPager viewPager = view.findViewById(R.id.matching_frame);
+        final MatchingExpertPagerAdapter myPagerAdapter = new MatchingExpertPagerAdapter(getChildFragmentManager(), 4);
         viewPager.setAdapter(myPagerAdapter);
 
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
-
 
         return view;
     }

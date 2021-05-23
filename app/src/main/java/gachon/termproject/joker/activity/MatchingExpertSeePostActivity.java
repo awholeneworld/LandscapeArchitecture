@@ -57,7 +57,7 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.matching_expert_view_see_post);
+        setContentView(R.layout.matching_expert_see_post);
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);

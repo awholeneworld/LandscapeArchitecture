@@ -100,7 +100,7 @@ public class MyInfoPortfolioReviewAdapter extends RecyclerView.Adapter<MyInfoPor
     @NonNull
     @Override
     public MyInfoPortfolioReviewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_view_portfolio, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_view_expert_review, parent, false);
         return new MyInfoPortfolioReviewAdapter.ViewHolder(view);
     }
 

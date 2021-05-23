@@ -40,10 +40,10 @@ public class CommunityFreeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.community_free, container, false);
+        view = inflater.inflate(R.layout.content_community, container, false);
 
         // 레이아웃 가져오기
-        contents = view.findViewById(R.id.content_community);
+        contents = view.findViewById(R.id.communityContent);
         refresher = view.findViewById(R.id.refresh_layout);
 
         // 게시판 글 목록 내용 넣어줄 어레이 리스트와 어댑터 지정

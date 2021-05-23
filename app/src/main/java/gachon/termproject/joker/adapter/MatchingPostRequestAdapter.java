@@ -30,12 +30,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.Content.RequestFromExpertContent;
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.fragment.ExpertPortfolioFragment;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -180,7 +178,7 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
     @NonNull
     @Override
     public MatchingPostRequestAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request_user_view_matching, parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_request_see_post_user_matching, parent,false);
 
         return new MatchingPostRequestAdapter.ViewHolder(view);
     }

@@ -20,7 +20,7 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.CommunitySearchActivity;
 import gachon.termproject.joker.adapter.MatchingUserPagerAdapter;
 
-public class MatchingUserViewFragment extends Fragment {
+public class MatchingUserFragment extends Fragment {
     private TabLayout tabs;
     private View view;
 
@@ -28,7 +28,7 @@ public class MatchingUserViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_matching_user_view, container, false);
+        view = inflater.inflate(R.layout.fragment_matching, container, false);
         /*
 //        Button location_update = view.findViewById(R.id.select_location); //지역선택버튼 만들면 id = select_location 으로 해주세연
 //        location_update.setOnClickListener(new View.OnClickListener() {
@@ -46,8 +46,8 @@ public class MatchingUserViewFragment extends Fragment {
         tabs.setTabGravity(tabs.GRAVITY_FILL);
 
         //어답터설정
-        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.matching_user_frame);
-        final MatchingUserPagerAdapter myPagerAdapter = new MatchingUserPagerAdapter(getFragmentManager(), 3);
+        final ViewPager viewPager = view.findViewById(R.id.matching_frame);
+        final MatchingUserPagerAdapter myPagerAdapter = new MatchingUserPagerAdapter(getChildFragmentManager(), 3);
         viewPager.setAdapter(myPagerAdapter);
 
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));

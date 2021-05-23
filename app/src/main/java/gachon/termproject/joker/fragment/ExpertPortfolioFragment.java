@@ -36,7 +36,7 @@ public class ExpertPortfolioFragment extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.matching_expert_list_portfolio);
+        setContentView(R.layout.expert_portfolio);
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
