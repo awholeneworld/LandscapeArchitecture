@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +29,8 @@ import gachon.termproject.joker.Content.ChatMessageContent;
 
 public class ChatFragment extends Fragment {
     private View view;
+    private ImageView backgroundImg;
+    private TextView backgroundTxt;
     private RecyclerView recyclerView;
     private ArrayList<ChatMessageContent> chatList;
     private ChatListAdapter chatListAdapter;
@@ -35,8 +39,13 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_chat, container, false);
-        
+
+        backgroundImg = view.findViewById(R.id.empty_chat_img);
+        backgroundTxt = view.findViewById(R.id.empty_chat_txt);
         recyclerView = view.findViewById(R.id.roomList);
+
+        backgroundImg.setVisibility(View.INVISIBLE);
+        backgroundTxt.setVisibility(View.INVISIBLE);
 
         chatList = new ArrayList<>();
         chatListAdapter = new ChatListAdapter(getActivity(), chatList);
@@ -52,6 +61,10 @@ public class ChatFragment extends Fragment {
                     ChatMessageContent chatMessageContent = item.getValue(ChatMessageContent.class);
                     if (chatMessageContent.users.containsKey(UserInfo.userId))
                         chatList.add(0, chatMessageContent);
+                }
+                if (chatList.size() == 0) {
+                    backgroundImg.setVisibility(View.VISIBLE);
+                    backgroundTxt.setVisibility(View.VISIBLE);
                 }
                 chatListAdapter.notifyDataSetChanged();
             }
