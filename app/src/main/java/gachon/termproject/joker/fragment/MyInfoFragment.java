@@ -26,6 +26,8 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.SettingActivity;
 
+import static android.app.Activity.RESULT_OK;
+
 public class MyInfoFragment extends Fragment {
     private View view;
     private MyInfoTabPostFragment post;
@@ -33,6 +35,10 @@ public class MyInfoFragment extends Fragment {
     private ViewGroup portfolioLayout;
     private FragmentManager fm;
     private TabLayout tabs;
+    public static ImageView profileImg;
+    public static TextView nickname;
+    public static TextView location;
+    public static TextView intro;
     static String locationStr;
 
     @Nullable
@@ -40,12 +46,21 @@ public class MyInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_myinfo, container, false);
 
-        //action bar menu
+        // 액션바 옵션메뉴 설정
         setHasOptionsMenu(true);
 
-        // 포트폴리오 창 설정
+        // 레이아웃 가져오기
         portfolioLayout = view.findViewById(R.id.portfolioLayout);
+        profileImg = view.findViewById(R.id.profileImage);
+        nickname = view.findViewById(R.id.myInfoNickname);
+        location = view.findViewById(R.id.myInfoLocation);
+        intro = view.findViewById(R.id.myInfoMessage);
+        tabs = view.findViewById(R.id.myinfo_tabs);
 
+        // 프래그먼트 매니저 설정
+        fm = getChildFragmentManager();
+
+        // 포트폴리오 창 설정
         if (UserInfo.isPublic) {
             portfolioLayout.setVisibility(View.GONE);
         } else {
@@ -59,13 +74,11 @@ public class MyInfoFragment extends Fragment {
         }
 
         // 프사 설정
-        ImageView profileImg = view.findViewById(R.id.profileImage);
         //profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         if (!UserInfo.profileImg.equals("None"))
             Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
 
         // 닉네임 설정
-        TextView nickname = view.findViewById(R.id.myInfoNickname);
         nickname.setText(UserInfo.nickname);
 
         // 지역 설정
@@ -73,22 +86,19 @@ public class MyInfoFragment extends Fragment {
         for (String item : UserInfo.location) {
             locationStr += item + " ";
         }
-        TextView location = view.findViewById(R.id.myInfoLocation);
+
         location.setText(locationStr);
 
         // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
-        TextView intro = view.findViewById(R.id.myInfoMessage);
         intro.setText(UserInfo.introduction);
 
         // 마이인포 탭 첫 화면
-        fm = getChildFragmentManager();
         if (post == null) {
             post = new MyInfoTabPostFragment();
             fm.beginTransaction().add(R.id.myinfo_frame, post).commit();
         }
 
         // 탭 설정
-        tabs = view.findViewById(R.id.myinfo_tabs);
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -120,7 +130,7 @@ public class MyInfoFragment extends Fragment {
         return view;
     }
 
-    // action bar menu
+    // 액션바 옵션 메뉴
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.top_setting_app_bar, menu);
@@ -132,7 +142,7 @@ public class MyInfoFragment extends Fragment {
     {
         switch(item.getItemId()) {
             case R.id.setting:
-                getActivity().startActivity(new Intent(getContext(), SettingActivity.class));
+                startActivityForResult(new Intent(getContext(), SettingActivity.class), 1);
                 break;
         }
 

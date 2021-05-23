@@ -121,6 +121,8 @@ public class MatchingExpertListFragment extends Fragment {
                 if (task.isSuccessful()) {
                     QuerySnapshot querySnapshot = task.getResult();
                     List<DocumentSnapshot> list = querySnapshot.getDocuments();
+                    expertList.clear();
+
                     for (int i = 0; i < list.size(); i++) {
                         DocumentSnapshot snapshot = list.get(i);
                         Boolean isPublic = snapshot.getBoolean("isPublic");
@@ -134,6 +136,7 @@ public class MatchingExpertListFragment extends Fragment {
                             expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, location));
                         }
                     }
+
                     expertListAdapter.notifyDataSetChanged();
                 }
             }

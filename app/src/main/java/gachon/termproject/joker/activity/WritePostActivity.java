@@ -42,6 +42,9 @@ import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.fragment.CommunityFreeFragment;
+import gachon.termproject.joker.fragment.CommunityReviewFragment;
+import gachon.termproject.joker.fragment.CommunityTipFragment;
 
 public class WritePostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -205,9 +208,15 @@ public class WritePostActivity extends AppCompatActivity {
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    MainActivity.userPostsIdList.add(0, postId); // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                    // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                    MainActivity.userPostsIdList.add(0, postId);
+
+                    // 글 작성 후 게시판 자동 업데이트
+                    if (category.equals("free")) CommunityFreeFragment.databaseReference.addListenerForSingleValueEvent(CommunityFreeFragment.postsListener);
+                    if (category.equals("review")) CommunityReviewFragment.databaseReference.addListenerForSingleValueEvent(CommunityReviewFragment.postsListener);
+                    if (category.equals("tip")) CommunityTipFragment.databaseReference.addListenerForSingleValueEvent(CommunityTipFragment.postsListener);
+
                     Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK, new Intent());
                     finish();
                 }
             });
@@ -252,9 +261,15 @@ public class WritePostActivity extends AppCompatActivity {
                                     databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
-                                            MainActivity.userPostsIdList.add(0, postId); // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                                            // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
+                                            MainActivity.userPostsIdList.add(0, postId);
+
+                                            // 글 작성 후 게시판 자동 업데이트
+                                            if (category.equals("free")) CommunityFreeFragment.databaseReference.addListenerForSingleValueEvent(CommunityFreeFragment.postsListener);
+                                            if (category.equals("review")) CommunityReviewFragment.databaseReference.addListenerForSingleValueEvent(CommunityReviewFragment.postsListener);
+                                            if (category.equals("tip")) CommunityTipFragment.databaseReference.addListenerForSingleValueEvent(CommunityTipFragment.postsListener);
+
                                             Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
-                                            setResult(RESULT_OK, new Intent());
                                             finish();
                                         }
                                     });

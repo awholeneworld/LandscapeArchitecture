@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // 자기가 작성한 포스트 아이디 가져오기
         Intent intent = getIntent();
         userPostsIdList = intent.getStringArrayListExtra("userPostsIdList");
+        if (userPostsIdList == null) userPostsIdList = new ArrayList<>();
 
         // 일반인인지 전문가인지에 따라 매칭 화면 다르게 설정
         FragmentManager fm = getSupportFragmentManager();
