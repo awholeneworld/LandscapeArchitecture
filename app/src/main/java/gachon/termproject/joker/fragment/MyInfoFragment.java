@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +34,10 @@ public class MyInfoFragment extends Fragment {
     private View view;
     private MyInfoTabPostFragment post;
     private MyInfoTabCommentFragment comment;
-    private Button portfolioButton;
     private FragmentManager fm;
     private TabLayout tabs;
+    private LinearLayout portfolioLayout;
+    private Button portfolioButton;
     public static ImageView profileImg;
     public static TextView nickname;
     public static TextView location;
@@ -52,6 +54,7 @@ public class MyInfoFragment extends Fragment {
         setHasOptionsMenu(true);
 
         // 레이아웃 가져오기
+        portfolioLayout = view.findViewById(R.id.portfolioLayout);
         portfolioButton = view.findViewById(R.id.portfolioButton);
         profileImg = view.findViewById(R.id.profileImage);
         nickname = view.findViewById(R.id.myInfoNickname);
@@ -64,7 +67,7 @@ public class MyInfoFragment extends Fragment {
 
         // 포트폴리오 버튼 설정
         if (UserInfo.isPublic)
-            portfolioButton.setVisibility(View.GONE);
+            portfolioLayout.setVisibility(View.GONE);
 
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
