@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -64,6 +65,7 @@ public class SettingMyInfoFragment extends Fragment {
     private ArrayList<String> locationSelected;
     private ArrayList<String> location;
     private ImageView profileImg;
+    private TextView profileChangeImage;
     private EditText nickname;
     private EditText introMsg;
     private Button checkNickname;
@@ -84,6 +86,7 @@ public class SettingMyInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.setting_myinfo_fragment, container, false);
         // 레이아웃 가져오기
+        profileChangeImage = view.findViewById(R.id.profileChangeImage);
         profileImg = view.findViewById(R.id.profileImage);
         EditText email = view.findViewById(R.id.setting_email);
         nickname = view.findViewById(R.id.setting_nickname);
@@ -130,7 +133,7 @@ public class SettingMyInfoFragment extends Fragment {
         setLocation();
 
         // 프사 눌렀을 때 이미지 파일 선택 창으로 이동
-        profileImg.setOnClickListener(new View.OnClickListener() {
+        profileChangeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
