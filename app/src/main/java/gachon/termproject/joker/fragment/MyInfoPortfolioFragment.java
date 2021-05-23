@@ -1,6 +1,8 @@
 package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +49,7 @@ public class MyInfoPortfolioFragment extends AppCompatActivity {
     private ImageView mainImg;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,8 @@ public class MyInfoPortfolioFragment extends AppCompatActivity {
         TextView location = findViewById(R.id.myInfoLocation);
         mainImg = findViewById(R.id.main_image);
 
+        profileImage.setBackground(new ShapeDrawable(new OvalShape()));
+        profileImage.setClipToOutline(true);
         if (!UserInfo.profileImg.equals("None"))
             Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
         nickname.setText(UserInfo.nickname);

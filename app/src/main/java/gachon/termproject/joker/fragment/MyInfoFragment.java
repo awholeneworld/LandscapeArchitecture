@@ -3,6 +3,7 @@ package gachon.termproject.joker.fragment;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,12 +11,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -26,13 +29,11 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.SettingActivity;
 
-import static android.app.Activity.RESULT_OK;
-
 public class MyInfoFragment extends Fragment {
     private View view;
     private MyInfoTabPostFragment post;
     private MyInfoTabCommentFragment comment;
-    private ViewGroup portfolioLayout;
+    private Button portfolioButton;
     private FragmentManager fm;
     private TabLayout tabs;
     public static ImageView profileImg;
@@ -41,6 +42,7 @@ public class MyInfoFragment extends Fragment {
     public static TextView intro;
     static String locationStr;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class MyInfoFragment extends Fragment {
         setHasOptionsMenu(true);
 
         // 레이아웃 가져오기
-        portfolioLayout = view.findViewById(R.id.portfolioLayout);
+        portfolioButton = view.findViewById(R.id.portfolioButton);
         profileImg = view.findViewById(R.id.profileImage);
         nickname = view.findViewById(R.id.myInfoNickname);
         location = view.findViewById(R.id.myInfoLocation);
@@ -60,21 +62,13 @@ public class MyInfoFragment extends Fragment {
         // 프래그먼트 매니저 설정
         fm = getChildFragmentManager();
 
-        // 포트폴리오 창 설정
-        if (UserInfo.isPublic) {
-            portfolioLayout.setVisibility(View.GONE);
-        } else {
-            portfolioLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getContext(), MyInfoPortfolioFragment.class));
-                }
-            });
-        }
+        // 포트폴리오 버튼 설정
+        if (UserInfo.isPublic)
+            portfolioButton.setVisibility(View.GONE);
 
         // 프사 설정
-        //profileImg.setBackground(new ShapeDrawable(new OvalShape()));
+        profileImg.setBackground(new ShapeDrawable(new OvalShape()));
+        profileImg.setClipToOutline(true);
         if (!UserInfo.profileImg.equals("None"))
             Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
 
@@ -89,8 +83,17 @@ public class MyInfoFragment extends Fragment {
 
         location.setText(locationStr);
 
-        // 한줄 소개 설정 -> 설정 구현되면 마저 작성할 것임
+        // 한줄 소개 설정
         intro.setText(UserInfo.introduction);
+
+        // 포트폴리오 버튼 누르면
+        portfolioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), MyInfoPortfolioFragment.class));
+            }
+        });
 
         // 마이인포 탭 첫 화면
         if (post == null) {
