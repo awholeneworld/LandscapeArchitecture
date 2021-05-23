@@ -118,6 +118,10 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int curId = item.getItemId();
         switch(curId){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
             case R.id.show_profile:
                 Toast.makeText(this, "프로필 보기", Toast.LENGTH_SHORT).show();
                 break;

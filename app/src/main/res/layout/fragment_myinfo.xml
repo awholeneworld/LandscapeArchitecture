@@ -37,12 +37,12 @@
                 android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
-                <ImageView
+                <!-- <ImageView
                     android:id="@+id/UserOption"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_baseline_beenhere_24" />
+                    android:src="@drawable/ic_baseline_beenhere_24" /> -->
 
                 <TextView
                     android:id="@+id/myInfoNickname"
@@ -60,9 +60,8 @@
                 android:id="@+id/myInfoLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:layout_marginLeft="35dp"
+                android:layout_marginLeft="10dp"
                 android:text="지역"
                 android:textColor="@color/black"
                 android:textSize="12dp" />
@@ -71,7 +70,8 @@
                 android:id="@+id/myInfoMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="35dp"
+                android:layout_marginLeft="10dp"
+                android:paddingRight="5dp"
                 android:text="한줄 메시지 (소개)"
                 android:textColor="@color/black"
                 android:textSize="12dp" />
@@ -107,8 +107,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/myinfo_tabs"

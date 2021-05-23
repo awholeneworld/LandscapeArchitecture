@@ -11,9 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,10 +36,11 @@ public class MyInfoFragment extends Fragment {
     private View view;
     private MyInfoTabPostFragment post;
     private MyInfoTabCommentFragment comment;
+    private Button portfolioButton;
     private FragmentManager fm;
     private TabLayout tabs;
     private LinearLayout portfolioLayout;
-    private Button portfolioButton;
+    // private Button portfolioButton;
     public static ImageView profileImg;
     public static TextView nickname;
     public static TextView location;
@@ -72,8 +75,8 @@ public class MyInfoFragment extends Fragment {
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         profileImg.setClipToOutline(true);
-        if (!UserInfo.profileImg.equals("None"))
-            Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
+        //if (!UserInfo.profileImg.equals("None"))
+            //Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
 
         // 닉네임 설정
         nickname.setText(UserInfo.nickname);
@@ -144,8 +147,7 @@ public class MyInfoFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected (MenuItem item)
-    {
+    public boolean onOptionsItemSelected (MenuItem item) {
         switch(item.getItemId()) {
             case R.id.setting:
                 startActivityForResult(new Intent(getContext(), SettingActivity.class), 1);

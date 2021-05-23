@@ -98,8 +98,8 @@ public class SeePostActivity extends AppCompatActivity {
         ImageView profile = findViewById(R.id.postProfile);
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
-        if (!profileImg.equals("None"))
-            Glide.with(this).load(profileImg).into(profile);
+        //if (!profileImg.equals("None"))
+            //Glide.with(this).load(profileImg).into(profile);
 
         // 포스트 내용 넣을 공간 지정
         container = findViewById(R.id.seepost_content);
@@ -210,7 +210,6 @@ public class SeePostActivity extends AppCompatActivity {
 
             //자기가 쓴 글일때 - 삭제
             case R.id.delete:
-
                 break;
 
             //남이 쓴 글일때 - 프로필보기 / 신고
