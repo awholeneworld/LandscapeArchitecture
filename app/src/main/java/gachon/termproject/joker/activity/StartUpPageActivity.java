@@ -89,6 +89,92 @@ public class StartUpPageActivity extends AppCompatActivity {
                         }
 
                         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+
+                        ChildEventListener childEventListener = new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                if (snapshot.getKey().equals("Posts")) {
+                                    DatabaseReference postsDbRef = dbRef.child("Posts");
+                                    postsDbRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DataSnapshot dataSnapshot) {
+                                            final long categoryNum = dataSnapshot.getChildrenCount();
+                                            postsDbRef.addChildEventListener(new ChildEventListener() {
+                                                @Override
+                                                public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                    snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @RequiresApi(api = Build.VERSION_CODES.N)
+                                                        @Override
+                                                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                            for (DataSnapshot item : snapshot.getChildren()) {
+                                                                PostContent myInfoPostContent = item.getValue(PostContent.class);
+                                                                userPostsIdList.add(0, myInfoPostContent.getPostId());
+                                                            }
+
+                                                            finishCount++;
+                                                            if (finishCount == categoryNum) {
+                                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
+                                                                startActivity(intent);
+                                                                Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
+                                                                finish();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                }
+
+                                                @Override
+                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                }
+
+                                                @Override
+                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                            }
+                        };
+
+
                         dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                             @Override
                             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
@@ -97,63 +183,8 @@ public class StartUpPageActivity extends AppCompatActivity {
                                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                         Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
                                         finish();
-                                    } else {
-                                        dbRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                            @Override
-                                            public void onSuccess(DataSnapshot dataSnapshot) {
-                                                final long categoryNum = dataSnapshot.getChildrenCount();
-                                                dbRef.addChildEventListener(new ChildEventListener() {
-                                                    @Override
-                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                        snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @RequiresApi(api = Build.VERSION_CODES.N)
-                                                            @Override
-                                                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                                                for (DataSnapshot item : snapshot.getChildren()) {
-                                                                    PostContent myInfoPostContent = item.getValue(PostContent.class);
-                                                                    userPostsIdList.add(0, myInfoPostContent.getPostId());
-                                                                }
-
-                                                                finishCount++;
-                                                                if (finishCount == categoryNum) {
-                                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                                                    intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
-                                                                    startActivity(intent);
-                                                                    Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
-                                                                    finish();
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                            }
-                                                        });
-                                                    }
-
-                                                    @Override
-                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
+                                    } else
+                                        dbRef.addChildEventListener(childEventListener);
                                 }
                             }
                         });
