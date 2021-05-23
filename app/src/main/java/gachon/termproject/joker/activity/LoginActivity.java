@@ -235,9 +235,9 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    if (!task.getResult().exists()) {
+                                    DataSnapshot snapshot = task.getResult();
+                                    if (!snapshot.exists() || !snapshot.child("Posts").exists()) {
                                         startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                        Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
                                         finish();
                                     } else
                                         dbRef.addChildEventListener(childEventListener);
