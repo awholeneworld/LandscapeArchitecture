@@ -54,13 +54,23 @@
             <EditText
                 android:id="@+id/signup01_edittext01"
                 android:layout_width="match_parent"
+                android:lineSpacingExtra="2sp"
                 android:layout_height="40dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
                 android:singleLine="true"
                 android:backgroundTint="@color/mainGreen"
                 android:hint="이메일을 입력하세요"
                 android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/signup01_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#80AA0000"
+                android:paddingLeft="3dp"
+                />
+
 
             <!--                background : 버튼 누르면 물결 효과-->
             <Button

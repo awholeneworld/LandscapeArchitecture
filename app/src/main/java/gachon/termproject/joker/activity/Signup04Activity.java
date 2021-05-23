@@ -126,6 +126,13 @@ public class Signup04Activity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+
     public ArrayList<String> checklocation() {
         //선택된 지역을 저장할 리스트
         ArrayList<String> location = new ArrayList<>();

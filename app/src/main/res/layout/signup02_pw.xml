@@ -55,12 +55,22 @@
                 android:id="@+id/signup02_edittext01"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:lineSpacingExtra="2sp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
                 android:singleLine="true"
                 android:inputType="textPassword"
                 android:backgroundTint="@color/mainGreen"
                 android:hint="비밀번호를 입력하세요" />
+
+            <TextView
+                android:id="@+id/signup02_tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#80AA0000"
+                android:paddingLeft="3dp"
+                />
+
 
             <TextView
                 android:id="@+id/signup02_text02"
@@ -76,12 +86,22 @@
                 android:id="@+id/signup02_edittext02"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:lineSpacingExtra="2sp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp"
                 android:singleLine="true"
                 android:inputType="textPassword"
                 android:backgroundTint="@color/mainGreen"
                 android:hint="다시 비밀번호를 입력하세요" />
+
+            <TextView
+                android:id="@+id/signup02_tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#80AA0000"
+                android:paddingLeft="3dp"
+                />
+
 
 
 

@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
@@ -16,6 +17,8 @@ import gachon.termproject.joker.R;
 
 public class Signup02Activity extends AppCompatActivity {
     public static String password; // 회원가입을 위한 전역변수
+    private TextView tv1;
+    private TextView tv2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class Signup02Activity extends AppCompatActivity {
         Button nextButton = findViewById(R.id.signup02_button01);
         EditText firstPw = findViewById(R.id.signup02_edittext01);
         EditText secondPw = findViewById(R.id.signup02_edittext02);
+        tv1 = findViewById(R.id.signup02_tv1);
+        tv2 = findViewById(R.id.signup02_tv2);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,17 +48,20 @@ public class Signup02Activity extends AppCompatActivity {
 
                 // 비밀번호 확인
                 if (TextUtils.isEmpty(pw)) {
-                    Toast.makeText(getApplicationContext(), "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
-                }
-                else if (TextUtils.isEmpty(checkPw)) {
-                    Toast.makeText(getApplicationContext(), "확인 비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
-                }
-                else if (pw.compareTo(checkPw) != 0) { //불일치한다면
-                    Toast.makeText(getApplicationContext(), "비밀번호가 다릅니다.", Toast.LENGTH_SHORT).show();
-
+                    tv1.setText("비밀번호를 입력해주세요");
+                    tv2.setText("");
                 }
                 else if (pw.length() < 6) {
-                    Toast.makeText(getApplicationContext(), "비밀번호는 최소 6자가 되어야 합니다.", Toast.LENGTH_SHORT).show();
+                    tv1.setText("비밀번호는 최소 6자가 되어야 합니다");
+                    tv2.setText("");
+                }
+                else if (TextUtils.isEmpty(checkPw)) {
+                    tv1.setText("");
+                    tv2.setText("확인 비밀번호를 입력해주세요");
+                }
+                else if (pw.compareTo(checkPw) != 0) { //불일치한다면
+                    tv1.setText("");
+                    tv2.setText("비밀번호가 다릅니다");
                 }
                 else { //비밀번호가 일치한다면
                     password = pw; // PW 전역변수 설정
@@ -62,4 +70,11 @@ public class Signup02Activity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,10 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
         TextView title;
+        TextView nickname;
+        TextView date;
+        TextView content;
+        ImageView image;
         String categoryOfPost;
         String userIdInPost;
         String profileImgInPost;
@@ -47,10 +52,16 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationPost;
+        boolean isMatched;
 
         ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
+            content = itemView.findViewById(R.id.content);
+            nickname = itemView.findViewById(R.id.writer);
+            date = itemView.findViewById(R.id.date);
+            image = itemView.findViewById(R.id.image);
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -84,9 +95,25 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PostContent content = postContentList.get(position);
         String contentTitle = content.getTitle();
+        String contentNickname = content.getNickname();
+        String contentTime = content.getPostTime();
+        ArrayList<String> contentsList = content.getContent();
+        ArrayList<String> imagesList = content.getImages();
 
         // 뷰홀더 클래스의 전역 변수 설정
         holder.titleInPost = contentTitle;
+
+        holder.categoryOfPost = content.getCategory();
+        holder.userIdInPost = content.getUserId();
+        holder.profileImgInPost = content.getProfileImg();
+        holder.nicknameInPost = contentNickname;
+        holder.timeInPost = contentTime;
+        holder.postIdInPost = content.getPostId();
+        holder.contentInPost = contentsList;
+        holder.imagesInPost = imagesList;
+        holder.expertIdOfPost = content.getExpertId();
+        holder.locationPost = content.getLocation();
+        holder.isMatched = content.getIsMatched();
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         if (contentTitle.length() > 15)

@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -41,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import gachon.termproject.joker.R;
@@ -57,6 +59,7 @@ public class SeePostActivity extends AppCompatActivity {
     private PostCommentContent postComment;
     private ValueEventListener commentsListener;
     private boolean isWriter;
+    List<ImageView> iv = new ArrayList<ImageView>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -129,6 +132,20 @@ public class SeePostActivity extends AppCompatActivity {
                 imageView.setLayoutParams(layoutParams);
                 imageView.setScaleType(ImageView.ScaleType.CENTER);
                 Glide.with(SeePostActivity.this).load(images.get(i)).into(imageView);
+                imageView.setId(i);
+                iv.add(imageView);
+
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), FullScreenImageActivity.class);
+                        for(int j = 0; j < images.size(); j++){
+                            if(v.getId() == iv.get(j).getId()) {
+                                intent.putExtra("img", images.get(j));
+                            }
+                        }
+                        startActivity(intent);
+                    } });
+
                 imageContainer.addView(imageView);
             }
         }
@@ -199,6 +216,7 @@ public class SeePostActivity extends AppCompatActivity {
             }
         });
     }
+
 
     //위에 메뉴 관련
     @Override

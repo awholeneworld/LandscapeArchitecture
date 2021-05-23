@@ -49,6 +49,14 @@ public class Signup05Activity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+
+
     public class StartUpPageThread extends Thread {
         private Handler handler;
 

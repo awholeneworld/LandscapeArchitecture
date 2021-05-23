@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/fullscreen_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:id="@+id/LL"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:background="#1EFFFFFF">
+
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_margin="5dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
