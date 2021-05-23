@@ -139,7 +139,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                 location_select.setEnabled(false);
 
                 InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                if(manager != null) manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                if(manager != null) manager.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 //지역선택하는 화면이 있는 relative layout -> 선택지를 화면 내로 끌고와서 보여줌
                 LinearLayout LL = findViewById(R.id.post_select_location);
