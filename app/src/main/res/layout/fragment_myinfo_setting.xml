@@ -337,6 +337,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginBottom="15dp"
                 android:backgroundTint="#FFFFFF"
                 android:gravity="center"
                 android:text="비밀번호 변경"

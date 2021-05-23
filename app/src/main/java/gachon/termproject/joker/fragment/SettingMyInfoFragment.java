@@ -22,14 +22,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,9 +51,6 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.CheckPasswordActivity;
 import gachon.termproject.joker.activity.MainActivity;
-import gachon.termproject.joker.activity.WritePostActivity;
-import gachon.termproject.joker.activity.WriteReviewPostExpertListActivity;
-import gachon.termproject.joker.adapter.CommunityPagerAdapter;
 
 public class SettingMyInfoFragment extends Fragment {
 
@@ -84,7 +79,7 @@ public class SettingMyInfoFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.setting_myinfo_fragment, container, false);
+        view = inflater.inflate(R.layout.fragment_myinfo_setting, container, false);
         // 레이아웃 가져오기
         profileChangeImage = view.findViewById(R.id.profileChangeImage);
         profileImg = view.findViewById(R.id.profileImage);
@@ -207,19 +202,19 @@ public class SettingMyInfoFragment extends Fragment {
 
         if (temp.length() == 0) {
             nickname.setText(UserInfo.nickname);
-            nickname.setEnabled(false);
-            checkNickname.setEnabled(false);
+            //nickname.setEnabled(false);
+            //checkNickname.setEnabled(false);
             Toast.makeText(getContext(), "변경할 닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
         }
         else if (temp.length() > 6) {
             nickname.setText(UserInfo.nickname);
-            nickname.setEnabled(false);
-            checkNickname.setEnabled(false);
+            //nickname.setEnabled(false);
+            //checkNickname.setEnabled(false);
             Toast.makeText(getContext(), "닉네임은 6자 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
         }
         else if (temp.equals(UserInfo.nickname)) {
-            nickname.setEnabled(false);
-            checkNickname.setEnabled(false);
+            //nickname.setEnabled(false);
+            //checkNickname.setEnabled(false);
             Toast.makeText(getContext(), "본인의 닉네임입니다.", Toast.LENGTH_SHORT).show();
         }
         else { //데이터베이스에서 중복되는 닉네임 있는지 확인!!!
@@ -239,8 +234,8 @@ public class SettingMyInfoFragment extends Fragment {
                             } else if (i == list.size() - 1) {
                                 flag_nickname_check++;
                                 nicknameEdited = temp;
-                                nickname.setEnabled(false);
-                                checkNickname.setEnabled(false);
+                                //nickname.setEnabled(false);
+                                //checkNickname.setEnabled(false);
                                 Toast.makeText(getContext(), "사용 가능한 닉네임 입니다", Toast.LENGTH_SHORT).show();
                             }
                         }
