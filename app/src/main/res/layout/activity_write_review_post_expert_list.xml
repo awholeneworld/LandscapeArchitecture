@@ -23,6 +23,13 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <TextView
+        android:id="@+id/toolbar_bottom_boarder"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/whitegray" />
+
     <FrameLayout
         android:id="@+id/write_review_post_expert_list_frame"
         android:layout_width="match_parent"
