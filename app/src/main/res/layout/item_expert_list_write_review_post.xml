@@ -13,46 +13,52 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        android:layout_gravity="center">
-
-        <ImageView
-            android:id="@+id/expert_image"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_launcher_background" />
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="250dp"
-            android:layout_height="50dp"
-            android:orientation="vertical"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
 
-            <TextView
-                android:id="@+id/expert_nickname"
+            <ImageView
+                android:id="@+id/expert_image"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_width="50dp"
+                android:layout_gravity="center_vertical"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_launcher_background" />
+
+                <TextView
+                    android:id="@+id/expert_nickname"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="nickname"
+                    android:textColor="@android:color/black"
+                    android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/select"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="0dp"
-                android:text="nickname"
-                android:textColor="@android:color/black"
-                android:textSize="20dp" />
+                android:textColor="@color/black"
+                android:layout_gravity="center_vertical"
+                android:text="선택하기" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/select"
+        <TextView
+            android:id="@+id/toolbar_bottom_boarder"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="선택하기" />
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/whitegray" />
 
     </LinearLayout>
 
