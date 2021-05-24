@@ -41,6 +41,7 @@ public class StartUpPageActivity extends AppCompatActivity {
     private DocumentReference documentReference;
     private ArrayList<String> userPostsIdList = new ArrayList<>();
     private int finishCount = 0;
+    private int failCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,28 +103,29 @@ public class StartUpPageActivity extends AppCompatActivity {
                                             postsDbRef.addChildEventListener(new ChildEventListener() {
                                                 @Override
                                                 public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                    snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @RequiresApi(api = Build.VERSION_CODES.N)
+                                                    snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                         @Override
-                                                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                                            for (DataSnapshot item : snapshot.getChildren()) {
-                                                                PostContent myInfoPostContent = item.getValue(PostContent.class);
-                                                                userPostsIdList.add(0, myInfoPostContent.getPostId());
+                                                        public void onSuccess(DataSnapshot dataSnapshot) {
+                                                            if (!dataSnapshot.exists()) {
+                                                                failCount++;
+                                                                if (failCount == categoryNum) {
+                                                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                                                    finish();
+                                                                }
+                                                            } else {
+                                                                for (DataSnapshot item : snapshot.getChildren()) {
+                                                                    PostContent myInfoPostContent = item.getValue(PostContent.class);
+                                                                    userPostsIdList.add(0, myInfoPostContent.getPostId());
+                                                                }
+
+                                                                finishCount++;
+                                                                if (finishCount == categoryNum) {
+                                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                    intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                }
                                                             }
-
-                                                            finishCount++;
-                                                            if (finishCount == categoryNum) {
-                                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                                                intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
-                                                                startActivity(intent);
-                                                                Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
-                                                                finish();
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                                                         }
                                                     });
                                                 }

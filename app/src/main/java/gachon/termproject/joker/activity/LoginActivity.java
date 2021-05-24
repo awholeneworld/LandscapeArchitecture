@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button button_login;
     private ArrayList<String> userPostsIdList = new ArrayList<>();
     private int finishCount = 0;
+    private int failCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,18 +163,25 @@ public class LoginActivity extends AppCompatActivity {
                                                         @RequiresApi(api = Build.VERSION_CODES.N)
                                                         @Override
                                                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                                            for (DataSnapshot item : snapshot.getChildren()) {
-                                                                PostContent myInfoPostContent = item.getValue(PostContent.class);
-                                                                userPostsIdList.add(0, myInfoPostContent.getPostId());
-                                                            }
+                                                            if (!dataSnapshot.exists()) {
+                                                                failCount++;
+                                                                if (failCount == categoryNum) {
+                                                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                                                    finish();
+                                                                }
+                                                            } else {
+                                                                for (DataSnapshot item : snapshot.getChildren()) {
+                                                                    PostContent myInfoPostContent = item.getValue(PostContent.class);
+                                                                    userPostsIdList.add(0, myInfoPostContent.getPostId());
+                                                                }
 
-                                                            finishCount++;
-                                                            if (finishCount == categoryNum) {
-                                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                                                intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
-                                                                startActivity(intent);
-                                                                Toast.makeText(getApplicationContext(), "로그인 성공!!", Toast.LENGTH_SHORT).show();
-                                                                finish();
+                                                                finishCount++;
+                                                                if (finishCount == categoryNum) {
+                                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                    intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
+                                                                    startActivity(intent);
+                                                                    finish();
+                                                                }
                                                             }
                                                         }
 
