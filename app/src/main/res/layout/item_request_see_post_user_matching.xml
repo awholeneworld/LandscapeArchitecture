@@ -43,17 +43,29 @@
             android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"/>
 
+
         <Button
             android:id="@+id/matching_request_item_pofol"
-            android:layout_width="95dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:text="포트폴리오"
-            android:textSize="13dp"
+            android:textSize="11dp"
             android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"
             android:layout_toLeftOf="@+id/matching_request_item_accept"
             android:layout_marginRight="10dp"/>
 
+
+        <Button
+            android:id="@+id/matching_request_item_accept"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:text="수락"
+            android:textSize="11dp"
+            android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"
+            android:layout_toLeftOf="@+id/matching_request_item_cancel"
+            android:layout_marginRight="5dp"/>
 
         <Button
             android:id="@+id/matching_request_item_cancel"
@@ -61,22 +73,11 @@
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:text="취소"
-            android:textSize="13dp"
-            android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"
-            android:layout_toRightOf="@+id/matching_request_item_pofol"
-            android:layout_marginRight="10dp"/>
-
-        <Button
-            android:id="@+id/matching_request_item_accept"
-            android:layout_width="85dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:text="수락"
-            android:textSize="13dp"
+            android:textSize="11dp"
             android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"/>
+            android:layout_marginRight="10dp"/>
 
     </RelativeLayout>
 
