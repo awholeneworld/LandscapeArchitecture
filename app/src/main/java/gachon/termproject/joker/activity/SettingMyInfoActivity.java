@@ -75,10 +75,10 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
         FragmentManager fm = getSupportFragmentManager(); // 프래그먼트 간의 이동을 도와주는 것
-                if (settingMyInfoFragment == null) {
-                    settingMyInfoFragment = new SettingMyInfoFragment();
-                    fm.beginTransaction().add(R.id.setting_myinfo_frame, settingMyInfoFragment).commit();
-                }
-                if (settingMyInfoFragment != null) fm.beginTransaction().show(settingMyInfoFragment).commit();
+        if (settingMyInfoFragment == null) {
+            settingMyInfoFragment = new SettingMyInfoFragment();
+            fm.beginTransaction().add(R.id.setting_myinfo_frame, settingMyInfoFragment).commit();
+        }
+        if (settingMyInfoFragment != null) fm.beginTransaction().show(settingMyInfoFragment).commit();
     }
 }

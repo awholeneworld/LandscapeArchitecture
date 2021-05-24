@@ -1,63 +1,39 @@
 package gachon.termproject.joker.activity;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+
+import android.os.Build;
 import android.os.Bundle;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import gachon.termproject.joker.UserInfo;
-
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.adapter.WriteReviewPostExpertListAdapter;
-import gachon.termproject.joker.Content.ExpertListContent;
+import gachon.termproject.joker.fragment.WriteReviewPostExpertListFragment;
 
 public class WriteReviewPostExpertListActivity extends AppCompatActivity {
+    private WriteReviewPostExpertListFragment writeReviewPostExpertListActivity;
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_review_post_expert_list);
 
-        RecyclerView content = findViewById(R.id.content);
-        ArrayList<ExpertListContent> expertList = new ArrayList<>();
-        WriteReviewPostExpertListAdapter expertListAdapter = new WriteReviewPostExpertListAdapter(getApplicationContext(), expertList);
+        //toolbar를 activity bar로 지정!
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
+        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
-        content.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        content.setHasFixedSize(true);
-        content.setAdapter(expertListAdapter);
-
-        FirebaseFirestore.getInstance().collection("users").limit(50).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    QuerySnapshot querySnapshot = task.getResult();
-                    List<DocumentSnapshot> list = querySnapshot.getDocuments();
-                    for (int i = 0; i < list.size(); i++) {
-                        DocumentSnapshot snapshot = list.get(i);
-                        Boolean isPublic = snapshot.getBoolean("isPublic");
-                        String userId = snapshot.getId();
-                        if (!isPublic && !userId.equals(UserInfo.userId)) {
-                            String nickname = snapshot.getString("nickname");
-                            String profileImg = snapshot.getString("profileImg");
-                            String portfolioImg = snapshot.getString("portfolioImg");
-                            String portfolioWeb = snapshot.getString("portfolioWeb");
-                            expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, new ArrayList<>()));
-                        }
-                    }
-                    expertListAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+        FragmentManager fm = getSupportFragmentManager(); // 프래그먼트 간의 이동을 도와주는 것
+        if (writeReviewPostExpertListActivity == null) {
+            writeReviewPostExpertListActivity = new WriteReviewPostExpertListFragment();
+            fm.beginTransaction().add(R.id.write_review_post_expert_list_frame, writeReviewPostExpertListActivity).commit();
+        }
+        if (writeReviewPostExpertListActivity != null) fm.beginTransaction().show(writeReviewPostExpertListActivity).commit();
     }
 }

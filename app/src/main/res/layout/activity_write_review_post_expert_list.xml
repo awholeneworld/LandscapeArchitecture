@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_setting"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/content"
+    <!--toolbar-->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="?attr/actionBarSize" >
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:id="@+id/write_review_post_expert_list_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="전문가 선택"
+            android:textColor="@color/mainGreen"
+            android:textSize="20sp">
+        </TextView>
 
-</ScrollView>
+    </androidx.appcompat.widget.Toolbar>
+
+    <FrameLayout
+        android:id="@+id/write_review_post_expert_list_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
+
+    </FrameLayout>
+
+
+</RelativeLayout>

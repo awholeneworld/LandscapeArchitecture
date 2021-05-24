@@ -61,8 +61,7 @@
           android:singleLine="true"
           android:backgroundTint="@color/mainGreen"
           android:hint="기존의 링크 넣어주세요"
-          android:enabled="false"
-          android:inputType="textPassword" />
+          android:enabled="false" />
 
       <Button
           android:id="@+id/original_link_button"
@@ -91,8 +90,7 @@
           android:layout_marginBottom="10dp"
           android:singleLine="true"
           android:backgroundTint="@color/mainGreen"
-          android:hint="새로운 링크 주소를 입력해주세요"
-          android:inputType="textPassword" />
+          android:hint="새로운 링크 주소를 입력해주세요" />
 
       <Button
           android:id="@+id/new_link_button"

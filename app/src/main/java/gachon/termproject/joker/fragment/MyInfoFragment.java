@@ -75,8 +75,8 @@ public class MyInfoFragment extends Fragment {
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         profileImg.setClipToOutline(true);
-        //if (!UserInfo.profileImg.equals("None"))
-            //Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
+        if (!UserInfo.profileImg.equals("None"))
+            Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
 
         // 닉네임 설정
         nickname.setText(UserInfo.nickname);
