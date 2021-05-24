@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.WriteReviewPostExpertListFragment;
@@ -35,5 +36,16 @@ public class WriteReviewPostExpertListActivity extends AppCompatActivity {
             fm.beginTransaction().add(R.id.write_review_post_expert_list_frame, writeReviewPostExpertListActivity).commit();
         }
         if (writeReviewPostExpertListActivity != null) fm.beginTransaction().show(writeReviewPostExpertListActivity).commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

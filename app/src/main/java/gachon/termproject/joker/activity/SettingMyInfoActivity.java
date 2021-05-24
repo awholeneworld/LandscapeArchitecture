@@ -81,4 +81,15 @@ public class SettingMyInfoActivity extends AppCompatActivity {
         }
         if (settingMyInfoFragment != null) fm.beginTransaction().show(settingMyInfoFragment).commit();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
