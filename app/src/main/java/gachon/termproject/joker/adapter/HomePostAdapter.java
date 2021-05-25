@@ -51,8 +51,6 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
         String expertIdOfPost;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
-        ArrayList<String> locationPost;
-        boolean isMatched;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -77,7 +75,6 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
                     intent.putExtra("expertId", expertIdOfPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putStringArrayListExtra("location", locationPost);
                     context.startActivity(intent);
                 }
             });
@@ -112,8 +109,6 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
-        holder.locationPost = content.getLocation();
-        holder.isMatched = content.getIsMatched();
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         if (contentTitle.length() > 15)

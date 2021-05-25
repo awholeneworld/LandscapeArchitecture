@@ -15,13 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import gachon.termproject.joker.Content.MatchingPostContent;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.MatchingExpertSeePostActivity;
 import gachon.termproject.joker.activity.MatchingUserSeePostActivity;
-import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.FirebaseHelper;
 
@@ -29,10 +28,10 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
 {
     private Context context;
     private FirebaseHelper firebaseHelper;
-    ArrayList<PostContent> postContentList;
+    ArrayList<MatchingPostContent> postContentList;
     String category;
 
-    public MatchingPostAdapter(Context context, ArrayList<PostContent> postContentList, String category)
+    public MatchingPostAdapter(Context context, ArrayList<MatchingPostContent> postContentList, String category)
     {
         this.context = context;
         this.postContentList = postContentList;
@@ -105,7 +104,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PostContent content = postContentList.get(position);
+        MatchingPostContent content = postContentList.get(position);
 
         String contentTitle = content.getTitle();
         String contentNickname = content.getNickname();

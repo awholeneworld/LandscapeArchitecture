@@ -67,7 +67,6 @@ public class ExpertPortfolioReviewAdapter extends RecyclerView.Adapter<ExpertPor
         String expertIdOfPost;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
-        ArrayList<String> locationPost;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -88,7 +87,6 @@ public class ExpertPortfolioReviewAdapter extends RecyclerView.Adapter<ExpertPor
                     intent.putExtra("expertId", expertIdOfPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putStringArrayListExtra("location", locationPost);
                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
@@ -124,7 +122,6 @@ public class ExpertPortfolioReviewAdapter extends RecyclerView.Adapter<ExpertPor
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
-        holder.locationPost = content.getLocation();
 
         if (imagesList != null)
             Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);

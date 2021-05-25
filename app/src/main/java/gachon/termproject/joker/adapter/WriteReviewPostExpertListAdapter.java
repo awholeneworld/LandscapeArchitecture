@@ -1,5 +1,6 @@
 package gachon.termproject.joker.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
@@ -61,6 +62,7 @@ public class WriteReviewPostExpertListAdapter extends RecyclerView.Adapter<Write
                     intent.putExtra("expertId", expertUserId);
                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    ((Activity) context).finish();
                 }
             });
         }

@@ -46,8 +46,18 @@ public class LoginActivity extends AppCompatActivity {
     private TextView forgetPW;
     private Button button_login;
     private ArrayList<String> userPostsIdList = new ArrayList<>();
-    private int finishCount = 0;
+    private ArrayList<PostContent> userPostsList = new ArrayList<>();
+    private ArrayList<String> userCommentsIdList = new ArrayList<>();
+    private ArrayList<PostContent> postsOfCommentsList = new ArrayList<>();
+    private int successCount = 0;
     private int failCount = 0;
+    private int successCountFree = 0;
+    private int failCountFree = 0;
+    private int successCountReview = 0;
+    private int failCountReview = 0;
+    private int successCountTip = 0;
+    private int failCountTip = 0;
+    private int finishCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,110 +155,276 @@ public class LoginActivity extends AppCompatActivity {
                             UserInfo.portfolioWeb = document.getString("portfolioWeb");
                         }
 
-                        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
-
-                        ChildEventListener childEventListener = new ChildEventListener() {
+                        DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("Posts");
+                        postsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // DB에 Posts가 있는지 확인하기 위해 가져와본다
                             @Override
-                            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                if (snapshot.getKey().equals("Posts")) {
-                                    DatabaseReference postsDbRef = dbRef.child("Posts");
-                                    postsDbRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                if (!dataSnapshot.exists()) { // Posts가 없으면 바로 로그인
+                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    finish();
+                                } else { // Posts가 있다면 자기가 작성한 게시글이랑 댓글 정보 가져오는 작업 수행
+                                    final long categoryNum = dataSnapshot.getChildrenCount(); // 현재 Posts에 있는 category 수
+
+                                    dataSnapshot.getRef().addChildEventListener(new ChildEventListener() { // Posts에 있는 카테고리의 데이터를 카테고리 하나씩 가져올거임
                                         @Override
-                                        public void onSuccess(DataSnapshot dataSnapshot) {
-                                            final long categoryNum = dataSnapshot.getChildrenCount();
-                                            postsDbRef.addChildEventListener(new ChildEventListener() {
+                                        public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                            snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                 @Override
-                                                public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                    snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @RequiresApi(api = Build.VERSION_CODES.N)
-                                                        @Override
-                                                        public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                                            if (!dataSnapshot.exists()) {
-                                                                failCount++;
-                                                                if (failCount == categoryNum) {
-                                                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                                                    finish();
-                                                                }
-                                                            } else {
-                                                                for (DataSnapshot item : snapshot.getChildren()) {
-                                                                    PostContent myInfoPostContent = item.getValue(PostContent.class);
-                                                                    userPostsIdList.add(0, myInfoPostContent.getPostId());
+                                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                                    if (!dataSnapshot.exists()) { // 내가 쓴 글이 존재하지 않는다면
+                                                        failCount++;
+                                                        if (failCount + successCount == categoryNum) { // 내가 쓴 글이 아예 존재하지 않는다면, 내가 쓴 댓글 확인하러 슝슝
+                                                            failCount = 0;
+                                                            successCount = 0;
+                                                            postsRef.getRef().addChildEventListener(new ChildEventListener() { // Posts DB에 접근해서 카테고리 하나씩 가져오기
+                                                                @Override
+                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot categorySnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                    categorySnapshot.getRef().addChildEventListener(new ChildEventListener() { // 카테고리에 있는 글 하나 하나씩 가져오기
+                                                                        @Override
+                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                            if (!snapshot.hasChild("comments")) { // 글에 댓글이 없다면
+                                                                                if (categorySnapshot.getKey().equals("free")) failCountFree++;
+                                                                                else if (categorySnapshot.getKey().equals("review")) failCountReview++;
+                                                                                else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
+
+                                                                                if ((categorySnapshot.getKey().equals("free") && failCountFree + successCountFree == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("review") && failCountReview + successCountReview == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("tip") && failCountTip + successCountTip == categorySnapshot.getChildrenCount())) {
+                                                                                    finishCount++;
+                                                                                    if (finishCount == categoryNum) {
+                                                                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                                        intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
+                                                                                        intent.putStringArrayListExtra("userCommentsIdList", userCommentsIdList);
+                                                                                        intent.putExtra("userPostsList", userPostsList);
+                                                                                        intent.putExtra("postsOfCommentsList", postsOfCommentsList);
+                                                                                        startActivity(intent);
+                                                                                        finish();
+                                                                                    }
+                                                                                }
+                                                                            } else {
+                                                                                snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                                                                        if (!dataSnapshot.exists()) { // 현재 게시글에 내가 쓴 댓글이 없으면
+                                                                                            if (categorySnapshot.getKey().equals("free")) failCountFree++;
+                                                                                            else if (categorySnapshot.getKey().equals("review")) failCountReview++;
+                                                                                            else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
+                                                                                        } else { // 내가 단 댓글이 있으면
+                                                                                            for (DataSnapshot snapshot3 : dataSnapshot.getChildren()) { // 정보 담기
+                                                                                                userCommentsIdList.add(0, snapshot3.getKey());
+                                                                                                postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                            }
+                                                                                            if (categorySnapshot.getKey().equals("free")) successCountFree++;
+                                                                                            else if (categorySnapshot.getKey().equals("review")) successCountReview++;
+                                                                                            else if (categorySnapshot.getKey().equals("tip")) successCountTip++;
+                                                                                        }
+
+                                                                                        if ((categorySnapshot.getKey().equals("free") && failCountFree + successCountFree == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("review") && failCountReview + successCountReview == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("tip") && failCountTip + successCountTip == categorySnapshot.getChildrenCount())) {
+                                                                                            finishCount++;
+                                                                                            if (finishCount == categoryNum) {
+                                                                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                                                intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
+                                                                                                intent.putStringArrayListExtra("userCommentsIdList", userCommentsIdList);
+                                                                                                intent.putExtra("userPostsList", userPostsList);
+                                                                                                intent.putExtra("postsOfCommentsList", postsOfCommentsList);
+                                                                                                startActivity(intent);
+                                                                                                finish();
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                        }
+                                                                    });
                                                                 }
 
-                                                                finishCount++;
-                                                                if (finishCount == categoryNum) {
-                                                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                                                    intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
-                                                                    startActivity(intent);
-                                                                    finish();
+                                                                @Override
+                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                }
+                                                            });
+                                                        }
+                                                    } else { // 내가 쓴 글이 있다면
+                                                        dataSnapshot.getRef().addValueEventListener(new ValueEventListener() { // 정보 저장
+                                                            @Override
+                                                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                                for (DataSnapshot shot : snapshot.getChildren()) {
+                                                                    PostContent content = shot.getValue(PostContent.class);
+                                                                    userPostsIdList.add(0, content.getPostId());
+                                                                    userPostsList.add(0, content);
+                                                                }
+                                                                successCount++; // 성공 카운트 올리기
+                                                                if (failCount + successCount == categoryNum) { // Posts에 있는 카테고리 수만큼 내가 단 댓글 정보 가져올거임임
+                                                                    failCount = 0;
+                                                                    successCount = 0;
+                                                                    postsRef.getRef().addChildEventListener(new ChildEventListener() { // Posts DB에 접근해서 카테고리 하나씩 가져오기
+                                                                        @Override
+                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot categorySnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                            categorySnapshot.getRef().addChildEventListener(new ChildEventListener() { // 카테고리에 있는 글 하나 하나씩 가져오기
+                                                                                @Override
+                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                    if (!snapshot.hasChild("comments")) { // 글에 댓글이 없다면
+                                                                                        if (categorySnapshot.getKey().equals("free")) failCountFree++;
+                                                                                        else if (categorySnapshot.getKey().equals("review")) failCountReview++;
+                                                                                        else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
+
+                                                                                        if ((categorySnapshot.getKey().equals("free") && failCountFree + successCountFree == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("review") && failCountReview + successCountReview == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("tip") && failCountTip + successCountTip == categorySnapshot.getChildrenCount())) {
+                                                                                            finishCount++;
+                                                                                            if (finishCount == categoryNum) {
+                                                                                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                                                intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
+                                                                                                intent.putStringArrayListExtra("userCommentsIdList", userCommentsIdList);
+                                                                                                intent.putExtra("userPostsList", userPostsList);
+                                                                                                intent.putExtra("postsOfCommentsList", postsOfCommentsList);
+                                                                                                startActivity(intent);
+                                                                                                finish();
+                                                                                            }
+                                                                                        }
+                                                                                    } else {
+                                                                                        snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                            @Override
+                                                                                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                                                                                if (!dataSnapshot.exists()) { // 현재 게시글에 내가 쓴 댓글이 없으면
+                                                                                                    if (categorySnapshot.getKey().equals("free")) failCountFree++;
+                                                                                                    else if (categorySnapshot.getKey().equals("review")) failCountReview++;
+                                                                                                    else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
+                                                                                                } else { // 내가 단 댓글이 있으면
+                                                                                                    for (DataSnapshot snapshot3 : dataSnapshot.getChildren()) { // 정보 담기
+                                                                                                        userCommentsIdList.add(0, snapshot3.getKey());
+                                                                                                        postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                    }
+                                                                                                    if (categorySnapshot.getKey().equals("free")) successCountFree++;
+                                                                                                    else if (categorySnapshot.getKey().equals("review")) successCountReview++;
+                                                                                                    else if (categorySnapshot.getKey().equals("tip")) successCountTip++;
+                                                                                                }
+
+                                                                                                if ((categorySnapshot.getKey().equals("free") && failCountFree + successCountFree == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("review") && failCountReview + successCountReview == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("tip") && failCountTip + successCountTip == categorySnapshot.getChildrenCount())) {
+                                                                                                    finishCount++;
+                                                                                                    if (finishCount == categoryNum) {
+                                                                                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                                                                        intent.putStringArrayListExtra("userPostsIdList", userPostsIdList);
+                                                                                                        intent.putStringArrayListExtra("userCommentsIdList", userCommentsIdList);
+                                                                                                        intent.putParcelableArrayListExtra("userPostsList", userPostsList);
+                                                                                                        intent.putParcelableArrayListExtra("postsOfCommentsList", postsOfCommentsList);
+                                                                                                        startActivity(intent);
+                                                                                                        finish();
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                    // 나중에 포스트는 시간 순으로 정리해주기
+                                                                                }
+
+                                                                                @Override
+                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                }
+
+                                                                                @Override
+                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                }
+
+                                                                                @Override
+                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                }
+
+                                                                                @Override
+                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                }
+                                                                            });
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                        }
+                                                                    });
                                                                 }
                                                             }
-                                                        }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                                                            @Override
+                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-                                                        }
-                                                    });
-                                                }
-
-                                                @Override
-                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                }
-
-                                                @Override
-                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                }
-
-                                                @Override
-                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             });
                                         }
+
+                                        @Override
+                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                        }
+
+                                        @Override
+                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                        }
                                     });
-                                }
-                            }
-
-                            @Override
-                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                            }
-                        };
-
-
-                        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DataSnapshot snapshot = task.getResult();
-                                    if (!snapshot.exists() || !snapshot.child("Posts").exists()) {
-                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                        finish();
-                                    } else
-                                        dbRef.addChildEventListener(childEventListener);
                                 }
                             }
                         });

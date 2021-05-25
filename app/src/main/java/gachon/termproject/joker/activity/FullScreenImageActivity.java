@@ -1,14 +1,10 @@
 package gachon.termproject.joker.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.RequiresApi;

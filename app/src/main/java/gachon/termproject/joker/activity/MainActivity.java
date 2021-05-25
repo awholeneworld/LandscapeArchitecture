@@ -1,11 +1,13 @@
 package gachon.termproject.joker.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,7 +16,9 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
+import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.ChatFragment;
 import gachon.termproject.joker.fragment.CommunityFragment;
@@ -26,6 +30,8 @@ import gachon.termproject.joker.UserInfo;
 
 
 public class MainActivity extends AppCompatActivity {
+    private ActionBar actionBar;
+    private TextView action_bar_title;
     private BottomNavigationView bottomNavigationView;
     private MainHomeFragment home;
     private CommunityFragment community;
@@ -35,9 +41,11 @@ public class MainActivity extends AppCompatActivity {
     private MyInfoFragment myInfo;
     private int backPressed = 0;
     public static ArrayList<String> userPostsIdList;
-    ActionBar actionBar;
-    TextView action_bar_title;
+    public static ArrayList<PostContent> userPostsList;
+    public static ArrayList<String> userCommentsIdList;
+    public static ArrayList<PostContent> postsOfCommentsList;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +90,35 @@ public class MainActivity extends AppCompatActivity {
         // 자기가 작성한 포스트 아이디 가져오기
         Intent intent = getIntent();
         userPostsIdList = intent.getStringArrayListExtra("userPostsIdList");
+        userCommentsIdList = intent.getStringArrayListExtra("userCommentsIdList");
+        userPostsList = intent.getParcelableArrayListExtra("userPostsList");
+        postsOfCommentsList = intent.getParcelableArrayListExtra("postsOfCommentsList");
         if (userPostsIdList == null) userPostsIdList = new ArrayList<>();
+        if (userCommentsIdList == null) userCommentsIdList = new ArrayList<>();
+        if (userPostsList == null) userPostsList = new ArrayList<>();
+        else userPostsList.sort(new Comparator<PostContent>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public int compare(PostContent o1, PostContent o2) {
+                long o1Id = Long.parseUnsignedLong(o1.getPostId());
+                long o2Id = Long.parseUnsignedLong(o2.getPostId());
+
+                if (o1Id < o2Id) return 1;
+                else return -1;
+            }
+        });
+        if (postsOfCommentsList == null) postsOfCommentsList = new ArrayList<>();
+        else postsOfCommentsList.sort(new Comparator<PostContent>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public int compare(PostContent o1, PostContent o2) {
+                long o1Id = Long.parseUnsignedLong(o1.getPostId());
+                long o2Id = Long.parseUnsignedLong(o2.getPostId());
+
+                if (o1Id < o2Id) return 1;
+                else return -1;
+            }
+        });
 
         // 일반인인지 전문가인지에 따라 매칭 화면 다르게 설정
         FragmentManager fm = getSupportFragmentManager();

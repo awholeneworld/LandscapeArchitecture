@@ -34,8 +34,8 @@ public class WriteReviewPostExpertListActivity extends AppCompatActivity {
         if (writeReviewPostExpertListActivity == null) {
             writeReviewPostExpertListActivity = new WriteReviewPostExpertListFragment();
             fm.beginTransaction().add(R.id.write_review_post_expert_list_frame, writeReviewPostExpertListActivity).commit();
+            fm.beginTransaction().show(writeReviewPostExpertListActivity).commit();
         }
-        if (writeReviewPostExpertListActivity != null) fm.beginTransaction().show(writeReviewPostExpertListActivity).commit();
     }
 
     @Override

@@ -24,12 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import gachon.termproject.joker.Content.MatchingPostContent;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.MatchingUserWritePostActivity;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
-import gachon.termproject.joker.Content.PostContent;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -41,8 +41,8 @@ public class MatchingUserTabRequestFragment extends Fragment {
     private FloatingActionButton button;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    ArrayList<PostContent> postContentList;
-    PostContent postContent;
+    ArrayList<MatchingPostContent> postContentList;
+    MatchingPostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
     ValueEventListener postsListener;
     String category;
@@ -113,7 +113,7 @@ public class MatchingUserTabRequestFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postContent = snapshot.getValue(PostContent.class);
+                    postContent = snapshot.getValue(MatchingPostContent.class);
                     if (!postContent.getIsMatched())
                         postContentList.add(0, postContent);
                 }
@@ -157,22 +157,6 @@ public class MatchingUserTabRequestFragment extends Fragment {
         }
     }
 
-    OnPostListener onPostListener = new OnPostListener() {
-        @Override
-        public void onPost() {
-
-        }
-
-        @Override
-        public void onDelete(PostContent postContent) {
-            postContentList.remove(postContent);
-            matchingpostAdapter.notifyDataSetChanged();
-        }
-
-        @Override
-        public void onModify() {
-        }
-    };
     /*
     private void loadPosts(final boolean clear) {
         doUpdate = true;

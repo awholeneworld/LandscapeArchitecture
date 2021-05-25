@@ -11,11 +11,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
@@ -34,13 +33,13 @@ import gachon.termproject.joker.activity.SettingActivity;
 
 public class MyInfoFragment extends Fragment {
     private View view;
+    public static SwipeRefreshLayout refresher;
+    private LinearLayout portfolioLayout;
+    private TabLayout tabs;
+    private FragmentManager fm;
     private MyInfoTabPostFragment post;
     private MyInfoTabCommentFragment comment;
     private Button portfolioButton;
-    private FragmentManager fm;
-    private TabLayout tabs;
-    private LinearLayout portfolioLayout;
-    // private Button portfolioButton;
     public static ImageView profileImg;
     public static TextView nickname;
     public static TextView location;
@@ -57,6 +56,7 @@ public class MyInfoFragment extends Fragment {
         setHasOptionsMenu(true);
 
         // 레이아웃 가져오기
+        refresher = view.findViewById(R.id.myInfoRefresher);
         portfolioLayout = view.findViewById(R.id.portfolioLayout);
         portfolioButton = view.findViewById(R.id.portfolioButton);
         profileImg = view.findViewById(R.id.profileImage);
@@ -64,9 +64,6 @@ public class MyInfoFragment extends Fragment {
         location = view.findViewById(R.id.myInfoLocation);
         intro = view.findViewById(R.id.myInfoMessage);
         tabs = view.findViewById(R.id.myinfo_tabs);
-
-        // 프래그먼트 매니저 설정
-        fm = getChildFragmentManager();
 
         // 포트폴리오 버튼 설정
         if (UserInfo.isPublic)
@@ -101,9 +98,26 @@ public class MyInfoFragment extends Fragment {
             }
         });
 
+        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!UserInfo.profileImg.equals("None"))
+                    Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
+                nickname.setText(UserInfo.nickname);
+                locationStr = "";
+                for (String item : UserInfo.location) {
+                    locationStr += item + " ";
+                }
+                location.setText(locationStr);
+                intro.setText(UserInfo.introduction);
+                refresher.setRefreshing(false);
+            }
+        });
+
         // 마이인포 탭 첫 화면
         if (post == null) {
             post = new MyInfoTabPostFragment();
+            fm = getChildFragmentManager();
             fm.beginTransaction().add(R.id.myinfo_frame, post).commit();
         }
 
@@ -150,7 +164,7 @@ public class MyInfoFragment extends Fragment {
     public boolean onOptionsItemSelected (MenuItem item) {
         switch(item.getItemId()) {
             case R.id.setting:
-                startActivityForResult(new Intent(getContext(), SettingActivity.class), 1);
+                startActivity(new Intent(getContext(), SettingActivity.class));
                 break;
         }
 

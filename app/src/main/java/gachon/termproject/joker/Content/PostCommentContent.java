@@ -31,7 +31,7 @@ public class PostCommentContent {
     public String getCommentId() { return commentId; }
     public String getContent() { return content; }
     public void setCategory() { this.category = category; }
-    public void setUserId(String id) { this.userId = userId; }
+    public void setUserId(String userId) { this.userId = userId; }
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setProfileImg(String profileImg) { this.profileImg = profileImg; }
     public void setCommentTime(String commentTime) { this.commentTime = commentTime; }

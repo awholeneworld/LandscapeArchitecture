@@ -39,17 +39,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import gachon.termproject.joker.Content.MatchingPostContent;
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.PostImage;
-import gachon.termproject.joker.Content.PostContent;
 
 public class MatchingUserWritePostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
     private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
     private FirebaseHelper firebaseHelper = new FirebaseHelper(this);
-    private PostContent postContent;
+    private MatchingPostContent postContent;
     private Uri image; // 이미지 저장 변수
     private ArrayList<String> contentList = new ArrayList<>();
     private ArrayList<Uri> imagesList = new ArrayList<>();
@@ -288,7 +288,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, null, locationSelected, false);
+            postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, null, locationSelected, false);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -334,7 +334,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                                     String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new PostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, null, locationSelected, false);
+                                    postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, null, locationSelected, false);
 
                                     // Firebase Realtime DB에 글 내용 올리기
                                     databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
