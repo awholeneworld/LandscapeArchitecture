@@ -284,6 +284,13 @@ PostContent를 그냥 게시판용 PostContent랑 매칭 게시판용 MatchinigP
 
 내 정보 카드뷰 부분 사이 간격 조정
 
+** 2. 내 정보 비밀번호 변경 부분 **
+
+ChangePasswordActivity가 CheckPasswordActivity로 연결되어 있어 수정
+
+** 3. 전문가 매칭 리스트 **
+
+뒤로 가기 버튼 추가
 
 <br>
 <br>

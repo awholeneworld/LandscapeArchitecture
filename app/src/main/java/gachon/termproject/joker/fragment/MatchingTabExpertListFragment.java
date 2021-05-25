@@ -43,6 +43,7 @@ public class MatchingTabExpertListFragment extends Fragment {
     private TextView location_tv;
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
     private Button location_select_OK_btn;
+    private Button location_cancel_OK_btn;
 
 
     @Nullable
@@ -63,24 +64,25 @@ public class MatchingTabExpertListFragment extends Fragment {
         location_btn = view.findViewById(R.id.button_location);
         location_tv = view.findViewById(R.id.textview_location);
         location_select_OK_btn = view.findViewById(R.id.btn_post_select_location);
+        location_cancel_OK_btn = view.findViewById(R.id.btn_post_cancel_location);
         // 지역을 선택하는 부분입니다!!!!
-        SU = view.findViewById(R.id.signup04_SU);
-        IC = view.findViewById(R.id.signup04_IC);
-        DJ = view.findViewById(R.id.signup04_DJ);
-        GJ = view.findViewById(R.id.signup04_GJ);
-        DG = view.findViewById(R.id.signup04_DG);
-        US = view.findViewById(R.id.signup04_US);
-        BS = view.findViewById(R.id.signup04_BS);
-        JJ = view.findViewById(R.id.signup04_JJ);
-        GG = view.findViewById(R.id.signup04_GG);
-        GW = view.findViewById(R.id.signup04_GW);
-        CB = view.findViewById(R.id.signup04_CB);
-        CN = view.findViewById(R.id.signup04_CN);
-        GB = view.findViewById(R.id.signup04_GB);
-        GN = view.findViewById(R.id.signup04_GN);
-        JB = view.findViewById(R.id.signup04_JB);
-        JN = view.findViewById(R.id.signup04_JN);
-        SJ = view.findViewById(R.id.signup04_SJ);
+        SU = view.findViewById(R.id.SU);
+        IC = view.findViewById(R.id.IC);
+        DJ = view.findViewById(R.id.DJ);
+        GJ = view.findViewById(R.id.GJ);
+        DG = view.findViewById(R.id.DG);
+        US = view.findViewById(R.id.US);
+        BS = view.findViewById(R.id.BS);
+        JJ = view.findViewById(R.id.JJ);
+        GG = view.findViewById(R.id.GG);
+        GW = view.findViewById(R.id.GW);
+        CB = view.findViewById(R.id.CB);
+        CN = view.findViewById(R.id.CN);
+        GB = view.findViewById(R.id.GB);
+        GN = view.findViewById(R.id.GN);
+        JB = view.findViewById(R.id.JB);
+        JN = view.findViewById(R.id.JN);
+        SJ = view.findViewById(R.id.SJ);
 
         location_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,8 +93,6 @@ public class MatchingTabExpertListFragment extends Fragment {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
                 lp.addRule(RelativeLayout.BELOW, 0);
                 LL.setLayoutParams(lp);
-
-
             }
         });
 
@@ -114,6 +114,19 @@ public class MatchingTabExpertListFragment extends Fragment {
             }
         });
 
+        location_cancel_OK_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //지역선택 뷰를 다시 밑으로 내립니다.
+                LinearLayout LL = view.findViewById(R.id.post_select_location);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
+                lp.addRule(RelativeLayout.BELOW, R.id.refresh_layout);
+                lp.addRule(RelativeLayout.ABOVE, 0);
+                LL.setLayoutParams(lp);
+
+            }
+        });
 
         OnCompleteListener onCompleteListener = new OnCompleteListener<QuerySnapshot>() {
             @Override
