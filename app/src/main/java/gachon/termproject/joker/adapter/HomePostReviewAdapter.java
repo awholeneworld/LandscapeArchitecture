@@ -39,6 +39,9 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
         TextView title;
+        TextView nickname;
+        TextView date;
+        TextView content;
         ImageView image;
         String categoryOfPost;
         String userIdInPost;
@@ -51,6 +54,7 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationPost;
+        boolean isMatched;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -89,12 +93,26 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PostContent content = postContentList.get(position);
         String contentTitle = content.getTitle();
+        String contentNickname = content.getNickname();
+        String contentTime = content.getPostTime();
+        ArrayList<String> contentsList = content.getContent();
         ArrayList<String> imagesList = content.getImages();
 
 
 
         // 뷰홀더 클래스의 전역 변수 설정
         holder.titleInPost = contentTitle;
+
+        holder.categoryOfPost = content.getCategory();
+        holder.userIdInPost = content.getUserId();
+        holder.profileImgInPost = content.getProfileImg();
+        holder.nicknameInPost = contentNickname;
+        holder.timeInPost = contentTime;
+        holder.postIdInPost = content.getPostId();
+        holder.contentInPost = contentsList;
+        holder.imagesInPost = imagesList;
+        holder.expertIdOfPost = content.getExpertId();
+
 
         Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).centerCrop() .into(holder.image);
 

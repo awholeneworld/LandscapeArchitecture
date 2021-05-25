@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.Content.RequestFromExpertContent;
+import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.MatchingPostRequestAdapter;
@@ -43,6 +44,8 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     private MatchingPostRequestAdapter adapter;
     private ArrayList<RequestFromExpertContent> requestsList;
     private int requestsNum = 0; //매칭 요청한 갯수(정확히는 매칭이 진행중인 갯수)
+    private String postId;
+    private ArrayList<String> images;
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도 - clear
@@ -62,10 +65,10 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
 
         // 인텐트 데이터 가져오기
         Intent intent = getIntent();
-        String postId = intent.getStringExtra("postId");
+        postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
-        ArrayList<String> images = intent.getStringArrayListExtra("images");
+        images = intent.getStringArrayListExtra("images");
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -170,6 +173,9 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
 
             //자기가 쓴 글이므로 - 삭제
             case R.id.delete:
+                FirebaseHelper.storeDelete(this, "Matching", "userRequests", postId, images);
+                finish();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

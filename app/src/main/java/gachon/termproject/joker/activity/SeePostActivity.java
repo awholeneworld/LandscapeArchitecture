@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -49,6 +48,7 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
 import gachon.termproject.joker.Content.PostCommentContent;
+import gachon.termproject.joker.FirebaseHelper;
 
 public class SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
@@ -59,6 +59,9 @@ public class SeePostActivity extends AppCompatActivity {
     private PostCommentContent postComment;
     private ValueEventListener commentsListener;
     private boolean isWriter;
+    String postId;
+    String category;
+    ArrayList<String> images;
     List<ImageView> iv = new ArrayList<ImageView>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -77,11 +80,11 @@ public class SeePostActivity extends AppCompatActivity {
 
         // 인텐트 데이터 가져오기
         Intent intent = getIntent();
-        String category = intent.getStringExtra("category");
-        String postId = intent.getStringExtra("postId");
+        category = intent.getStringExtra("category");
+        postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
-        ArrayList<String> images = intent.getStringArrayListExtra("images");
+        images = intent.getStringArrayListExtra("images");
 
         // 작성자 본인 확인
         for (String myPostId : MainActivity.userPostsIdList) {
@@ -228,6 +231,8 @@ public class SeePostActivity extends AppCompatActivity {
 
             //자기가 쓴 글일때 - 삭제
             case R.id.delete:
+                FirebaseHelper.storeDelete(this, "Posts", category, postId, images);
+                finish();
                 break;
 
             //남이 쓴 글일때 - 프로필보기 / 신고
