@@ -49,6 +49,7 @@ import java.util.Map;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.ChangePasswordActivity;
 import gachon.termproject.joker.activity.CheckPasswordActivity;
 
 public class SettingMyInfoFragment extends Fragment {
@@ -185,7 +186,7 @@ public class SettingMyInfoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 resetPwd.setEnabled(false);
-                startActivity(new Intent(getContext(), CheckPasswordActivity.class));
+                startActivity(new Intent(getContext(), ChangePasswordActivity.class));
             }
         });
 
