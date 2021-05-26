@@ -28,6 +28,7 @@ import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,6 +57,7 @@ public class SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
     private RecyclerView commentSection;
     private DatabaseReference databaseReference;
+    private SwipeRefreshLayout refresher;
     private ArrayList<PostCommentContent> postCommentList;
     private PostContent postContent;
     private PostCommentAdapter postCommentAdapter;
@@ -95,6 +97,8 @@ public class SeePostActivity extends AppCompatActivity {
             if (postId.equals(myPostId))
                 isWriter = true;
         }
+
+        refresher = findViewById(R.id.refresh_layout);
 
         // 제목, 닉네임, 작성시간 세팅
         TextView title = findViewById(R.id.title);
@@ -162,7 +166,7 @@ public class SeePostActivity extends AppCompatActivity {
         commentSection = findViewById(R.id.comment_listview);
 
         postCommentList = new ArrayList<>();
-        postCommentAdapter = new PostCommentAdapter(getApplicationContext(), postCommentList);
+        postCommentAdapter = new PostCommentAdapter(getApplicationContext(), postCommentList, databaseReference);
 
         commentSection.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         commentSection.setHasFixedSize(true);
@@ -186,6 +190,16 @@ public class SeePostActivity extends AppCompatActivity {
         };
 
         databaseReference.addListenerForSingleValueEvent(commentsListener);
+
+        // 댓글 새로고침 리스너 설정
+        refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                databaseReference.addListenerForSingleValueEvent(commentsListener);
+                refresher.setRefreshing(false);
+            }
+        });
+
 
         // 댓글 작성
         ImageButton uploadComment = findViewById(R.id.see_post_comment_send_button);
@@ -248,6 +262,7 @@ public class SeePostActivity extends AppCompatActivity {
                 break;
 
             case R.id.decelerate:
+
         }
         return super.onOptionsItemSelected(item);
     }

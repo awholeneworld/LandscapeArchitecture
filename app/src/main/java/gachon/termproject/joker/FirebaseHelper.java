@@ -111,4 +111,12 @@ public class FirebaseHelper {
 
 
     }
+
+    public static void commentDelete(DatabaseReference databaseReference, final String commentid) {
+        //Bigcategory => Matching, Posts
+        //category => free, review, tip, userRequests...
+
+
+        databaseReference.child(commentid).removeValue();
+    }
 }
