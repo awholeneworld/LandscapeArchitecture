@@ -70,8 +70,14 @@ public class MyInfoPortfolioFragment extends AppCompatActivity {
 
         profileImage.setBackground(new ShapeDrawable(new OvalShape()));
         profileImage.setClipToOutline(true);
+
         if (!UserInfo.profileImg.equals("None"))
             Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
+
+        if (!UserInfo.portfolioImg.equals("None"))
+            Glide.with(getApplicationContext()).load(UserInfo.portfolioImg).into(mainImg);
+
+
         nickname.setText(UserInfo.nickname);
         location.setText(locationStr);
 

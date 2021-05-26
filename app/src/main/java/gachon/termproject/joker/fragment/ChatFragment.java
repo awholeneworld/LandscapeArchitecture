@@ -66,6 +66,10 @@ public class ChatFragment extends Fragment {
                     backgroundImg.setVisibility(View.VISIBLE);
                     backgroundTxt.setVisibility(View.VISIBLE);
                 }
+                else{
+                    backgroundImg.setVisibility(View.INVISIBLE);
+                    backgroundTxt.setVisibility(View.INVISIBLE);
+                }
                 chatListAdapter.notifyDataSetChanged();
             }
 

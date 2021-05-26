@@ -72,6 +72,25 @@
                     android:layout_marginBottom="10dp"
                     android:background="@color/whitegray" />
 
+                <TextView
+                    android:id="@+id/writepost_review_expertname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="35dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:text="선택한 전문가 :"/>
+
+                <!--선-->
+                <View
+                    android:id="@+id/writepost_review_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/whitegray" />
+
                 <!--내용-->
                 <EditText
                     android:id="@+id/writepost_content"

@@ -95,7 +95,6 @@ public class MyInfoFragment extends Fragment {
         portfolioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "포트폴리오 창 이동", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getActivity(), MyInfoPortfolioFragment.class));
             }
         });

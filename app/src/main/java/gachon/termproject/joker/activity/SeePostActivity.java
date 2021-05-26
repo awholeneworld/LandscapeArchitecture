@@ -8,6 +8,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,6 +39,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,6 +70,7 @@ public class SeePostActivity extends AppCompatActivity {
     private PostCommentContent postComment;
     private ValueEventListener commentsListener;
     private boolean isWriter;
+    private String expertname;
     String postId;
     String category;
     ArrayList<String> images;
@@ -92,6 +99,7 @@ public class SeePostActivity extends AppCompatActivity {
         images = intent.getStringArrayListExtra("images");
         postContent = intent.getParcelableExtra("postContent");
 
+
         // 작성자 본인 확인
         for (String myPostId : MainActivity.userPostsIdList) {
             if (postId.equals(myPostId))
@@ -115,6 +123,45 @@ public class SeePostActivity extends AppCompatActivity {
         if (!profileImg.equals("None"))
             Glide.with(this).load(profileImg).into(profile);
 
+        TextView expert_name = findViewById(R.id.seepost_review_expertname);
+        View line1 = findViewById(R.id.seepost_review_line1);
+        View line2 = findViewById(R.id.seepost_review_line2);
+        View margin = findViewById(R.id.seepost_formargin);
+
+        //리뷰인경우 전문가 이름 세팅
+        if (category.equals("review")) {
+            expert_name.setVisibility(View.VISIBLE);
+            line1.setVisibility(View.VISIBLE);
+            line2.setVisibility(View.VISIBLE);
+            margin.setVisibility(View.GONE);
+
+            String expertid = intent.getStringExtra("expertId");
+
+            DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(expertid);
+
+            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // 사용자 닉네임, 프로필 사진 Url 등 가져오기
+                            expertname = document.getString("nickname");
+                            expert_name.setText("전문가 : " + expertname);
+                        }
+                    }
+                }
+            });
+
+        } else {
+            expert_name.setVisibility(View.GONE);
+            line1.setVisibility(View.GONE);
+            line2.setVisibility(View.GONE);
+            margin.setVisibility(View.VISIBLE);
+
+        }
+
+
         // 포스트 내용 넣을 공간 지정
         container = findViewById(R.id.seepost_content);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -133,11 +180,11 @@ public class SeePostActivity extends AppCompatActivity {
         if (images != null) {
             LinearLayout imageContainer = findViewById(R.id.seepost_imagecontainer);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(dpToPx(150), dpToPx(150));
-            layoutParams.setMargins(dpToPx(10),0, dpToPx(10), 0);
+            layoutParams.setMargins(dpToPx(10), 0, dpToPx(10), 0);
 
             // imageView 채우기
             for (int i = 0; i < images.size(); i++) {
-                if(images.get(0).compareTo("") == 0) break;
+                if (images.get(0).compareTo("") == 0) break;
 
                 ImageView imageView = new ImageView(SeePostActivity.this);
                 imageView.setLayoutParams(layoutParams);
@@ -147,15 +194,17 @@ public class SeePostActivity extends AppCompatActivity {
                 iv.add(imageView);
 
                 imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View v) {
+                    @Override
+                    public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), FullScreenImageActivity.class);
-                        for(int j = 0; j < images.size(); j++){
-                            if(v.getId() == iv.get(j).getId()) {
+                        for (int j = 0; j < images.size(); j++) {
+                            if (v.getId() == iv.get(j).getId()) {
                                 intent.putExtra("img", images.get(j));
                             }
                         }
                         startActivity(intent);
-                    } });
+                    }
+                });
 
                 imageContainer.addView(imageView);
             }
@@ -214,10 +263,10 @@ public class SeePostActivity extends AppCompatActivity {
                 PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment);
 
                 //키보드 내리기
-                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                if (comment.length() == 0){
+                if (comment.length() == 0) {
                     Toast.makeText(getApplicationContext(), "1자 이상 댓글을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -229,7 +278,8 @@ public class SeePostActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 MainActivity.userCommentsIdList.add(0, commentId);
                                 MainActivity.postsOfCommentsList.add(0, postContent);
-                                if (MyInfoFragment.comment != null) MyInfoFragment.comment.adapter.notifyDataSetChanged();
+                                if (MyInfoFragment.comment != null)
+                                    MyInfoFragment.comment.adapter.notifyDataSetChanged();
 
                                 Toast.makeText(getApplicationContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
                                 databaseReference.addListenerForSingleValueEvent(commentsListener);
@@ -269,7 +319,7 @@ public class SeePostActivity extends AppCompatActivity {
 
     @SuppressLint("RestrictedApi")
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         //내가 쓴글이면 my post menu, 남이 쓴 글이면 other post menu가 보이도록 합니다
         MenuInflater inflater = getMenuInflater();
 
@@ -279,7 +329,7 @@ public class SeePostActivity extends AppCompatActivity {
             inflater.inflate(R.menu.others_post_menu, menu);
 
         // To display icon on overflow menu
-        if (menu instanceof MenuBuilder){
+        if (menu instanceof MenuBuilder) {
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);
         }
@@ -292,7 +342,7 @@ public class SeePostActivity extends AppCompatActivity {
         finish();
     }
 
-    public static int dpToPx(int dp){
+    public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 }

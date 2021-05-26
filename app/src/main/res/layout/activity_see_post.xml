@@ -103,13 +103,41 @@
                     </LinearLayout>
 
                     <!--실제 내용-->
+                    <View
+                        android:id="@+id/seepost_review_line1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/whitegray" />
+                    <TextView
+                        android:id="@+id/seepost_review_expertname"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:text="전문가 :"/>
+
+                    <View
+                        android:id="@+id/seepost_review_line2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/whitegray" />
+
+                    <View
+                        android:id="@+id/seepost_formargin"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="20dp"/>
+
                     <LinearLayout
                         android:id="@+id/seepost_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
                         android:layout_marginBottom="10dp"
-                        android:orientation="vertical"></LinearLayout>
+                        android:orientation="vertical"/>
 
 
                     <HorizontalScrollView

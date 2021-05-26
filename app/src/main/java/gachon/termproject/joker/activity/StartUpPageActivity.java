@@ -90,6 +90,8 @@ public class StartUpPageActivity extends AppCompatActivity {
                         UserInfo.introduction = document.getString("introduction");
                         UserInfo.isPublic = document.getBoolean("isPublic");
                         UserInfo.location = (ArrayList<String>) document.get("location");
+
+
                         if (!UserInfo.isPublic) {
                             UserInfo.portfolioImg = document.getString("portfolioImg");
                             UserInfo.portfolioWeb = document.getString("portfolioWeb");

@@ -61,7 +61,7 @@ public class Signup01Activity extends AppCompatActivity {
                 //userEmail에 이메일을 받아와서 여차저차함
                 if (TextUtils.isEmpty(userEmail))
                     tv.setText("이메일을 입력해주세요");
-                else if (email_check)
+                else if (!email_check)
                     tv.setText("올바른 이메일 형식이 아닙니다");
                 // Email 중복여부 확인
                 else

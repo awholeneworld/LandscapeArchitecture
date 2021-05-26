@@ -28,6 +28,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -102,6 +105,37 @@ public class WritePostActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String category = intent.getStringExtra("category");
         expertId = intent.getStringExtra("expertId");
+
+        //리뷰인경우 전문가 이름 세팅
+        TextView expert_name = findViewById(R.id.writepost_review_expertname);
+        View line = findViewById(R.id.writepost_review_line);
+        if (category.equals("review")) {
+            expert_name.setVisibility(View.VISIBLE);
+            line.setVisibility(View.VISIBLE);
+
+            DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(expertId);
+
+            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // 사용자 닉네임, 프로필 사진 Url 등 가져오기
+                            String expertname = document.getString("nickname");
+                            expert_name.setText("선택된 전문가 : " + expertname);
+                        }
+                    }
+                }
+            });
+
+
+        } else {
+            expert_name.setVisibility(View.GONE);
+            line.setVisibility(View.GONE);
+
+        }
+
 
         // 파일 선택
         imageAddButton.setOnClickListener(new View.OnClickListener() {
