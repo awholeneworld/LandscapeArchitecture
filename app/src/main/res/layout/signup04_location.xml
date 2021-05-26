@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--toolbar-->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -26,6 +24,7 @@
                 android:textSize="20sp">
 
             </TextView>
+
         </androidx.appcompat.widget.Toolbar>
 
         <TextView
@@ -62,6 +61,7 @@
             android:stretchColumns="0, 1">
 
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_SU"
                     android:layout_width="match_parent"
@@ -79,9 +79,11 @@
                     android:textSize="20sp">
 
                 </CheckBox>
+
             </TableRow>
 
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_IC"
                     android:layout_width="wrap_content"
@@ -97,9 +99,11 @@
                     android:text="강원도"
                     android:textSize="20sp">
                 </CheckBox>
+
             </TableRow>
 
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_SJ"
                     android:layout_width="wrap_content"
@@ -115,9 +119,11 @@
                     android:text="충청북도"
                     android:textSize="20sp">
                 </CheckBox>
+
             </TableRow>
 
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_DJ"
                     android:layout_width="wrap_content"
@@ -133,9 +139,11 @@
                     android:text="충청남도"
                     android:textSize="20sp">
                 </CheckBox>
+
             </TableRow>
 
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_GJ"
                     android:layout_width="wrap_content"
@@ -151,9 +159,11 @@
                     android:text="경상북도"
                     android:textSize="20sp">
                 </CheckBox>
+
             </TableRow>
 
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_DG"
                     android:layout_width="wrap_content"
@@ -169,8 +179,10 @@
                     android:text="경상남도"
                     android:textSize="20sp">
                 </CheckBox>
+
             </TableRow>
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_US"
                     android:layout_width="wrap_content"
@@ -186,8 +198,10 @@
                     android:text="전라북도"
                     android:textSize="20sp">
                 </CheckBox>
+
             </TableRow>
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_BS"
                     android:layout_width="wrap_content"
@@ -203,8 +217,11 @@
                     android:text="전라남도"
                     android:textSize="20sp">
                 </CheckBox>
+
             </TableRow>
+
             <TableRow>
+
                 <CheckBox
                     android:id="@+id/signup04_JJ"
                     android:layout_width="wrap_content"
@@ -212,9 +229,10 @@
                     android:text="제주특별자치도"
                     android:textSize="20sp">
                 </CheckBox>
-            </TableRow>
-        </TableLayout>
 
+            </TableRow>
+
+        </TableLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -223,7 +241,6 @@
             android:layout_marginTop="15dp"
             android:orientation="vertical">
 
-            <!--                background : 버튼 누르면 물결 효과-->
             <Button
                 android:id="@+id/signup04_button01"
                 android:layout_width="100dp"
@@ -234,8 +251,9 @@
                 android:textColor="@color/white"
                 android:textSize="15dp"
                 tools:ignore="RtlHardcoded" />
+
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-

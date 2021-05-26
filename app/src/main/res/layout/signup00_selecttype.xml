@@ -43,8 +43,7 @@
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="160dp"
-            >
+            android:layout_marginTop="160dp">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -90,7 +89,6 @@
 
         </TableLayout>
 
-
         <TextView
             android:id="@+id/signup00_textView_goLogIn"
             android:layout_width="match_parent"
@@ -99,6 +97,7 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:text="로그인하기" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

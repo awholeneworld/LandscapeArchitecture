@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--toolbar-->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -25,6 +23,7 @@
                 android:textColor="@color/mainGreen"
                 android:textSize="20sp">
             </TextView>
+
         </androidx.appcompat.widget.Toolbar>
 
         <TextView
@@ -51,7 +50,6 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="28sp" />
 
-
             <TextView
                 android:id="@+id/signup05_text02"
                 android:layout_width="wrap_content"
@@ -61,8 +59,6 @@
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
-
-            <!--                background : 버튼 누르면 물결 효과-->
             <Button
                 android:id="@+id/signup05_button01"
                 android:layout_width="120dp"
@@ -74,8 +70,8 @@
                 android:textSize="15dp"
                 tools:ignore="RtlHardcoded" />
 
-
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
