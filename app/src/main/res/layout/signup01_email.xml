@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--toolbar-->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -25,6 +23,7 @@
                 android:textColor="@color/mainGreen"
                 android:textSize="20sp">
             </TextView>
+
         </androidx.appcompat.widget.Toolbar>
 
         <TextView
@@ -50,12 +49,11 @@
                 android:textColor="@color/black"
                 android:textSize="28sp" />
 
-
             <EditText
                 android:id="@+id/signup01_edittext01"
                 android:layout_width="match_parent"
                 android:lineSpacingExtra="2sp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:singleLine="true"
                 android:backgroundTint="@color/mainGreen"
@@ -68,11 +66,8 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#80AA0000"
-                android:paddingLeft="3dp"
-                />
+                android:paddingLeft="3dp" />
 
-
-            <!--                background : 버튼 누르면 물결 효과-->
             <Button
                 android:id="@+id/signup01_button01"
                 android:layout_width="100dp"
@@ -84,8 +79,8 @@
                 android:textSize="15dp"
                 tools:ignore="RtlHardcoded" />
 
-
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

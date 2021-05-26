@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,7 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--toolbar-->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -25,6 +23,7 @@
                 android:textColor="@color/mainGreen"
                 android:textSize="20sp">
             </TextView>
+
         </androidx.appcompat.widget.Toolbar>
 
         <TextView
@@ -51,7 +50,6 @@
                 android:textColor="@color/black"
                 android:textSize="28sp" />
 
-
             <TextView
                 android:id="@+id/signup06_text02"
                 android:layout_width="wrap_content"
@@ -60,7 +58,6 @@
                 android:text="전문가 인증은 운영측에서 확인 후\n완료시까지 1~2일이 소요될 수 있습니다."
                 android:textColor="@color/gray"
                 android:textSize="18sp" />
-
 
             <TextView
                 android:id="@+id/signup06_text03"
@@ -80,7 +77,6 @@
                 android:textSize="22sp"
                 android:enabled="false" />
 
-            <!--                background : 버튼 누르면 물결 효과-->
             <Button
                 android:id="@+id/signup06_button01"
                 android:layout_width="100dp"
@@ -105,6 +101,7 @@
                 tools:ignore="RtlHardcoded" />
 
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

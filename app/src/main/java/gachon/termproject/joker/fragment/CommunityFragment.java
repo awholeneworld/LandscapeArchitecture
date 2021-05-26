@@ -27,12 +27,9 @@ import gachon.termproject.joker.adapter.CommunityPagerAdapter;
 
 public class CommunityFragment extends Fragment {
     private View view;
+    private TabLayout tabs;
     private FloatingActionButton button;
-
-    TabLayout tabs;
-    Button selectCommunityMode;
-    boolean i = true;
-    private RelativeLayout loaderLayout;
+    public static Button changeMode;
 
     @Nullable
     @Override
@@ -44,8 +41,9 @@ public class CommunityFragment extends Fragment {
 
         // 앨범, 리스트 변환 버튼 부분은 내가 해야될 것 같아서 삭제했음
         // 레이아웃 가져오기
-        button = view.findViewById(R.id.fab);
         tabs = view.findViewById(R.id.tabs);
+        changeMode = view.findViewById(R.id.changeMode);
+        button = view.findViewById(R.id.fab);
 
         // 어댑터설정
         final ViewPager viewPager = view.findViewById(R.id.community_frame);
@@ -79,10 +77,28 @@ public class CommunityFragment extends Fragment {
                         intent = new Intent(getActivity(), WritePostActivity.class);
                         intent.putExtra("category", "tip");
                         startActivity(intent);
-                        break;
+                }
+            }
+        });
 
-                    default:
+        changeMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (viewPager.getCurrentItem()) {
+                    case 0:
+                        changeMode.setEnabled(false);
+                        CommunityFreeFragment.changeMode();
+                        changeMode.setEnabled(true);
                         break;
+                    case 1:
+                        changeMode.setEnabled(false);
+                        CommunityReviewFragment.changeMode();
+                        changeMode.setEnabled(true);
+                        break;
+                    case 2:
+                        changeMode.setEnabled(false);
+                        CommunityTipFragment.changeMode();
+                        changeMode.setEnabled(true);
                 }
             }
         });
