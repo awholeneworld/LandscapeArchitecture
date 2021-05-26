@@ -214,28 +214,28 @@ setting 알림 설정하는 부분 연결 완료
 
 ## 0519
 ### 김수현
-**1. search **
+**1. search**
 
 일단 community search design만 구현해둠
 
 file : CommunitySearchActivity, CommunityFragment, activity_search_community.xml, search.xml
 
 
-**2. 수정(Rewrite) **
+**2. 수정(Rewrite)**
 
 일단 post id 불러오는 문제가 해결되어야 더 진행 가능...
 
 file : ReWritePostActivity, SeePostActivity (menu 선택 부분), activity_rewrite_post.xml, my_post_menu.xml
 
 
-**3. Main home **
+**3. Main home**
 
 일단 community부분은 완성. 전문가 후기 부분은 see post 안되는 문제 해결되면 그 다음에 할 예정.
 
 file : HomePostAdapter, MainHomeFragment
 
 
-**4. matching 게시판 **
+**4. matching 게시판**
 
 이거 올리고 작업할예정,,, 일단 id없어서 에러나서 주석처리해둠
 
@@ -280,20 +280,20 @@ PostContent를 그냥 게시판용 PostContent랑 매칭 게시판용 MatchinigP
 
 
 ### 고지민
-** 1. 내 정보 카드뷰 부분 **
+**1. 내 정보 카드뷰 부분**
 
 내 정보 카드뷰 부분 사이 간격 조정
 
-** 2. 내 정보 비밀번호 변경 부분 **
+**2. 내 정보 비밀번호 변경 부분**
 
 ChangePasswordActivity가 CheckPasswordActivity로 연결되어 있어 수정
 
-** 3. 전문가 매칭 리스트 **
+**3. 전문가 매칭 리스트**
 
 뒤로 가기 버튼 추가
 
  
- ## 0527
+## 0527
 ### 김수현
 **한거**
 <br> 
