@@ -47,26 +47,25 @@ public class ChatAreaAdapter extends RecyclerView.Adapter<ChatAreaAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView message;   //메시지 내용
+        public LinearLayout messagebox;
+        public LinearLayout sender;
+        public TextView message;
         public TextView nickname;
         public TextView time;
         public ImageView profileImg;
-        public LinearLayout messagebox;
-        public LinearLayout sender;
+
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            messagebox = itemView.findViewById(R.id.messagebox);
+            sender = itemView.findViewById(R.id.messagebox_sender);
             message = itemView.findViewById(R.id.messagebox_msg);
             nickname = itemView.findViewById(R.id.messagebox_nickname);
             time = itemView.findViewById(R.id.messagebox_timestamp);
             profileImg = itemView.findViewById(R.id.messagebox_profileImg);
             profileImg.setBackground(new ShapeDrawable(new OvalShape()));
             profileImg.setClipToOutline(true);
-
-            messagebox = itemView.findViewById(R.id.messagebox);
-            sender = itemView.findViewById(R.id.messagebox_sender);
         }
     }
 
@@ -81,12 +80,18 @@ public class ChatAreaAdapter extends RecyclerView.Adapter<ChatAreaAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.weight = 1.0f;
+        params.gravity = Gravity.RIGHT;
+
         //나의 uid 이면
         if (messageList.get(position).userId.equals(UserInfo.userId)) {
             //나의 말풍선 오른쪽으로
             holder.sender.setVisibility(View.INVISIBLE);
             holder.message.setText(messageList.get(position).message);
-            holder.message.setBackgroundResource(R.drawable.rightbubble); // 이부분 수정
+            holder.message.setBackgroundResource(R.drawable.rightbubble);
+            holder.message.setLayoutParams(params);
+            holder.time.setLayoutParams(params);
             holder.messagebox.setGravity(Gravity.RIGHT);
         } else {
             //상대방 말풍선 왼쪽

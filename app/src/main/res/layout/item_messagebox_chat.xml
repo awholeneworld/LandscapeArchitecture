@@ -8,8 +8,6 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp" >
 
-    <!--for testing-->
-
     <LinearLayout
         android:id="@+id/messagebox_sender"
         android:orientation="vertical"
@@ -32,8 +30,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/messagebox_content"
-        android:layout_width="wrap_content"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:orientation="vertical">
@@ -41,9 +38,9 @@
         <TextView
             android:id="@+id/messagebox_msg"
             android:layout_width="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="5dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
             android:text="message"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
@@ -54,8 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="yyyy.mm.dd hh:mm"
-            android:textSize="10sp"
-            android:textColor="@color/gray" />
+            android:textColor="@color/gray"
+            android:textSize="10sp" />
 
     </LinearLayout>
 
