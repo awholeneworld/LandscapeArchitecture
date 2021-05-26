@@ -37,7 +37,7 @@ public class SettingActivity extends AppCompatActivity {
         myinfoText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), CheckPasswordActivity.class));
+                startActivity(new Intent(getApplicationContext(), SettingMyInfoActivity.class));
             }
         });
 

@@ -40,10 +40,10 @@ public class CheckPasswordActivity extends AppCompatActivity {
         check_password_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "비밀번호 확인", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "비밀번호가 확인되었습니다.", Toast.LENGTH_SHORT).show();
                 // 비밀번호 확인하는 로직 넣어주세요
                 // 맞으면 화면 넘어가도록!!
-                startActivity(new Intent(getApplicationContext(), SettingMyInfoActivity.class));
+                startActivity(new Intent(getApplicationContext(), ChangePasswordActivity.class));
                 finish();
             }
         });

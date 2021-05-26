@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:src="@drawable/ic_launcher_background"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop" />
 
 
     <TextView
@@ -22,6 +21,5 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="후기글 제목! 호호호호호호호호호호호호호호제목 보이는거 세줄까지 가능."
-        android:textSize="14dp"
-        />
+        android:textSize="14dp" />
 </LinearLayout>

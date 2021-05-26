@@ -178,7 +178,7 @@ public class SettingMyInfoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 resetPwd.setEnabled(false);
-                startActivity(new Intent(getContext(), ChangePasswordActivity.class));
+                startActivity(new Intent(getContext(), CheckPasswordActivity.class));
             }
         });
 

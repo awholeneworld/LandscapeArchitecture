@@ -126,7 +126,7 @@ public class ChatActivity extends AppCompatActivity {
                 Toast.makeText(this, "프로필 보기", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.decelerate:
-                Toast.makeText(this, "신고", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, opponentNickname + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);
