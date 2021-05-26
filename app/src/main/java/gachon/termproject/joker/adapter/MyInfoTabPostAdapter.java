@@ -66,7 +66,7 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post_myinfo, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_myinfo, parent, false);
         return new ViewHolder(view);
     }
 

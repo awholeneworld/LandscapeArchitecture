@@ -45,6 +45,9 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.fragment.CommunityFreeFragment;
 import gachon.termproject.joker.fragment.CommunityReviewFragment;
 import gachon.termproject.joker.fragment.CommunityTipFragment;
+import gachon.termproject.joker.fragment.MyInfoFragment;
+import gachon.termproject.joker.fragment.MyInfoTabCommentFragment;
+import gachon.termproject.joker.fragment.MyInfoTabPostFragment;
 
 public class WritePostActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
@@ -202,7 +205,7 @@ public class WritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, imagesUrl, expertId);
+            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, contentList, null, expertId);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -210,11 +213,13 @@ public class WritePostActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
                     MainActivity.userPostsIdList.add(0, postId);
+                    MainActivity.userPostsList.add(0, postContent);
 
                     // 글 작성 후 게시판 자동 업데이트
                     if (category.equals("free")) CommunityFreeFragment.databaseReference.addListenerForSingleValueEvent(CommunityFreeFragment.postsListener);
                     if (category.equals("review")) CommunityReviewFragment.databaseReference.addListenerForSingleValueEvent(CommunityReviewFragment.postsListener);
                     if (category.equals("tip")) CommunityTipFragment.databaseReference.addListenerForSingleValueEvent(CommunityTipFragment.postsListener);
+                    if (MyInfoFragment.post != null) MyInfoFragment.post.adapter.notifyDataSetChanged();
 
                     Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                     finish();
@@ -263,11 +268,13 @@ public class WritePostActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             // 자기가 쓴 포스트 아이디 리스트에 본 포스트 아이디 추가
                                             MainActivity.userPostsIdList.add(0, postId);
+                                            MainActivity.userPostsList.add(0, postContent);
 
                                             // 글 작성 후 게시판 자동 업데이트
                                             if (category.equals("free")) CommunityFreeFragment.databaseReference.addListenerForSingleValueEvent(CommunityFreeFragment.postsListener);
                                             if (category.equals("review")) CommunityReviewFragment.databaseReference.addListenerForSingleValueEvent(CommunityReviewFragment.postsListener);
                                             if (category.equals("tip")) CommunityTipFragment.databaseReference.addListenerForSingleValueEvent(CommunityTipFragment.postsListener);
+                                            if (MyInfoFragment.post != null) MyInfoFragment.post.adapter.notifyDataSetChanged();
 
                                             Toast.makeText(getApplicationContext(), "등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                             finish();

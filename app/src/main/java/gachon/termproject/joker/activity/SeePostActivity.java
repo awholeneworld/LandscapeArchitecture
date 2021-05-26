@@ -44,17 +44,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
 import gachon.termproject.joker.Content.PostCommentContent;
 import gachon.termproject.joker.FirebaseHelper;
+import gachon.termproject.joker.fragment.MyInfoFragment;
 
 public class SeePostActivity extends AppCompatActivity {
     private LinearLayout container;
     private RecyclerView commentSection;
     private DatabaseReference databaseReference;
     private ArrayList<PostCommentContent> postCommentList;
+    private PostContent postContent;
     private PostCommentAdapter postCommentAdapter;
     private PostCommentContent postComment;
     private ValueEventListener commentsListener;
@@ -85,6 +88,7 @@ public class SeePostActivity extends AppCompatActivity {
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         images = intent.getStringArrayListExtra("images");
+        postContent = intent.getParcelableExtra("postContent");
 
         // 작성자 본인 확인
         for (String myPostId : MainActivity.userPostsIdList) {
@@ -209,6 +213,10 @@ public class SeePostActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                MainActivity.userCommentsIdList.add(0, commentId);
+                                MainActivity.postsOfCommentsList.add(0, postContent);
+                                if (MyInfoFragment.comment != null) MyInfoFragment.comment.adapter.notifyDataSetChanged();
+
                                 Toast.makeText(getApplicationContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
                                 databaseReference.addListenerForSingleValueEvent(commentsListener);
                             }

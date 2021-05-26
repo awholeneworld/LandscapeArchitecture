@@ -30,16 +30,18 @@ import com.google.android.material.tabs.TabLayout;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.SettingActivity;
+import gachon.termproject.joker.adapter.MyInfoTabCommentAdapter;
+import gachon.termproject.joker.adapter.MyInfoTabPostAdapter;
 
 public class MyInfoFragment extends Fragment {
     private View view;
-    public static SwipeRefreshLayout refresher;
+    private SwipeRefreshLayout refresher;
     private LinearLayout portfolioLayout;
     private TabLayout tabs;
-    private FragmentManager fm;
-    private MyInfoTabPostFragment post;
-    private MyInfoTabCommentFragment comment;
     private Button portfolioButton;
+    private FragmentManager fm;
+    public static MyInfoTabPostFragment post;
+    public static MyInfoTabCommentFragment comment;
     public static ImageView profileImg;
     public static TextView nickname;
     public static TextView location;
@@ -72,8 +74,8 @@ public class MyInfoFragment extends Fragment {
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         profileImg.setClipToOutline(true);
-        if (!UserInfo.profileImg.equals("None"))
-            Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
+        if (UserInfo.portfolioImg != null && !UserInfo.profileImg.equals("None"))
+            Glide.with(getActivity()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImg);
 
         // 닉네임 설정
         nickname.setText(UserInfo.nickname);
@@ -98,6 +100,7 @@ public class MyInfoFragment extends Fragment {
             }
         });
 
+        // 새로고침 하면
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -110,6 +113,12 @@ public class MyInfoFragment extends Fragment {
                 }
                 location.setText(locationStr);
                 intro.setText(UserInfo.introduction);
+
+                MyInfoTabPostFragment.adapter.notifyDataSetChanged();
+                if (comment != null) MyInfoTabCommentFragment.adapter.notifyDataSetChanged();
+                // MyInfoTabPostFragment.postsRef.get().addOnSuccessListener(MyInfoTabPostFragment.onSuccessListener);
+                // if (comment != null) MyInfoTabCommentFragment.postsRef.get().addOnSuccessListener(MyInfoTabCommentFragment.onSuccessListener);
+
                 refresher.setRefreshing(false);
             }
         });
