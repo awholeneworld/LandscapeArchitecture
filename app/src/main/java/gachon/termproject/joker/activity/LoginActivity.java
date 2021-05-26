@@ -1,7 +1,6 @@
 package gachon.termproject.joker.activity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,13 +26,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -209,9 +206,11 @@ public class LoginActivity extends AppCompatActivity {
                                                                                             else if (categorySnapshot.getKey().equals("review")) failCountReview++;
                                                                                             else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
                                                                                         } else { // 내가 단 댓글이 있으면
-                                                                                            for (DataSnapshot snapshot3 : dataSnapshot.getChildren()) { // 정보 담기
-                                                                                                userCommentsIdList.add(0, snapshot3.getKey());
-                                                                                                postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                            for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) { // 정보 담기
+                                                                                                if (snapshot2.child("userId").getValue().equals(UserInfo.userId)) {
+                                                                                                    userCommentsIdList.add(0, snapshot2.getKey());
+                                                                                                    postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                }
                                                                                             }
                                                                                             if (categorySnapshot.getKey().equals("free")) successCountFree++;
                                                                                             else if (categorySnapshot.getKey().equals("review")) successCountReview++;
@@ -279,15 +278,17 @@ public class LoginActivity extends AppCompatActivity {
                                                             });
                                                         }
                                                     } else { // 내가 쓴 글이 있다면
+                                                        successCount++; // 성공 카운트 올리기
                                                         dataSnapshot.getRef().addValueEventListener(new ValueEventListener() { // 정보 저장
                                                             @Override
                                                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                                                                 for (DataSnapshot shot : snapshot.getChildren()) {
-                                                                    PostContent content = shot.getValue(PostContent.class);
-                                                                    userPostsIdList.add(0, content.getPostId());
-                                                                    userPostsList.add(0, content);
+                                                                    if (shot.child("userId").getValue().equals(UserInfo.userId)) {
+                                                                        PostContent content = shot.getValue(PostContent.class);
+                                                                        userPostsIdList.add(0, content.getPostId());
+                                                                        userPostsList.add(0, content);
+                                                                    }
                                                                 }
-                                                                successCount++; // 성공 카운트 올리기
                                                                 if (failCount + successCount == categoryNum) { // Posts에 있는 카테고리 수만큼 내가 단 댓글 정보 가져올거임임
                                                                     failCount = 0;
                                                                     successCount = 0;
@@ -323,9 +324,11 @@ public class LoginActivity extends AppCompatActivity {
                                                                                                     else if (categorySnapshot.getKey().equals("review")) failCountReview++;
                                                                                                     else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
                                                                                                 } else { // 내가 단 댓글이 있으면
-                                                                                                    for (DataSnapshot snapshot3 : dataSnapshot.getChildren()) { // 정보 담기
-                                                                                                        userCommentsIdList.add(0, snapshot3.getKey());
-                                                                                                        postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                    for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) { // 정보 담기
+                                                                                                        if (snapshot2.child("userId").getValue().equals(UserInfo.userId)) {
+                                                                                                            userCommentsIdList.add(0, snapshot2.getKey());
+                                                                                                            postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                        }
                                                                                                     }
                                                                                                     if (categorySnapshot.getKey().equals("free")) successCountFree++;
                                                                                                     else if (categorySnapshot.getKey().equals("review")) successCountReview++;
