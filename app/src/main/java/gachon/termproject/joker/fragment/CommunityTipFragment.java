@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -24,14 +25,17 @@ import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.adapter.PostAdapter;
 import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.adapter.PostAlbumAdapter;
 
 public class CommunityTipFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
-    private RecyclerView contents;
+    private static RecyclerView contents;
     private ArrayList<PostContent> postContentList;
     private PostContent postContent;
-    private PostAdapter postAdapter;
+    private static PostAdapter postAdapter;
+    private static PostAlbumAdapter postAlbumAdapter;
+    private static boolean clicked = false;
     public static DatabaseReference databaseReference;
     public static ValueEventListener postsListener;
     Boolean topScrolled;
@@ -49,6 +53,7 @@ public class CommunityTipFragment extends Fragment {
         // 게시판 글 목록 내용 넣어줄 어레이 리스트와 어댑터 지정
         postContentList = new ArrayList<>();
         postAdapter = new PostAdapter(getActivity(), postContentList);
+        postAlbumAdapter = new PostAlbumAdapter(getActivity(), postContentList);
         // postAdapter.setOnPostListener(onPostListener);
 
         // 레이아웃 설정
@@ -126,6 +131,19 @@ public class CommunityTipFragment extends Fragment {
         });
 
         return view;
+    }
+
+    // 앨범형으로 보기 눌렀을 때 실행되는 함수
+    public static void changeMode() {
+        if (!clicked) {
+            contents.setLayoutManager(new GridLayoutManager(contents.getContext(), 3));
+            contents.setAdapter(postAlbumAdapter);
+            clicked = true;
+        } else {
+            contents.setLayoutManager(new LinearLayoutManager(contents.getContext()));
+            contents.setAdapter(postAdapter);
+            clicked = false;
+        }
     }
 
     OnPostListener onPostListener = new OnPostListener() {

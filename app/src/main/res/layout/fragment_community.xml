@@ -17,51 +17,16 @@
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="@color/gray">
 
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:id="@+id/tab1"-->
-<!--            android:layout_width="50dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="자유" />-->
-
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:id="@+id/tab2"-->
-<!--            android:layout_width="50dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="후기" />-->
-
-<!--        <com.google.android.material.tabs.TabItem-->
-<!--            android:id="@+id/tab3"-->
-<!--            android:layout_width="50dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="조경 팁" />-->
-
     </com.google.android.material.tabs.TabLayout>
 
     <Button
-        android:id="@+id/selectCommunityMode"
+        android:id="@+id/changeMode"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginLeft="66dp"
         android:layout_marginTop="9dp"
         android:layout_toRightOf="@+id/tabs"
         android:background="@drawable/ic_baseline_view_list_24"/>
-
-    <!--
-    <TextView
-        android:id="@+id/toolbar_bottom_boarder"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/whitegray"
-        android:layout_alignTop="@+id/community_frame" />-->
-
-<!--    <FrameLayout-->
-<!--        android:id="@+id/community_frame"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@id/tabs"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/tabs">-->
-<!--    </FrameLayout>-->
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/community_frame"
@@ -84,6 +49,5 @@
         app:fabSize="normal"
         android:backgroundTint="#3CAF5C"
         app:tint="@null"/>
-
 
 </RelativeLayout>
