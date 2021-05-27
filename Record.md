@@ -302,6 +302,12 @@ ChangePasswordActivity가 CheckPasswordActivity로 연결되어 있어 수정
 채팅이 없습니다. => 채팅있을때 안보이게<br> 
 후기 게시글 인터페이스 => see, write에서 전문가 닉네임 보이게<br> 
 
+ ### 박승민
+ **한거**
+ <br>
+ MatchingTabExpertListFragment.java - 지역 검색하면 결과에 부합하는 전문가 출력
+ CommunitySearchActivity.java - 검색결과에 맞는 게시글id를 log로 출력해놓음. (99번째줄에 log출력 & 100~101에 게시글 list까지는 )
+ 
  
  
 <br>
