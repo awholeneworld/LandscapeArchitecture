@@ -129,19 +129,15 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.show_profile:
-                                //프로필보기
-                                Toast.makeText(context.getApplicationContext(),"프로필보기",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context.getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
                                 break;
-
                             case R.id.decelerate:
-                                //신고
-                                Toast.makeText(context.getApplicationContext(),"신고되었습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context.getApplicationContext(), commentNickname + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.delete:
                                 firebaseHelper.commentDelete(databaseReference, commentId);
                                 Toast.makeText(context.getApplicationContext(),"삭제되었습니다.", Toast.LENGTH_SHORT).show();
                                 break;
-
                             default:
                                 break;
                         }

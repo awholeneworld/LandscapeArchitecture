@@ -71,6 +71,7 @@ public class SeePostActivity extends AppCompatActivity {
     private ValueEventListener commentsListener;
     private boolean isWriter;
     private String expertname;
+    Intent intent;
     String postId;
     String category;
     ArrayList<String> images;
@@ -91,7 +92,7 @@ public class SeePostActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
 
         // 인텐트 데이터 가져오기
-        Intent intent = getIntent();
+        intent = getIntent();
         category = intent.getStringExtra("category");
         postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
@@ -292,7 +293,6 @@ public class SeePostActivity extends AppCompatActivity {
         });
     }
 
-
     //위에 메뉴 관련
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -309,9 +309,11 @@ public class SeePostActivity extends AppCompatActivity {
 
             //남이 쓴 글일때 - 프로필보기 / 신고
             case R.id.show_profile:
+                Toast.makeText(getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
                 break;
-
             case R.id.decelerate:
+                Toast.makeText(getApplicationContext(), intent.getStringExtra("nickname") + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
+                break;
 
         }
         return super.onOptionsItemSelected(item);
