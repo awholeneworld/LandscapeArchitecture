@@ -18,6 +18,7 @@
         android:padding="3dp"/>
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:text="글 제목"

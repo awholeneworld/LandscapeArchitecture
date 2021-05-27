@@ -30,6 +30,8 @@
                 android:textColor="@android:color/black"
                 android:textSize="20dp"
                 android:text="Title"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -40,6 +42,8 @@
                 android:layout_marginRight="10dp"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="15dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:text="Content"
                 android:id="@+id/content"
                 android:layout_width="match_parent"

@@ -30,6 +30,7 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
+        TextView title;
         String categoryOfPost;
         String userIdInPost;
         String profileImgInPost;
@@ -45,6 +46,7 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
         ViewHolder(View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
+            title = itemView.findViewById(R.id.title);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,6 +102,14 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
         // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
         if (imagesList != null)
             Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
+
+        holder.title.setText(contentTitle);
+
+        if (contentTitle.length() > 15)
+            holder.title.setText(contentTitle.substring(0, 16));
+        else
+            holder.title.setText(contentTitle);
+
     }
 
     @Override
