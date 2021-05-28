@@ -27,7 +27,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,6 +47,7 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private HashMap<String, RequestFromExpertContent> requestsList;
     private RequestFromExpertContent request;
     private int state = 0; //0 - 매칭요청 / 1 - 취소 / 2 - 완료 (가능한 액션)
+    Intent intent;
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도
@@ -72,7 +72,7 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
 
         // 인텐트 데이터 가져오기
-        Intent intent = getIntent();
+        intent = getIntent();
         String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
@@ -221,6 +221,15 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
+
+            //남이 쓴 글일때 - 프로필보기 / 신고
+            case R.id.show_profile:
+                Toast.makeText(getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), SeeProfileActivity.class));
+                break;
+            case R.id.decelerate:
+                Toast.makeText(getApplicationContext(), intent.getStringExtra("nickname") + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

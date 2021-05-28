@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -48,6 +49,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     private boolean isMatched;
     private ArrayList<String> images;
     private String locationStr;
+    Intent intent;
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도 - clear
@@ -66,7 +68,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         setContentView(R.layout.matching_user_see_post);
 
         // 인텐트 데이터 가져오기
-        Intent intent = getIntent();
+        intent = getIntent();
         postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");

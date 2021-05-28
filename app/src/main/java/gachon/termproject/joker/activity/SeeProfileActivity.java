@@ -26,7 +26,6 @@ import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.fragment.MyInfoPortfolioFragment;
 import gachon.termproject.joker.fragment.MyInfoTabCommentFragment;
 import gachon.termproject.joker.fragment.MyInfoTabPostFragment;
 
