@@ -72,6 +72,7 @@ public class MatchingTabExpertListFragment extends Fragment {
         location_tv = view.findViewById(R.id.textview_location);
         location_select_OK_btn = view.findViewById(R.id.btn_post_select_location);
         location_cancel_OK_btn = view.findViewById(R.id.btn_post_cancel_location);
+        location_tv.setText(" "); //초반에 텍스트 삭제
         // 지역을 선택하는 부분입니다!!!!
         SU = view.findViewById(R.id.SU);
         IC = view.findViewById(R.id.IC);
@@ -106,9 +107,20 @@ public class MatchingTabExpertListFragment extends Fragment {
         location_select_OK_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!SU.isChecked() && !IC.isChecked() && !DJ.isChecked() &&
+                        !GJ.isChecked() && !DG.isChecked() && !US.isChecked() && !BS.isChecked() &&
+                        !JJ.isChecked() && !GG.isChecked() && !GW.isChecked() && !CB.isChecked() &&
+                        !CN.isChecked() && !GB.isChecked() && !GN.isChecked() && !JB.isChecked() &&
+                        !JN.isChecked() && !SJ.isChecked()){
+                        Log.e("asdf", "123123");
+                        Toast.makeText(getContext(), "지역을 최소 하나이상 선택해주세요.", Toast.LENGTH_SHORT).show();
+                        return;
+                }
                 ArrayList<String> locationSelected = checklocation();
 
-                location_tv.setText(locationSelected.size() + "개 지역");
+
+
+                location_tv.setText(for_print(locationSelected));
 
                 //지역선택 뷰를 다시 밑으로 내립니다.
                 LinearLayout LL = view.findViewById(R.id.post_select_location);
@@ -130,7 +142,7 @@ public class MatchingTabExpertListFragment extends Fragment {
                             List<DocumentSnapshot> list = querySnapshot.getDocuments();
                             boolean next = false;
                             ArrayList<String> idList = new ArrayList<String>();
-                            idList.add("test");
+                            idList.add("test"); //null에러를 막기위함
 
                             //델꼬온나
                             expertList.clear();
@@ -146,9 +158,11 @@ public class MatchingTabExpertListFragment extends Fragment {
                                                 String userId = snapshot.getId();
 
                                                 for(int ab = 0; ab < idList.size(); ab++){ //이부분을 통과했다면 중복이 없다는 뜻
-                                                    if(!idList.contains(userId)){
-                                                        idList.add(userId);
-                                                        next = true;
+                                                    if(!idList.contains(userId)){//중복이 있으면 next값을 false로 없으면 true
+                                                        if(!userId.equals(UserInfo.userId)) { //본인 아이디랑 일치하지 않아야만 추가
+                                                            idList.add(userId);
+                                                            next = true;
+                                                        }
                                                     }
                                                 }
                                                 if(next) { //중복이 없을때 expertList에 추가
@@ -205,7 +219,7 @@ public class MatchingTabExpertListFragment extends Fragment {
                             String portfolioWeb = snapshot.getString("portfolioWeb");
                             ArrayList<String> location = (ArrayList<String>) snapshot.get("location");
                             expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, location));
-                            location_tv.setText("지역 넣기");
+                            location_tv.setText(" ");
                         }
                     }
 
@@ -250,5 +264,67 @@ public class MatchingTabExpertListFragment extends Fragment {
         if(SJ.isChecked()) location.add("세종");
 
         return location;
+    }
+
+    public String for_print(ArrayList<String> location){
+        String str = "";
+        String temp = "";
+
+        String result;
+        //seepost_request_total_num.setText(count + " ");
+        for(int i =0;  i < location.size(); i++) {
+            if (location.get(i) == "SU") {
+                temp = "서울";
+            } else if (location.get(i).equals("IC")) {
+                temp = "인천";
+            } else if (location.get(i).equals("JD")) {
+                temp = "대전";
+            } else if (location.get(i).equals("GJ")) {
+                temp = "광주";
+            } else if (location.get(i).equals("DG")) {
+                temp = "대구";
+            } else if (location.get(i).equals("US")) {
+                temp = "울산";
+            } else if (location.get(i).equals("BS")) {
+                temp = "부산";
+            } else if (location.get(i).equals("JJ")) {
+                temp = "제주도";
+            } else if (location.get(i).equals("GG")) {
+                temp = "경기도";
+            } else if (location.get(i).equals("GW")) {
+                temp = "강원도";
+            } else if (location.get(i).equals("CB")) {
+                temp = "충청북도";
+            } else if (location.get(i).equals("CN")) {
+                temp = "충청남도";
+            } else if (location.get(i).equals("GB")) {
+                temp = "경상북도";
+            } else if (location.get(i).equals("GN")) {
+                temp = "경상남도";
+            } else if (location.get(i).equals("JB")) {
+                temp = "전라북도";
+            } else if (location.get(i).equals("JN")) {
+                temp = "전라남도";
+            } else if (location.get(i).equals("SJ")) {
+                temp = "세종";
+            } else {
+                Log.e("1", location.get(i));
+                temp = location.get(i);
+            }
+
+
+            str += temp + " | ";
+            //Log.e("2", str.substring(0, str.length()-2));
+
+        }
+        //이 부분이 글자수 넘어갈때 자르는 역할
+        if(str.length() >= 27){
+            result = str.substring(0, 28) + "...";
+        }
+        else{
+            result = str.substring(0,str.length()-2);
+        }
+
+        return result;
     }
 }
