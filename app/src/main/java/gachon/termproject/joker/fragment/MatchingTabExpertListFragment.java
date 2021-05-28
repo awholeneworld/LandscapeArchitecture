@@ -46,11 +46,12 @@ public class MatchingTabExpertListFragment extends Fragment {
     private CollectionReference collectionReference;
     private ExpertListAdapter expertListAdapter;
     private ArrayList<ExpertListContent> expertList;
+    private ArrayList<String> locationSelected;
+    private boolean refresh = false;
     private Button location_btn;
     private TextView location_tv;
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
     private Button location_select_OK_btn;
-    private Button location_cancel_OK_btn;
     private FirebaseFirestore fStore;
 
     @Nullable
@@ -71,7 +72,6 @@ public class MatchingTabExpertListFragment extends Fragment {
         location_btn = view.findViewById(R.id.button_location);
         location_tv = view.findViewById(R.id.textview_location);
         location_select_OK_btn = view.findViewById(R.id.btn_post_select_location);
-        location_cancel_OK_btn = view.findViewById(R.id.btn_post_cancel_location);
         location_tv.setText(" "); //초반에 텍스트 삭제
         // 지역을 선택하는 부분입니다!!!!
         SU = view.findViewById(R.id.SU);
@@ -112,11 +112,10 @@ public class MatchingTabExpertListFragment extends Fragment {
                         !JJ.isChecked() && !GG.isChecked() && !GW.isChecked() && !CB.isChecked() &&
                         !CN.isChecked() && !GB.isChecked() && !GN.isChecked() && !JB.isChecked() &&
                         !JN.isChecked() && !SJ.isChecked()){
-                        Log.e("asdf", "123123");
-                        Toast.makeText(getContext(), "지역을 최소 하나이상 선택해주세요.", Toast.LENGTH_SHORT).show();
-                        return;
+                    Toast.makeText(getContext(), "지역을 최소 하나이상 선택해주세요.", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                ArrayList<String> locationSelected = checklocation();
+                locationSelected = checklocation();
 
 
 
@@ -178,25 +177,12 @@ public class MatchingTabExpertListFragment extends Fragment {
                                         }
                                     }
                                     expertListAdapter.notifyDataSetChanged();
+                                    refresh = true;
                                 }
                             }
                         }
                     }
                 });
-            }
-        });
-
-        location_cancel_OK_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //지역선택 뷰를 다시 밑으로 내립니다.
-                LinearLayout LL = view.findViewById(R.id.post_select_location);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
-                lp.addRule(RelativeLayout.BELOW, R.id.refresh_layout);
-                lp.addRule(RelativeLayout.ABOVE, 0);
-                LL.setLayoutParams(lp);
-
             }
         });
 
@@ -206,20 +192,22 @@ public class MatchingTabExpertListFragment extends Fragment {
                 if (task.isSuccessful()) {
                     QuerySnapshot querySnapshot = task.getResult();
                     List<DocumentSnapshot> list = querySnapshot.getDocuments();
-                    expertList.clear();
 
-                    for (int i = 0; i < list.size(); i++) {
-                        DocumentSnapshot snapshot = list.get(i);
-                        Boolean isPublic = snapshot.getBoolean("isPublic");
-                        String userId = snapshot.getId();
-                        if (!isPublic && !userId.equals(UserInfo.userId)) {
-                            String nickname = snapshot.getString("nickname");
-                            String profileImg = snapshot.getString("profileImg");
-                            String portfolioImg = snapshot.getString("portfolioImg");
-                            String portfolioWeb = snapshot.getString("portfolioWeb");
-                            ArrayList<String> location = (ArrayList<String>) snapshot.get("location");
-                            expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, location));
-                            location_tv.setText(" ");
+                    if(refresh){}
+                    else{
+                        expertList.clear();
+                        for (int i = 0; i < list.size(); i++) {
+                            DocumentSnapshot snapshot = list.get(i);
+                            Boolean isPublic = snapshot.getBoolean("isPublic");
+                            String userId = snapshot.getId();
+                            if (!isPublic && !userId.equals(UserInfo.userId)) {
+                                String nickname = snapshot.getString("nickname");
+                                String profileImg = snapshot.getString("profileImg");
+                                String portfolioImg = snapshot.getString("portfolioImg");
+                                String portfolioWeb = snapshot.getString("portfolioWeb");
+                                ArrayList<String> location = (ArrayList<String>) snapshot.get("location");
+                                expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, location));
+                            }
                         }
                     }
 
