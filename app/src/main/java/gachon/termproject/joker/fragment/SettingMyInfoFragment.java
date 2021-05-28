@@ -134,7 +134,6 @@ public class SettingMyInfoFragment extends Fragment {
 
         changeProfileImageBack.setBackground(new ShapeDrawable(new OvalShape()));
         changeProfileImageBack.setClipToOutline(true);
-        Glide.with(getContext()).load(R.drawable.camera).into(changeProfileImageBack);
 
         // 이메일 설정
         email.setText(UserInfo.email);
