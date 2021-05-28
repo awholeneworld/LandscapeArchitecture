@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,9 +28,8 @@ import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.MyInfoPortfolioActivity;
 import gachon.termproject.joker.activity.SettingActivity;
-import gachon.termproject.joker.adapter.MyInfoTabCommentAdapter;
-import gachon.termproject.joker.adapter.MyInfoTabPostAdapter;
 
 public class MyInfoFragment extends Fragment {
     private View view;
@@ -46,7 +44,7 @@ public class MyInfoFragment extends Fragment {
     public static TextView nickname;
     public static TextView location;
     public static TextView intro;
-    static String locationStr;
+    public static String locationStr;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -95,7 +93,7 @@ public class MyInfoFragment extends Fragment {
         portfolioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MyInfoPortfolioFragment.class));
+                startActivity(new Intent(getActivity(), MyInfoPortfolioActivity.class));
             }
         });
 
@@ -113,19 +111,17 @@ public class MyInfoFragment extends Fragment {
                 location.setText(locationStr);
                 intro.setText(UserInfo.introduction);
 
-                MyInfoTabPostFragment.adapter.notifyDataSetChanged();
-                if (comment != null) MyInfoTabCommentFragment.adapter.notifyDataSetChanged();
-                // MyInfoTabPostFragment.postsRef.get().addOnSuccessListener(MyInfoTabPostFragment.onSuccessListener);
-                // if (comment != null) MyInfoTabCommentFragment.postsRef.get().addOnSuccessListener(MyInfoTabCommentFragment.onSuccessListener);
+                if (post != null) post.adapter.notifyDataSetChanged();
+                if (comment != null) comment.adapter.notifyDataSetChanged();
 
                 refresher.setRefreshing(false);
             }
         });
 
         // 마이인포 탭 첫 화면
+        fm = getChildFragmentManager();
         if (post == null) {
             post = new MyInfoTabPostFragment();
-            fm = getChildFragmentManager();
             fm.beginTransaction().add(R.id.myinfo_frame, post).commit();
         }
 
@@ -141,6 +137,7 @@ public class MyInfoFragment extends Fragment {
                     case 1:
                         if (comment == null) {
                             comment = new MyInfoTabCommentFragment();
+                            fm = getChildFragmentManager();
                             fm.beginTransaction().add(R.id.myinfo_frame, comment).commit();
                         }
                         fm.beginTransaction().hide(post).commit();

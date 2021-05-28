@@ -2,6 +2,7 @@ package gachon.termproject.joker.activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -17,8 +18,8 @@ import gachon.termproject.joker.R;
 
 public class SettingBellActivity extends AppCompatActivity {
 
-    private Switch bell_switch1;
-    private Switch bell_switch2;
+    private SwitchCompat bell_switch1;
+    private SwitchCompat bell_switch2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class SettingBellActivity extends AppCompatActivity {
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
-        bell_switch1 = (Switch)findViewById(R.id.bell_switch1);
+        bell_switch1 = findViewById(R.id.bell_switch1);
         bell_switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -47,7 +48,7 @@ public class SettingBellActivity extends AppCompatActivity {
             }
         });
 
-        bell_switch2 = (Switch)findViewById(R.id.bell_switch2);
+        bell_switch2 = findViewById(R.id.bell_switch2);
         bell_switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

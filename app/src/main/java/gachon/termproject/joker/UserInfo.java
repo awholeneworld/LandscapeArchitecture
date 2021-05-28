@@ -10,6 +10,7 @@ public class UserInfo {
     public static String introduction;
     public static String portfolioImg;
     public static String portfolioWeb;
+    public static String pushToken;
     public static boolean isPublic;
     public static ArrayList<String> location;
 
