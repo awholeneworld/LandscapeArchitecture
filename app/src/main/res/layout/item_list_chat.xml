@@ -13,15 +13,6 @@
         android:layout_marginRight="22dp"
         android:src="@drawable/ic_launcher_background" />
 
-    <!-- 안 읽은 메시지가 있을 때 띄우는 것!!! -->
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="63dp"
-        android:layout_alignTop="@+id/profileImage"
-        android:src="@drawable/chatting_new_message" />
-
     <RelativeLayout
         android:id="@+id/text_layout"
         android:layout_width="match_parent"

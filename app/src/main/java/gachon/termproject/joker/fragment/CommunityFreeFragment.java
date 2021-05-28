@@ -60,6 +60,7 @@ public class CommunityFreeFragment extends Fragment {
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
         contents.setAdapter(postAdapter);
+
         /*
         contents.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

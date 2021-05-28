@@ -8,7 +8,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,8 +41,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -159,9 +156,7 @@ public class SeePostActivity extends AppCompatActivity {
             line1.setVisibility(View.GONE);
             line2.setVisibility(View.GONE);
             margin.setVisibility(View.VISIBLE);
-
         }
-
 
         // 포스트 내용 넣을 공간 지정
         container = findViewById(R.id.seepost_content);
@@ -310,6 +305,7 @@ public class SeePostActivity extends AppCompatActivity {
             //남이 쓴 글일때 - 프로필보기 / 신고
             case R.id.show_profile:
                 Toast.makeText(getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), SeeProfileActivity.class));
                 break;
             case R.id.decelerate:
                 Toast.makeText(getApplicationContext(), intent.getStringExtra("nickname") + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();

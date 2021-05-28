@@ -42,7 +42,6 @@
             android:layout_gravity="center_vertical"
             android:textColor="@color/black" />
 
-
     </LinearLayout>
 
     <LinearLayout
@@ -50,7 +49,6 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal">
-
 
         <Button
             android:id="@+id/matching_request_item_pofol"
@@ -62,7 +60,6 @@
             android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"
             android:text="포트폴리오"
             android:textSize="11dp" />
-
 
         <Button
             android:id="@+id/matching_request_item_chat"
