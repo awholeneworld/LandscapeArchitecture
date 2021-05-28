@@ -1,6 +1,7 @@
 package gachon.termproject.joker.fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -25,11 +29,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import gachon.termproject.joker.Content.ExpertListContent;
 import gachon.termproject.joker.Content.MatchingPostContent;
 import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
@@ -38,7 +48,7 @@ import gachon.termproject.joker.adapter.MatchingPostAdapter;
 
 import static android.app.Activity.RESULT_OK;
 
-public class MatchingExpertTabRequestFragment extends Fragment {
+public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -54,9 +64,10 @@ public class MatchingExpertTabRequestFragment extends Fragment {
     ArrayList<MatchingPostContent> postContentList;
     MatchingPostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
-    ChildEventListener childEventListener;
+    ValueEventListener postEventListener;
     Boolean topScrolled;
     Boolean doUpdate;
+    ArrayList<String> locationSelected = new ArrayList<>();
 
     @Nullable
     @Override
@@ -68,6 +79,8 @@ public class MatchingExpertTabRequestFragment extends Fragment {
         location_btn = view.findViewById(R.id.button_location);
         location_tv = view.findViewById(R.id.textview_location);
         location_select_OK_btn = view.findViewById(R.id.btn_post_select_location);
+        location_tv.setText("");
+
         // 지역을 선택하는 부분입니다!!!!
         SU = view.findViewById(R.id.signup04_SU);
         IC = view.findViewById(R.id.signup04_IC);
@@ -96,16 +109,20 @@ public class MatchingExpertTabRequestFragment extends Fragment {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
                 lp.addRule(RelativeLayout.BELOW, 0);
                 LL.setLayoutParams(lp);
-
-
             }
         });
 
         location_select_OK_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                locationSelected = checkLocation();
+                String locationStr = "";
 
-                //location_tv.setText(locationSelected.size() + "개 지역");
+                for (String item : locationSelected) {
+                    locationStr += item + " | ";
+                }
+
+                location_tv.setText(locationStr.substring(0, locationStr .length()-3));
 
                 //지역선택 뷰를 다시 밑으로 내립니다.
                 LinearLayout LL = view.findViewById(R.id.post_select_location);
@@ -115,7 +132,7 @@ public class MatchingExpertTabRequestFragment extends Fragment {
                 LL.setLayoutParams(lp);
 
                 //그리고 다시 query받아서 adapter를 구성해야 하는데,,,, 할수잇을까???
-
+                databaseReference.addListenerForSingleValueEvent(postEventListener);
             }
         });
 
@@ -132,86 +149,51 @@ public class MatchingExpertTabRequestFragment extends Fragment {
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
         contents.setAdapter(matchingpostAdapter);
-        /*
-        contents.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+        postEventListener = new ValueEventListener() {
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
-
-                if(newState == 1 && firstVisibleItemPosition == 0){
-                    topScrolled = true;
-                }
-                if(newState == 0 && topScrolled){
-                    loadPosts(true);
-                    topScrolled = false;
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-                super.onScrolled(recyclerView, dx, dy);
-
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                int firstVisibleItemPosition = ((LinearLayoutManager)layoutManager).findFirstVisibleItemPosition();
-                int lastVisibleItemPosition = ((LinearLayoutManager)layoutManager).findLastVisibleItemPosition();
-
-                if(totalItemCount - 3 <= lastVisibleItemPosition && ! doUpdate){
-                    loadPosts(false);
-                }
-
-                if(0 < firstVisibleItemPosition){
-                    topScrolled = false;
-                }
-            }
-        });
-        */
-
-        childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList.clear();
-
-                if (!snapshot.child("requests/" + UserInfo.userId).exists()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(MatchingPostContent.class);
-                    postContentList.add(0, postContent);
+                    if (!postContent.getIsMatched()){
+                        //아직 게시글은 매칭이 안되었는데
+
+                        //매칭 대기 목록에 앗 내가 없네 => 그럼 매칭 신청 탭에
+                        if(!snapshot.child("requests/" + UserInfo.userId).exists()){
+
+                            //근데 혹시 지역조건이 있다면 넣어주거라
+                            if(locationSelected.isEmpty()){
+                                postContentList.add(0, postContent);
+                            }
+                            else{ //지역 조건이 존재한다면?
+                                for(String loca : postContent.getLocation()){
+                                    if(locationSelected.contains(loca)){ //만약 글이 가지고 있는 지역이 선택범위에 있다면
+                                        postContentList.add(0, postContent);
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
                 }
-
                 matchingpostAdapter.notifyDataSetChanged();
-                databaseReference.removeEventListener(this);
             }
 
             @Override
-            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
 
-        databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
+
+        databaseReference.addListenerForSingleValueEvent(postEventListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
+                databaseReference.addListenerForSingleValueEvent(postEventListener);
                 refresher.setRefreshing(false);
             }
         });
@@ -225,7 +207,7 @@ public class MatchingExpertTabRequestFragment extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                databaseReference.orderByChild("requests").addChildEventListener(childEventListener);
+                databaseReference.addListenerForSingleValueEvent(postEventListener);
             }
         }
     }
@@ -267,23 +249,23 @@ public class MatchingExpertTabRequestFragment extends Fragment {
         //선택된 지역을 저장할 리스트
         ArrayList<String> location = new ArrayList<>();
 
-        if(SU.isChecked()) location.add("서울");
-        if(IC.isChecked()) location.add("인천");
-        if(DJ.isChecked()) location.add("대전");
-        if(GJ.isChecked()) location.add("광주");
-        if(DG.isChecked()) location.add("대구");
-        if(US.isChecked()) location.add("울산");
-        if(BS.isChecked()) location.add("부산");
-        if(JJ.isChecked()) location.add("제주");
-        if(GG.isChecked()) location.add("경기");
-        if(GW.isChecked()) location.add("강원");
-        if(CB.isChecked()) location.add("충북");
-        if(CN.isChecked()) location.add("충남");
-        if(GB.isChecked()) location.add("경북");
-        if(GN.isChecked()) location.add("경남");
-        if(JB.isChecked()) location.add("전북");
-        if(JN.isChecked()) location.add("전남");
-        if(SJ.isChecked()) location.add("세종");
+        if (SU.isChecked()) location.add("서울");
+        if (IC.isChecked()) location.add("인천");
+        if (DJ.isChecked()) location.add("대전");
+        if (GJ.isChecked()) location.add("광주");
+        if (DG.isChecked()) location.add("대구");
+        if (US.isChecked()) location.add("울산");
+        if (BS.isChecked()) location.add("부산");
+        if (JJ.isChecked()) location.add("제주");
+        if (GG.isChecked()) location.add("경기");
+        if (GW.isChecked()) location.add("강원");
+        if (CB.isChecked()) location.add("충북");
+        if (CN.isChecked()) location.add("충남");
+        if (GB.isChecked()) location.add("경북");
+        if (GN.isChecked()) location.add("경남");
+        if (JB.isChecked()) location.add("전북");
+        if (JN.isChecked()) location.add("전남");
+        if (SJ.isChecked()) location.add("세종");
 
         return location;
     }

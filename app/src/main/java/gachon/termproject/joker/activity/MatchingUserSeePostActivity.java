@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 import gachon.termproject.joker.Content.RequestFromExpertContent;
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.MatchingPostRequestAdapter;
 
 public class MatchingUserSeePostActivity extends AppCompatActivity {
@@ -45,7 +45,9 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     private ArrayList<RequestFromExpertContent> requestsList;
     private int requestsNum = 0; //매칭 요청한 갯수(정확히는 매칭이 진행중인 갯수)
     private String postId;
+    private boolean isMatched;
     private ArrayList<String> images;
+    private String locationStr;
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도 - clear
@@ -69,6 +71,8 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         images = intent.getStringArrayListExtra("images");
+        isMatched = intent.getBooleanExtra("isMatched", false);
+        locationStr = intent.getStringExtra("location");
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -86,16 +90,14 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         TextView location =  findViewById(R.id.see_post_location_name);
         TextView requestsNumView = findViewById(R.id.see_post_request_total_num);
         RecyclerView requests = findViewById(R.id.matching_see_post_request_listview);
+        TextView matchingline = findViewById(R.id.see_post_matching_line);
 
         // 제목, 닉네임, 작성시간, 지역 세팅
         title.setText(intent.getStringExtra("title"));
         nickname.setText(intent.getStringExtra("nickname"));
         time.setText(intent.getStringExtra("time"));
-        String locationStr = "";
-        for (String item : UserInfo.location) {
-            locationStr += item + " | ";
-        }
         location.setText(locationStr);
+
 
         // 프로필 사진 세팅 (oimage 동그랗게)
         profile.setBackground(new ShapeDrawable(new OvalShape()));
@@ -135,32 +137,66 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
             }
         }
 
+        //매칭 전이라면
+        if(!isMatched){
+            requestsList = new ArrayList<>();
+            adapter = new MatchingPostRequestAdapter(this, getApplicationContext(), requestsList, postId);
 
-        requestsList = new ArrayList<>();
-        adapter = new MatchingPostRequestAdapter(getApplicationContext(), requestsList, postId);
+            requests.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            requests.setHasFixedSize(true);
+            requests.setAdapter(adapter);
 
-        requests.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        requests.setHasFixedSize(true);
-        requests.setAdapter(adapter);
+            databaseReference = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    requestsList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                requestsList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
-                    requestsList.add(content);
+                        RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
+                        content.setExpertUserId(snapshot.getKey());
+                        requestsList.add(content);
+                    }
+                    requestsNum = requestsList.size();
+                    requestsNumView.setText(String.valueOf(requestsNum) + "건");
+                    adapter.notifyDataSetChanged();
                 }
-                requestsNum = requestsList.size();
-                requestsNumView.setText(String.valueOf(requestsNum));
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError error) {
+                }
+            });
+        }
+        else{ //매칭 후라면 >> 매칭된 사람꺼만 보여줘야함
+            matchingline.setText("매칭완료");
+            requestsNumView.setVisibility(View.GONE);
 
+            requestsList = new ArrayList<>();
+            adapter = new MatchingPostRequestAdapter(this, MatchingUserSeePostActivity.this, requestsList, postId);
+
+            requests.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            requests.setHasFixedSize(true);
+            requests.setAdapter(adapter);
+
+            databaseReference = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests");
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    requestsList.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
+                        content.setExpertUserId(snapshot.getKey());
+                        requestsList.add(content);
+                    }
+                    requestsNum = requestsList.size();
+                    requestsNumView.setText(String.valueOf(requestsNum));
+                    adapter.notifyDataSetChanged();
+                }
+                @Override
+                public void onCancelled(DatabaseError error) {
+                }
+            });
+        }
     }
 
     //위에 메뉴 관련

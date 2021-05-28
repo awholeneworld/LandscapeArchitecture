@@ -1,4 +1,4 @@
-package gachon.termproject.joker.fragment;
+package gachon.termproject.joker.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
@@ -30,7 +30,7 @@ import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.ChatActivity;
 import gachon.termproject.joker.adapter.ExpertPortfolioReviewAdapter;
 
-public class ExpertPortfolioFragment extends AppCompatActivity {
+public class ExpertPortfolioActivity extends AppCompatActivity {
     private RecyclerView contents;
     private TextView numberView;
     private String locationStr;
@@ -125,5 +125,16 @@ public class ExpertPortfolioFragment extends AppCompatActivity {
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

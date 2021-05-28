@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.Content.ExpertListContent;
-import gachon.termproject.joker.fragment.ExpertPortfolioFragment;
+import gachon.termproject.joker.activity.ExpertPortfolioActivity;
 
 public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.ViewHolder>{
     private Context context;
@@ -53,7 +53,7 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
             seePortfolio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ExpertPortfolioFragment.class);
+                    Intent intent = new Intent(context, ExpertPortfolioActivity.class);
                     intent.putExtra("userId", expertUserId);
                     intent.putExtra("nickname", expertNickname);
                     intent.putExtra("profileImg", expertProfileImg);

@@ -15,26 +15,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import gachon.termproject.joker.Content.MatchingPostContent;
-import gachon.termproject.joker.OnPostListener;
+import gachon.termproject.joker.Content.RequestFromExpertContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
 
 import static android.app.Activity.RESULT_OK;
 
-public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
+public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
@@ -61,7 +58,7 @@ public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
         databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
-        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "awaiting");
+        matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "complete");
         // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -74,12 +71,16 @@ public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(MatchingPostContent.class);
-                    if (!postContent.getIsMatched()){
-                        //아직 게시글은 매칭이 안되었는데
 
-                        //매칭 대기 목록에 앗 내가 잇네? => 그럼 매칭중 탭에
+                    //글 상태가 매칭 완료인뎅
+                    if (postContent.getIsMatched()){
+                        //매칭 대기 목록에 앗 내가 잇네?
                         if(snapshot.child("requests/" + UserInfo.userId).exists()){
-                            postContentList.add(0, postContent);
+                            //그럼 내가 match = true인지 확인하기
+                            RequestFromExpertContent a = snapshot.child("requests/" + UserInfo.userId).getValue(RequestFromExpertContent.class);
+                            if(a.getIsMatched()){
+                                postContentList.add(0, postContent);
+                            }
                         }
                     }
                 }

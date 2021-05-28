@@ -51,6 +51,10 @@ public class RequestFromExpertContent {
         return isMatched;
     }
 
+    public void setExpertUserId(String expertUserId) {
+        this.expertUserId = expertUserId;
+    }
+
     public void setExpertNickname(String expertNickname) {
         this.expertNickname = expertNickname;
     }

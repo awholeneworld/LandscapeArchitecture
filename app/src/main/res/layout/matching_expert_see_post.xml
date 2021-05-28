@@ -78,7 +78,7 @@
                             android:src="@drawable/ic_launcher_background" />
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
 
@@ -138,78 +138,15 @@
 
     <!--              이 버튼에 신청, 취소, 완료가 들어가는건 java에서 제어합니다.-->
                 <Button
-                    android:id="@+id/matching_expert_apply_button"
+                    android:id="@+id/matching_expert_button"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:text="매칭 요청"
                     android:textSize="15dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="25dp"
                     android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"/>
 
-                <Button
-                    android:id="@+id/matching_expert_cancel_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:text="취소"
-                    android:textSize="15dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
-                    android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"/>
-
-<!--                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--                    android:id="@+id/myApplication"-->
-<!--                    android:orientation="vertical"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginBottom="8dp">-->
-
-<!--                    <RelativeLayout-->
-<!--                        android:orientation="horizontal"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginVertical="10dp">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:id="@+id/matching_item_image_linearlayout"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_alignParentLeft="true"-->
-<!--                            android:layout_marginHorizontal="10dp"-->
-<!--                            android:layout_centerVertical="true">-->
-
-<!--                            <ImageView-->
-<!--                                android:id="@+id/comment_img"-->
-<!--                                android:layout_width="45dp"-->
-<!--                                android:layout_height="45dp"-->
-<!--                                android:src="@drawable/ic_launcher_background" />-->
-
-<!--                        </LinearLayout>-->
-
-<!--                        <TextView-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:text="닉네임"-->
-<!--                            android:layout_toRightOf="@+id/matching_item_image_linearlayout"-->
-<!--                            android:textColor="@color/black"-->
-<!--                            android:layout_marginLeft="5dp"-->
-<!--                            android:layout_centerVertical="true"/>-->
-
-<!--                        <Button-->
-<!--                            android:id="@+id/matching_apply_item_cancel"-->
-<!--                            android:layout_width="60dp"-->
-<!--                            android:layout_height="40dp"-->
-<!--                            android:layout_centerVertical="true"-->
-<!--                            android:text="취소"-->
-<!--                            android:textSize="13dp"-->
-<!--                            android:background="@drawable/all_button_bg_ripple_round_15_whiteborder"-->
-<!--                            android:layout_alignParentEnd="true"-->
-<!--                            android:layout_alignParentRight="true"-->
-<!--                            android:layout_marginRight="5dp"/>-->
-
-<!--                    </RelativeLayout>-->
-
-<!--                </LinearLayout>-->
 
              </LinearLayout>
 

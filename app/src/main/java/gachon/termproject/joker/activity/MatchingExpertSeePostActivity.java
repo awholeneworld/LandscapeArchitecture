@@ -1,6 +1,7 @@
 package gachon.termproject.joker.activity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -16,14 +17,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,10 +44,10 @@ import gachon.termproject.joker.UserInfo;
 
 public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
-    private Button applyBtn;
-    private Button cancelBtn;
+    private Button matching_btn;
     private HashMap<String, RequestFromExpertContent> requestsList;
     private RequestFromExpertContent request;
+    private int state = 0; //0 - 매칭요청 / 1 - 취소 / 2 - 완료 (가능한 액션)
 
     //해야 할 일!
 //    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도
@@ -81,21 +85,29 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.title);
         TextView nickname = findViewById(R.id.postNickname);
         TextView time = findViewById(R.id.postTime);
+        TextView loca = findViewById(R.id.see_post_location_name);
         container = findViewById(R.id.see_post_content);
-        applyBtn = findViewById(R.id.matching_expert_apply_button);
-        cancelBtn = findViewById(R.id.matching_expert_cancel_button);
+        matching_btn = findViewById(R.id.matching_expert_button);
 
         // 이미 매칭 요청 했는지 확인
-        if (category.equals("awaiting") || category.equals("complete"))
-            applyBtn.setVisibility(View.INVISIBLE);
-        else
-            cancelBtn.setVisibility(View.INVISIBLE);
+        if (category.equals("awaiting")){
+            matching_btn.setText("취소");
+            state = 1; //0 - 매칭요청 / 1 - 취소 / 2 - 완료 (가능한 액션)
 
+        } else if(category.equals("complete")){
+            matching_btn.setText("매칭완료");
+            state = 2;
+        }
+        else{
+            matching_btn.setText("매칭신청");
+            state = 0;
+        }
 
         // 제목, 닉네임, 작성시간 세팅
         title.setText(intent.getStringExtra("title"));
         nickname.setText(intent.getStringExtra("nickname"));
         time.setText(intent.getStringExtra("time"));
+        loca.setText(intent.getStringExtra("location"));
 
         // 프로필 사진 세팅 (oimage 동그랗게)
         profile.setBackground(new ShapeDrawable(new OvalShape()));
@@ -131,42 +143,73 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
             }
         }
 
-        applyBtn.setOnClickListener(new View.OnClickListener() {
+        matching_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                applyBtn.setEnabled(false);
-                if (requestsList == null) requestsList = new HashMap<>();
-                if (request == null) request = new RequestFromExpertContent();
-                request.setExpertProfileImg(UserInfo.profileImg);
-                request.setExpertNickname(UserInfo.nickname);
-                request.setExpertPortfolioImg(UserInfo.portfolioImg);
-                request.setExpertPortfolioWeb(UserInfo.portfolioWeb);
-                request.setExpertLocation(UserInfo.location);
-                requestsList.put(UserInfo.userId, request);
+                if(state == 0){
+                    //매칭신청
 
-                FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests").setValue(requestsList).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<Void> task) {
-                        applyBtn.setVisibility(View.INVISIBLE);
-                        cancelBtn.setVisibility(View.VISIBLE);
-                        cancelBtn.setEnabled(true);
-                    }
-                });
-            }
-        });
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(MatchingExpertSeePostActivity.this);
+                    dlg.setTitle("매칭 신청"); //제목
+                    dlg.setMessage("매칭을 신청하시겠습니까?"); // 메시지
+                    dlg.setPositiveButton("신청", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (requestsList == null) requestsList = new HashMap<>();
+                            if (request == null) request = new RequestFromExpertContent();
+                            request.setExpertProfileImg(UserInfo.profileImg);
+                            request.setExpertNickname(UserInfo.nickname);
+                            request.setExpertPortfolioImg(UserInfo.portfolioImg);
+                            request.setExpertPortfolioWeb(UserInfo.portfolioWeb);
+                            request.setExpertLocation(UserInfo.location);
+                            requestsList.put(UserInfo.userId, request);
 
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelBtn.setEnabled(false);
-                FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.userId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<Void> task) {
-                        cancelBtn.setVisibility(View.INVISIBLE);
-                        applyBtn.setVisibility(View.VISIBLE);
-                        applyBtn.setEnabled(true);
-                    }
-                });
+                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests").setValue(requestsList).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                }
+                            });
+                            matching_btn.setText("취소");
+                            state = 1;
+                        }
+                    });
+                    dlg.setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int which) {
+                            matching_btn.setText("매칭신청");
+                            state = 0;
+                        }
+                    });
+                    dlg.show();
+
+
+
+
+                } else if(state == 1) {
+                    //취소
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(MatchingExpertSeePostActivity.this);
+                    dlg.setTitle("매칭 취소"); //제목
+                    dlg.setMessage("매칭신청을 취소하시겠습니까?"); // 메시지
+                    dlg.setPositiveButton("신청 취소", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int which) {
+                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.userId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                }
+                            });
+                            matching_btn.setText("매칭신청");
+                            state = 0;
+
+                        }
+                    });
+
+                    dlg.setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int which) {
+                            matching_btn.setText("취소");
+                            state = 1;
+                        }
+                    });
+                    dlg.show();
+
+                }
             }
         });
     }

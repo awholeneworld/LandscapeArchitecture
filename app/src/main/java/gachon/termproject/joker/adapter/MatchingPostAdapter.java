@@ -31,6 +31,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
     ArrayList<MatchingPostContent> postContentList;
     String category;
 
+
     public MatchingPostAdapter(Context context, ArrayList<MatchingPostContent> postContentList, String category)
     {
         this.context = context;
@@ -58,6 +59,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationOfUser;
+        String locationStr = "";
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -87,7 +89,8 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
                     intent.putExtra("isMatched", isMatched);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putStringArrayListExtra("location", locationOfUser);
+                    intent.putExtra("location", locationStr);
+
                     ((Activity) context).startActivityForResult(intent, 1);
                 }
             });
@@ -133,47 +136,48 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
 
         holder.nickname.setText(contentNickname);
 
+        holder.locationStr="";
         if (locationList.size() == 1)
             holder.content.setText(locationList.get(0));
         else {
-            String locationStr = "";
             for (String item : locationList) {
-                locationStr += item + " | ";
+                holder.locationStr += item + " | ";
             }
-            holder.content.setText(locationStr);
+            holder.locationStr  = holder.locationStr .substring(0, holder.locationStr .length()-3);
+            holder.content.setText(holder.locationStr );
         }
 
         holder.date.setText(contentTime);
 
-        /*
-        // 목록에 나타나는 글의 내용 표시
-        // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
-        int inputLetters = 0;
-        int inputImage = 0;
-        String contents = "";
-        for (int i = 0; i < contentsList.size(); i++) {
-            String writings = contentsList.get(i);
-
-            if (writings.contains("\n")) {
-                contents += writings.substring(0, writings.indexOf("\n")) + "...";
-                inputLetters = 16;
-            } else if (inputLetters <= 15 && writings.length() > 0){
-                int writingsLength = writings.length();
-
-                if (inputLetters + writingsLength > 15)
-                    contents += (" " + writings.substring(0, 15 - inputLetters) + "...");
-                else
-                    contents += (" " + writings);
-
-                inputLetters += writingsLength;
-            } else if (inputImage == 0 && writings.length() == 0){
-                Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
-                inputImage++;
-            }
-        }
-
-        holder.content.setText(contents);
-         */
+//        /*
+//        // 목록에 나타나는 글의 내용 표시
+//        // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
+//        int inputLetters = 0;
+//        int inputImage = 0;
+//        String contents = "";
+//        for (int i = 0; i < contentsList.size(); i++) {
+//            String writings = contentsList.get(i);
+//
+//            if (writings.contains("\n")) {
+//                contents += writings.substring(0, writings.indexOf("\n")) + "...";
+//                inputLetters = 16;
+//            } else if (inputLetters <= 15 && writings.length() > 0){
+//                int writingsLength = writings.length();
+//
+//                if (inputLetters + writingsLength > 15)
+//                    contents += (" " + writings.substring(0, 15 - inputLetters) + "...");
+//                else
+//                    contents += (" " + writings);
+//
+//                inputLetters += writingsLength;
+//            } else if (inputImage == 0 && writings.length() == 0){
+//                Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
+//                inputImage++;
+//            }
+//        }
+//
+//        holder.content.setText(contents);
+//         */
     }
 
     @Override

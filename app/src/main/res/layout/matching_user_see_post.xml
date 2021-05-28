@@ -78,7 +78,7 @@
                         android:src="@drawable/ic_launcher_background" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
@@ -141,6 +141,7 @@
                     android:layout_marginBottom="5dp">
 
                     <TextView
+                        android:id="@+id/see_post_matching_line"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="매칭 요청 | "
@@ -150,14 +151,9 @@
                         android:id="@+id/see_post_request_total_num"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text=""
                         android:textColor="@color/gray"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="건"
-                        android:textColor="@color/gray"/>
 
                 </LinearLayout>
 

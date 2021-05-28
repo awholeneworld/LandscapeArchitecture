@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
+import gachon.termproject.joker.fragment.MatchingExpertTabCompleteFragment;
 import gachon.termproject.joker.fragment.MatchingTabExpertListFragment;
 import gachon.termproject.joker.fragment.MatchingExpertTabProgressFragment;
 import gachon.termproject.joker.fragment.MatchingExpertTabRequestFragment;
@@ -31,7 +32,7 @@ public class MatchingExpertPagerAdapter extends FragmentPagerAdapter {
                 return tab2;
 
             case 2:
-                Fragment  tab3 = new MatchingExpertTabProgressFragment();
+                Fragment  tab3 = new MatchingExpertTabCompleteFragment();
                 return tab3;
 
             case 3:

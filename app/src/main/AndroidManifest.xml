@@ -101,7 +101,7 @@
             android:name=".activity.MatchingUserWritePostActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".fragment.ExpertPortfolioFragment"
+            android:name=".activity.ExpertPortfolioActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.ReWritePostActivity"
