@@ -22,17 +22,15 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/toolbar_bottom_boarder"/>
 
-
-        <TextView
-            android:id="@+id/profileChangeImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:text="프로필 변경"
-            android:textColor="@color/white"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:layout_below="@+id/toolbar_bottom_boarder" />
-
+        <ImageView
+            android:id="@+id/changeProfileImageBack"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginBottom="-5dp"
+            android:layout_marginLeft="-30dp"
+            android:layout_toRightOf="@+id/profileImage"
+            android:layout_alignBottom="@+id/profileImage"
+            android:src="@drawable/camera" />
 
         <LinearLayout
             android:layout_width="360dp"
@@ -130,7 +128,7 @@
 
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_SU"
+                        android:id="@+id/SU"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -138,7 +136,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_GG"
+                        android:id="@+id/GG"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -149,7 +147,7 @@
 
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_IC"
+                        android:id="@+id/IC"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -157,7 +155,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_GW"
+                        android:id="@+id/GW"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -168,7 +166,7 @@
 
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_SJ"
+                        android:id="@+id/SJ"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -176,7 +174,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_CB"
+                        android:id="@+id/CB"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -187,7 +185,7 @@
 
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_DJ"
+                        android:id="@+id/DJ"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -195,7 +193,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_CN"
+                        android:id="@+id/CN"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -206,7 +204,7 @@
 
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_GJ"
+                        android:id="@+id/GJ"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -214,7 +212,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_GB"
+                        android:id="@+id/GB"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -225,7 +223,7 @@
 
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_DG"
+                        android:id="@+id/DG"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -233,7 +231,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_GN"
+                        android:id="@+id/GN"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -243,7 +241,7 @@
                 </TableRow>
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_US"
+                        android:id="@+id/US"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -251,7 +249,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_JB"
+                        android:id="@+id/JB"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -261,7 +259,7 @@
                 </TableRow>
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_BS"
+                        android:id="@+id/BS"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -269,7 +267,7 @@
                         android:textSize="15sp">
                     </CheckBox>
                     <CheckBox
-                        android:id="@+id/signup04_JN"
+                        android:id="@+id/JN"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"
@@ -279,7 +277,7 @@
                 </TableRow>
                 <TableRow>
                     <CheckBox
-                        android:id="@+id/signup04_JJ"
+                        android:id="@+id/JJ"
                         android:layout_width="140dp"
                         android:layout_height="30dp"
                         android:layout_marginBottom="2dp"

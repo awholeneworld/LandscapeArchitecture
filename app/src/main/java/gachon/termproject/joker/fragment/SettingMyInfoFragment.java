@@ -60,7 +60,9 @@ public class SettingMyInfoFragment extends Fragment {
     private ArrayList<String> locationSelected;
     private ArrayList<String> location;
     private ImageView profileImg;
-    private TextView profileChangeImage;
+    private ImageView changeProfileImageBack;
+    private ImageView changeProfileImage;
+    private EditText email;
     private EditText nickname;
     private EditText introMsg;
     private Button checkNickname;
@@ -98,37 +100,41 @@ public class SettingMyInfoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_myinfo_setting, container, false);
         // 레이아웃 가져오기
-        profileChangeImage = view.findViewById(R.id.profileChangeImage);
         profileImg = view.findViewById(R.id.profileImage);
-        EditText email = view.findViewById(R.id.setting_email);
+        changeProfileImageBack = view.findViewById(R.id.changeProfileImageBack);
+        email = view.findViewById(R.id.setting_email);
         nickname = view.findViewById(R.id.setting_nickname);
         introMsg = view.findViewById(R.id.setting_message);
         checkNickname = view.findViewById(R.id.duplicateCheck);
         save = view.findViewById(R.id.setting_save_button);
         resetPwd = view.findViewById(R.id.setting_password_button);
-        SU = view.findViewById(R.id.signup04_SU);
-        IC = view.findViewById(R.id.signup04_IC);
-        DJ = view.findViewById(R.id.signup04_DJ);
-        GJ = view.findViewById(R.id.signup04_GJ);
-        DG = view.findViewById(R.id.signup04_DG);
-        US = view.findViewById(R.id.signup04_US);
-        BS = view.findViewById(R.id.signup04_BS);
-        JJ = view.findViewById(R.id.signup04_JJ);
-        GG = view.findViewById(R.id.signup04_GG);
-        GW = view.findViewById(R.id.signup04_GW);
-        CB = view.findViewById(R.id.signup04_CB);
-        CN = view.findViewById(R.id.signup04_CN);
-        GB = view.findViewById(R.id.signup04_GB);
-        GN = view.findViewById(R.id.signup04_GN);
-        JB = view.findViewById(R.id.signup04_JB);
-        JN = view.findViewById(R.id.signup04_JN);
-        SJ = view.findViewById(R.id.signup04_SJ);
+        SU = view.findViewById(R.id.SU);
+        IC = view.findViewById(R.id.IC);
+        DJ = view.findViewById(R.id.DJ);
+        GJ = view.findViewById(R.id.GJ);
+        DG = view.findViewById(R.id.DG);
+        US = view.findViewById(R.id.US);
+        BS = view.findViewById(R.id.BS);
+        JJ = view.findViewById(R.id.JJ);
+        GG = view.findViewById(R.id.GG);
+        GW = view.findViewById(R.id.GW);
+        CB = view.findViewById(R.id.CB);
+        CN = view.findViewById(R.id.CN);
+        GB = view.findViewById(R.id.GB);
+        GN = view.findViewById(R.id.GN);
+        JB = view.findViewById(R.id.JB);
+        JN = view.findViewById(R.id.JN);
+        SJ = view.findViewById(R.id.SJ);
 
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         profileImg.setClipToOutline(true);
         if (!UserInfo.profileImg.equals("None"))
             Glide.with(getContext()).load(UserInfo.profileImg).into(profileImg);
+
+        changeProfileImageBack.setBackground(new ShapeDrawable(new OvalShape()));
+        changeProfileImageBack.setClipToOutline(true);
+        Glide.with(getContext()).load(R.drawable.camera).into(changeProfileImageBack);
 
         // 이메일 설정
         email.setText(UserInfo.email);
@@ -145,7 +151,17 @@ public class SettingMyInfoFragment extends Fragment {
         setLocation();
 
         // 프사 눌렀을 때 이미지 파일 선택 창으로 이동
-        profileChangeImage.setOnClickListener(new View.OnClickListener() {
+        profileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "사진을 선택하세요."), 0);
+            }
+        });
+
+        changeProfileImageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
