@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -183,14 +184,18 @@ public class ChatActivity extends AppCompatActivity {
         messageToSend.userId = UserInfo.userId;
         messageToSend.message = message;
         messageToSend.timestamp = ServerValue.TIMESTAMP;
-        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnFailureListener(new OnFailureListener() {
+        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                if (UserInfo.pushToken == null) passPushTokenToServer();
+                else sendGcm();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
                 Toast.makeText(getApplicationContext(), "메시지 전송 실패", Toast.LENGTH_SHORT).show();
             }
         });
-        if (UserInfo.pushToken == null) passPushTokenToServer();
-        else sendGcm();
     }
 
     private void passPushTokenToServer() {
@@ -218,7 +223,7 @@ public class ChatActivity extends AppCompatActivity {
         notificationContent.data.text = message;
 
 
-        RequestBody requestBody =RequestBody.create(MediaType.parse("application/json; charset=utf8"), gson.toJson(notificationContent));
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));
         Request request = new Request.Builder().header("Content-Type", "application/json")
                 .addHeader("Authorization", "key=AAAAm5WD8Bo:APA91bFr1BYENkzDe9KpX7JCk50IPp3ZtVc8LKSUvMmCxAZVadIB76K1OveBIm027j7ZH3naHZ65tuc9KeTNBqyWLOh6Ox0EyeRtBx2IdpVkl0n8ihZUMLY-I32WWAdObT-Mq-k2SUxV")
                 .url("https://gcm-http.googleapis.com/gcm/send")

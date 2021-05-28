@@ -22,13 +22,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            String title = remoteMessage.getData().get("title").toString();
-            String message = remoteMessage.getData().get("messageBody").toString();
+            String title = remoteMessage.getData().get("title");
+            String message = remoteMessage.getData().get("text");
             sendNotification(title, message);
         }
     }
 
-    private void sendNotification(String title, String messageBody) {
+    private void sendNotification(String title, String text) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
@@ -39,7 +39,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, "myChanel")
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(title)
-                        .setContentText(messageBody)
+                        .setContentText(text)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setPriority(Notification.PRIORITY_HIGH)
