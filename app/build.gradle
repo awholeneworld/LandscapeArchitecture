@@ -60,8 +60,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.7'
-    implementation 'com.squareup.okhttp3:okhttp'
-    implementation 'com.squareup.okhttp3:logging-interceptor'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
