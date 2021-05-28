@@ -1,4 +1,4 @@
-package gachon.termproject.joker.fragment;
+package gachon.termproject.joker.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
@@ -35,12 +35,11 @@ import org.jetbrains.annotations.NotNull;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.activity.ExpertPortfolioLinkActivity;
 import gachon.termproject.joker.adapter.MyInfoPortfolioReviewAdapter;
 
 import static gachon.termproject.joker.fragment.MyInfoFragment.locationStr;
 
-public class MyInfoPortfolioFragment extends AppCompatActivity {
+public class MyInfoPortfolioActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private Uri file;
     private RecyclerView contents;

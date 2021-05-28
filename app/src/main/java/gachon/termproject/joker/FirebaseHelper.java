@@ -1,9 +1,8 @@
 package gachon.termproject.joker;
 
-import static gachon.termproject.joker.Util.showToast;
-
 import android.app.Activity;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -58,7 +57,7 @@ public class FirebaseHelper {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        showToast(activity, "Error");
+                        Toast.makeText(activity, "Error");
                     }
                 });
             }
@@ -97,7 +96,7 @@ public class FirebaseHelper {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            showToast(activity, "사진 삭제 에러.");
+                            Toast.makeText(activity, "사진 삭제 에러.", Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -107,7 +106,7 @@ public class FirebaseHelper {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Bigcategory + "/").child(category).child(id);
         ref.removeValue();
-        showToast(activity, "게시글이 삭제되었습니다.");
+        Toast.makeText(activity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
 
 
     }

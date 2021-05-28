@@ -19,15 +19,30 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.installations.FirebaseInstallations;
+import com.google.firebase.installations.InstallationTokenResult;
+import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+
+import gachon.termproject.joker.Content.NotificationContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.ChatAreaAdapter;
@@ -169,10 +184,61 @@ public class ChatActivity extends AppCompatActivity {
         messageToSend.userId = UserInfo.userId;
         messageToSend.message = message;
         messageToSend.timestamp = ServerValue.TIMESTAMP;
-        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnFailureListener(new OnFailureListener() {
+        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                if (UserInfo.pushToken == null) passPushTokenToServer();
+                else sendGcm();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
                 Toast.makeText(getApplicationContext(), "메시지 전송 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void passPushTokenToServer() {
+        FirebaseInstallations.getInstance().getToken(true).addOnCompleteListener(new OnCompleteListener<InstallationTokenResult>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<InstallationTokenResult> task) {
+                FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("pushToken", task.getResult().getToken()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                        sendGcm();
+                    }
+                });
+            }
+        });
+    }
+
+    public void sendGcm() {
+        Gson gson = new Gson();
+
+        NotificationContent notificationContent = new NotificationContent();
+        notificationContent.to = UserInfo.userId;
+        notificationContent.notification.title = UserInfo.nickname;
+        notificationContent.notification.text = message;
+        notificationContent.data.title = UserInfo.nickname;
+        notificationContent.data.text = message;
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));
+        Request request = new Request.Builder().header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AAAAm5WD8Bo:APA91bFr1BYENkzDe9KpX7JCk50IPp3ZtVc8LKSUvMmCxAZVadIB76K1OveBIm027j7ZH3naHZ65tuc9KeTNBqyWLOh6Ox0EyeRtBx2IdpVkl0n8ihZUMLY-I32WWAdObT-Mq-k2SUxV")
+                .url("https://gcm-http.googleapis.com/gcm/send")
+                .post(requestBody).build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
             }
         });
     }
