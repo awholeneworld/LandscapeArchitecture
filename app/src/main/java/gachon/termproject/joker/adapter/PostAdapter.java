@@ -51,6 +51,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         String timeInPost;
         String postIdInPost;
         String expertIdOfPost;
+        String pushToken;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         PostContent postContent;
@@ -75,6 +76,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
                     intent.putExtra("expertId", expertIdOfPost);
+                    intent.putExtra("pushToken", pushToken);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putExtra("postContent", postContent);
@@ -109,6 +111,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         holder.nicknameInPost = contentNickname;
         holder.timeInPost = contentTime;
         holder.postIdInPost = content.getPostId();
+        holder.pushToken = content.getPushToken();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();

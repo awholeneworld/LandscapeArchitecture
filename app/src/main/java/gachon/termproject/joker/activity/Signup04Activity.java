@@ -18,12 +18,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.UserInfo;
 
 public class Signup04Activity extends AppCompatActivity {
     public static ArrayList<String> location; // 전문가 회원가입을 위한 전역변수
@@ -103,12 +107,30 @@ public class Signup04Activity extends AppCompatActivity {
                                     user.put("profileImg", "None"); // 프로필 이미지 url
                                     user.put("introduction", ""); // 자기소개 메시지
 
-                                    documentReference.set(user); // 데이터베이스에 정보 저장
+                                    documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() { // 데이터베이스에 정보 저장
+                                        @Override
+                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                            FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<String> task) {
+                                                    if (task.isSuccessful()) {
+                                                        FirebaseFirestore.getInstance().collection("users").document(ID).update("pushToken", task.getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                // 가입완료 페이지로 이동
+                                                                Intent intent = new Intent(getApplicationContext(), Signup05Activity.class);
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 이전 액티비티들을 모두 kill
+                                                                startActivity(intent);
+                                                            }
+                                                        });
+                                                        return;
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
 
-                                    // 가입완료 페이지로 이동
-                                    Intent intent = new Intent(getApplicationContext(), Signup05Activity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 이전 액티비티들을 모두 kill
-                                    startActivity(intent);
+
                                 } else {
                                     Toast.makeText(Signup04Activity.this, "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                 }

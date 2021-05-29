@@ -41,13 +41,22 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import gachon.termproject.joker.Content.NotificationContent;
 import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -67,12 +76,14 @@ public class SeePostActivity extends AppCompatActivity {
     private PostCommentContent postComment;
     private ValueEventListener commentsListener;
     private boolean isWriter;
-    private String expertname;
-    Intent intent;
-    String postId;
-    String category;
-    ArrayList<String> images;
-    List<ImageView> iv = new ArrayList<ImageView>();
+    private Intent intent;
+    private String pushToken;
+    private String postId;
+    private String category;
+    private String expertName;
+    private String comment;
+    private ArrayList<String> images;
+    private List<ImageView> iv = new ArrayList<ImageView>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -92,6 +103,7 @@ public class SeePostActivity extends AppCompatActivity {
         intent = getIntent();
         category = intent.getStringExtra("category");
         postId = intent.getStringExtra("postId");
+        pushToken = intent.getStringExtra("pushToken");
         String profileImg = intent.getStringExtra("profileImg");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         images = intent.getStringArrayListExtra("images");
@@ -143,8 +155,8 @@ public class SeePostActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             // 사용자 닉네임, 프로필 사진 Url 등 가져오기
-                            expertname = document.getString("nickname");
-                            expert_name.setText("전문가 : " + expertname);
+                            expertName = document.getString("nickname");
+                            expert_name.setText("전문가 : " + expertName);
                         }
                     }
                 }
@@ -251,7 +263,7 @@ public class SeePostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 EditText commentContent = findViewById(R.id.see_post_comment_text);
-                String comment = commentContent.getText().toString();
+                comment = commentContent.getText().toString();
                 Date currentTime = new Date();
                 String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
                 String commentId = String.valueOf(System.currentTimeMillis());
@@ -276,7 +288,7 @@ public class SeePostActivity extends AppCompatActivity {
                                 if (MyInfoFragment.comment != null)
                                     MyInfoFragment.comment.adapter.notifyDataSetChanged();
 
-                                Toast.makeText(getApplicationContext(), "댓글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                                sendFCM();
                                 databaseReference.addListenerForSingleValueEvent(commentsListener);
                             }
                         });
@@ -340,6 +352,37 @@ public class SeePostActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    public void sendFCM() {
+        Gson gson = new Gson();
+
+        NotificationContent notificationContent = new NotificationContent();
+        notificationContent.to = pushToken;
+        notificationContent.notification.title = UserInfo.nickname;
+        notificationContent.notification.body = comment;
+        notificationContent.data.title = UserInfo.nickname;
+        notificationContent.data.body = comment;
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));
+        Request request = new Request.Builder().header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AAAAm5WD8Bo:APA91bFr1BYENkzDe9KpX7JCk50IPp3ZtVc8LKSUvMmCxAZVadIB76K1OveBIm027j7ZH3naHZ65tuc9KeTNBqyWLOh6Ox0EyeRtBx2IdpVkl0n8ihZUMLY-I32WWAdObT-Mq-k2SUxV")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody).build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+            }
+        });
     }
 
     public static int dpToPx(int dp) {

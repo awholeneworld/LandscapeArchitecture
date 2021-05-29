@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,143 +9,141 @@
         android:layout_height="0.5dp"
         android:background="@color/whitegray" />
 
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="15dp"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/home_today_expert"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/home_box_border"
+                android:layout_height="match_parent"
+                android:layout_margin="15dp"
                 android:orientation="vertical">
 
-                <ImageView
+                <RelativeLayout
+                    android:id="@+id/home_today_expert"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_launcher_background" />
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/home_box_border"
+                    android:orientation="vertical">
 
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_launcher_background" />
 
-                <TextView
-                    android:id="@+id/home_relative_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/gray"
-                    android:text="오늘의 전문가"
-                    android:textColor="@color/white"
-                    android:textSize="20dp" />
+                    <TextView
+                        android:id="@+id/home_relative_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/gray"
+                        android:text="오늘의 전문가"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
 
+                    <TextView
+                        android:id="@+id/home_expert_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/home_relative_1"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/gray"
+                        android:text="홍길동"
+                        android:textColor="@color/white"
+                        android:textSize="17dp" />
 
-                <TextView
-                    android:id="@+id/home_expert_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/home_relative_1"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/gray"
-                    android:text="홍길동"
-                    android:textColor="@color/white"
-                    android:textSize="17dp" />
+                </RelativeLayout>
 
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/home_free_community"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/home_box_border"
-                android:orientation="vertical"
-                android:paddingHorizontal="15dp">
-
-                <TextView
+                <LinearLayout
+                    android:id="@+id/home_free_community"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="자유 커뮤니티"
-                    android:textSize="20dp" />
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/home_box_border"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="15dp">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_free_community_list"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="자유 커뮤니티"
+                        android:textSize="20dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_free_community_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingVertical="10dp">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/home_tip"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingVertical="10dp">
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/home_box_border"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="15dp">
 
-                </androidx.recyclerview.widget.RecyclerView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="조경 팁"
+                        android:textSize="20dp" />
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_tip_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingVertical="10dp">
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/home_expert_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginBottom="50dp"
+                    android:background="@drawable/home_box_border"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="15dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="전문가 후기"
+                        android:textSize="20dp" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_expert_review_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingVertical="10dp"
+                        android:orientation="horizontal"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/home_tip"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/home_box_border"
-                android:orientation="vertical"
-                android:paddingHorizontal="15dp">
+        </ScrollView>
 
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="조경 팁"
-                    android:textSize="20dp" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_tip_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingVertical="10dp">
-
-                </androidx.recyclerview.widget.RecyclerView>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/home_expert_review"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/home_box_border"
-                android:orientation="vertical"
-                android:paddingHorizontal="15dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="전문가 후기"
-                    android:textSize="20dp" />
-
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_expert_review_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingVertical="10dp"
-                    android:orientation="horizontal"/>
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

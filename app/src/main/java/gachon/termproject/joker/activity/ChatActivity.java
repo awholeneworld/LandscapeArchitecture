@@ -56,6 +56,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView actionBarName;
     private ImageView sendButton;
     private EditText messageArea;
+    private String opponentPushToken;
     private String opponentUserId;
     private String message;
     private boolean send = false;
@@ -77,6 +78,8 @@ public class ChatActivity extends AppCompatActivity {
         opponentUserId = intent.getStringExtra("userId");
         opponentNickname = intent.getStringExtra("nickname");
         opponentProfileImg = intent.getStringExtra("profileImg");
+        opponentPushToken = intent.getStringExtra("pushToken");
+
 
         actionBarName = findViewById(R.id.opponentNickname);
         chatArea = findViewById(R.id.chatArea);
@@ -99,11 +102,13 @@ public class ChatActivity extends AppCompatActivity {
                         // 나의 정보
                         user.nickname = UserInfo.nickname;
                         user.profileImg = UserInfo.profileImg;
+                        user.pushToken = UserInfo.pushToken;
                         chatMessageContent.users.put(UserInfo.userId, user);
 
                         // 상대방 정보
                         opponent.nickname = opponentNickname;
                         opponent.profileImg = opponentProfileImg;
+                        opponent.pushToken = opponentPushToken;
                         chatMessageContent.users.put(opponentUserId, opponent);
 
                         sendButton.setEnabled(false);
@@ -164,10 +169,11 @@ public class ChatActivity extends AppCompatActivity {
                         if (send) {
                             send = false;
                             sendMsgToDB();
+                        } else {
+                            sendButton.setEnabled(true);
+                            chatArea.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            chatArea.setAdapter(new ChatAreaAdapter());
                         }
-                        sendButton.setEnabled(true);
-                        chatArea.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        chatArea.setAdapter(new ChatAreaAdapter());
                     }
                 }
             }
@@ -184,11 +190,14 @@ public class ChatActivity extends AppCompatActivity {
         messageToSend.userId = UserInfo.userId;
         messageToSend.message = message;
         messageToSend.timestamp = ServerValue.TIMESTAMP;
-        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnSuccessListener(new OnSuccessListener<Void>() {
+        FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onSuccess(Void unused) {
-                if (UserInfo.pushToken == null) passPushTokenToServer();
-                else sendGcm();
+            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                sendButton.setEnabled(true);
+                chatArea.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                chatArea.setAdapter(new ChatAreaAdapter());
+
+                sendFCM();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -198,35 +207,22 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void passPushTokenToServer() {
-        FirebaseInstallations.getInstance().getToken(true).addOnCompleteListener(new OnCompleteListener<InstallationTokenResult>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<InstallationTokenResult> task) {
-                FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("pushToken", task.getResult().getToken()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<Void> task) {
-                        sendGcm();
-                    }
-                });
-            }
-        });
-    }
 
-    public void sendGcm() {
+    public void sendFCM() {
         Gson gson = new Gson();
 
         NotificationContent notificationContent = new NotificationContent();
-        notificationContent.to = UserInfo.userId;
+        notificationContent.to = opponentPushToken;
         notificationContent.notification.title = UserInfo.nickname;
-        notificationContent.notification.text = message;
+        notificationContent.notification.body = message;
         notificationContent.data.title = UserInfo.nickname;
-        notificationContent.data.text = message;
+        notificationContent.data.body = message;
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));
         Request request = new Request.Builder().header("Content-Type", "application/json")
                 .addHeader("Authorization", "key=AAAAm5WD8Bo:APA91bFr1BYENkzDe9KpX7JCk50IPp3ZtVc8LKSUvMmCxAZVadIB76K1OveBIm027j7ZH3naHZ65tuc9KeTNBqyWLOh6Ox0EyeRtBx2IdpVkl0n8ihZUMLY-I32WWAdObT-Mq-k2SUxV")
-                .url("https://gcm-http.googleapis.com/gcm/send")
+                .url("https://fcm.googleapis.com/fcm/send")
                 .post(requestBody).build();
 
         OkHttpClient okHttpClient = new OkHttpClient();

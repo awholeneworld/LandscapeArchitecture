@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--toolbar-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -68,7 +67,6 @@
         android:text="로그아웃"
         android:textColor="@color/black"
         android:textSize="17dp" />
-
 
     <TextView
         android:layout_width="match_parent"

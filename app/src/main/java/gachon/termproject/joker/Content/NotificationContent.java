@@ -7,11 +7,11 @@ public class NotificationContent {
 
     public static class Notification {
         public String title;
-        public String text;
+        public String body;
     }
 
     public static class Data {
         public String title;
-        public String text;
+        public String body;
     }
 }

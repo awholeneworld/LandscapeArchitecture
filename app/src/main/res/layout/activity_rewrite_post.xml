@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--게시글 작성하는 부분-->
     <LinearLayout
         android:id="@+id/post_container"
         android:layout_width="match_parent"
@@ -15,7 +14,6 @@
         android:layout_alignParentTop="true"
         android:layout_above="@+id/layout_post_bottom">
 
-        <!--toolbar-->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -31,6 +29,7 @@
                 android:textSize="20sp">
 
             </TextView>
+
         </androidx.appcompat.widget.Toolbar>
 
         <TextView
@@ -52,7 +51,6 @@
                 android:layout_marginTop="15dp"
                 android:orientation="vertical">
 
-                <!--제목-->
                 <EditText
                     android:id="@+id/writepost_title"
                     android:layout_width="match_parent"
@@ -64,7 +62,6 @@
                     android:maxLength="30"
                     android:textSize="20sp" />
 
-                <!--선-->
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -73,7 +70,6 @@
                     android:layout_marginBottom="10dp"
                     android:background="@color/whitegray" />
 
-                <!--내용-->
                 <EditText
                     android:id="@+id/writepost_content"
                     android:layout_width="match_parent"
@@ -91,7 +87,6 @@
 
     </LinearLayout>
 
-    <!--bottom bar -->
     <FrameLayout
         android:id="@+id/layout_post_bottom"
         android:layout_width="match_parent"
@@ -104,7 +99,6 @@
             android:layout_marginHorizontal="20dp"
             android:background="@color/whitegray" />
 
-        <!--사진입력-->
         <ImageButton
             android:id="@+id/writepost_imageAddButton"
             android:layout_width="45dp"
@@ -115,7 +109,6 @@
             android:scaleType="fitCenter"
             android:src="@drawable/insert_photo_grey_72x72" />
 
-        <!--등록버튼-->
         <Button
             android:id="@+id/writepost_assign"
             android:layout_width="75dp"
@@ -127,6 +120,7 @@
             android:text="등록"
             android:textColor="@color/white"
             android:textSize="15sp" />
+
     </FrameLayout>
 
 </RelativeLayout>

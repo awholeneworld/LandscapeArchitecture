@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.activity.ChatActivity;
 import gachon.termproject.joker.adapter.ExpertPortfolioReviewAdapter;
 
 public class ExpertPortfolioActivity extends AppCompatActivity {
@@ -62,6 +61,7 @@ public class ExpertPortfolioActivity extends AppCompatActivity {
         String expertProfileImg = intent.getStringExtra("profileImg");
         String expertPortfolioImg = intent.getStringExtra("portfolioImg");
         String expertPortfolioWeb = intent.getStringExtra("portfolioWeb");
+        String expertPushToken = intent.getStringExtra("pushToken");
         ArrayList<String> expertLocation = intent.getStringArrayListExtra("location");
 
         // 프로필 이미지 설정
@@ -99,6 +99,7 @@ public class ExpertPortfolioActivity extends AppCompatActivity {
                 intent.putExtra("userId", expertUserId);
                 intent.putExtra("nickname", expertNickname);
                 intent.putExtra("profileImg", expertProfileImg);
+                intent.putExtra("pushToken", expertPushToken);
                 startActivity(intent);
             }
         });

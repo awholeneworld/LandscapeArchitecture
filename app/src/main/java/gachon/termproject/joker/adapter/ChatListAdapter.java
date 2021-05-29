@@ -43,6 +43,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         String opponentUid;
         String opponentNickname;
         String opponentProfileImg;
+        String opponentPushToken;
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         ViewHolder(View itemView) {
@@ -52,7 +53,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             profileImg = itemView.findViewById(R.id.profileImage);
             profileImg.setBackground(new ShapeDrawable(new OvalShape()));
             profileImg.setClipToOutline(true);
-            opponentUid = null;
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -61,6 +61,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                     intent.putExtra("userId", opponentUid);
                     intent.putExtra("nickname", opponentNickname);
                     intent.putExtra("profileImg", opponentProfileImg);
+                    intent.putExtra("pushToken", opponentPushToken);
                     context.startActivity(intent);
                 }
             });
@@ -85,6 +86,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 holder.opponentUid = user;
                 holder.opponentNickname = content.users.get(user).nickname;
                 holder.opponentProfileImg = content.users.get(user).profileImg;
+                holder.opponentPushToken = content.users.get(user).pushToken;
                 holder.roomName.setText(holder.opponentNickname);
 
                 if (!holder.opponentProfileImg.equals("None"))

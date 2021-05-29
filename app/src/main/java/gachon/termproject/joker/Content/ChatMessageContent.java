@@ -10,6 +10,7 @@ public class ChatMessageContent {
     public static class User {
         public String nickname;
         public String profileImg;
+        public String pushToken;
     }
 
     public static class Message {

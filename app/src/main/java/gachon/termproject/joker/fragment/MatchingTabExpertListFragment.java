@@ -169,7 +169,8 @@ public class MatchingTabExpertListFragment extends Fragment {
                                                     String profileImg = snapshot.getString("profileImg");
                                                     String portfolioImg = snapshot.getString("portfolioImg");
                                                     String portfolioWeb = snapshot.getString("portfolioWeb");
-                                                    expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, location));
+                                                    String pushToken = snapshot.getString("pushToken");
+                                                    expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, pushToken, location));
                                                     next = false;
                                                 }
                                                 break;
@@ -205,8 +206,9 @@ public class MatchingTabExpertListFragment extends Fragment {
                                 String profileImg = snapshot.getString("profileImg");
                                 String portfolioImg = snapshot.getString("portfolioImg");
                                 String portfolioWeb = snapshot.getString("portfolioWeb");
+                                String pushToken = snapshot.getString("pushToken");
                                 ArrayList<String> location = (ArrayList<String>) snapshot.get("location");
-                                expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, location));
+                                expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, pushToken, location));
                             }
                         }
                     }

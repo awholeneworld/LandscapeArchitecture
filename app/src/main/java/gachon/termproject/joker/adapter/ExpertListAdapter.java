@@ -42,6 +42,7 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
         String expertProfileImg;
         String expertPortfolioImg;
         String expertPortfolioWeb;
+        String expertPushToken;
         ArrayList<String> expertLocation;
 
         ViewHolder(View itemView) {
@@ -59,6 +60,7 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
                     intent.putExtra("profileImg", expertProfileImg);
                     intent.putExtra("portfolioImg", expertPortfolioImg);
                     intent.putExtra("portfolioWeb", expertPortfolioWeb);
+                    intent.putExtra("pushToken", expertPushToken);
                     intent.putStringArrayListExtra("location", expertLocation);
                     context.startActivity(intent);
                 }
@@ -88,6 +90,7 @@ public class ExpertListAdapter extends RecyclerView.Adapter<ExpertListAdapter.Vi
         holder.expertProfileImg = contentProfileImg;
         holder.expertPortfolioImg = content.getPortfolioImg();
         holder.expertPortfolioWeb = content.getPortfolioWeb();
+        holder.expertPushToken = content.getPushToken();
         holder.expertLocation = content.getLocation();
 
         holder.nickname.setText(contentNickname);
