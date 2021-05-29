@@ -1,50 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/totallayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--toolbar-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:contentInsetStart="0dp">
 
+
         <EditText
             android:id="@+id/search_edittext"
-            android:layout_marginVertical="5dp"
-            android:layout_marginRight="5dp"
-            android:paddingHorizontal="10dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginVertical="5dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/home_box_border"
             android:hint="글 제목"
+            android:paddingHorizontal="10dp"
             android:singleLine="true" />
 
     </androidx.appcompat.widget.Toolbar>
 
+
     <RelativeLayout
+        android:id="@+id/search_first_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchContent"
+            android:layout_marginHorizontal="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <ImageView
             android:id="@+id/search_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/lightbulb_outline_white_72x72"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="250dp"/>
+            android:layout_marginTop="250dp"
+            android:src="@drawable/lightbulb_outline_white_72x72" />
 
         <TextView
+            android:id="@+id/search_first_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/search_img"
+            android:layout_centerHorizontal="true"
             android:text="커뮤니티의 글을 검색해 보세요"
             android:textColor="#80505050"
-            android:textSize="20dp"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/search_nothing_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/search_img"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/search_img"/>
+            android:text="검색 결과가 없습니다"
+            android:textColor="#80505050"
+            android:textSize="20dp" />
 
     </RelativeLayout>
+
 
 </LinearLayout>

@@ -122,7 +122,12 @@ public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
                     locationStr += item + " | ";
                 }
 
-                location_tv.setText(locationStr.substring(0, locationStr .length()-3));
+                if(locationSelected.isEmpty()){
+                    location_tv.setText("");
+                }
+                else{
+                    location_tv.setText(locationStr.substring(0, locationStr .length()-3));
+                }
 
                 //지역선택 뷰를 다시 밑으로 내립니다.
                 LinearLayout LL = view.findViewById(R.id.post_select_location);
