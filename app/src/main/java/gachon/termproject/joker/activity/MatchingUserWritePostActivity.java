@@ -68,12 +68,10 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
     private RelativeLayout loaderLayout;
 
-
     //해야 할 일!
     //1. 게시글 저장에 선택 지역 반영하기!
     //2. 이건 유저별로 저장되어야 하는? 글임 => 그니까 이 글은 해당 일반인 유저랑 전문가들밖에 볼수없음
     // => DB저장 생각하면서 짜기
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,6 +201,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                 }
 
             }
+
         });
 
     }
@@ -265,6 +264,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
         else super.onBackPressed();
 
     }
+
     // 파일선택 함수
     private void selectFile(){
         Intent intent = new Intent();

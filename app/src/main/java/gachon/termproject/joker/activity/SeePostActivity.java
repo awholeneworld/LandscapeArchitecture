@@ -97,7 +97,6 @@ public class SeePostActivity extends AppCompatActivity {
         images = intent.getStringArrayListExtra("images");
         postContent = intent.getParcelableExtra("postContent");
 
-
         // 작성자 본인 확인
         for (String myPostId : MainActivity.userPostsIdList) {
             if (postId.equals(myPostId))
@@ -114,7 +113,7 @@ public class SeePostActivity extends AppCompatActivity {
         nickname.setText(intent.getStringExtra("nickname"));
         time.setText(intent.getStringExtra("time"));
 
-        // 프로필 사진 세팅 (oimage 동그랗게)
+        // 프로필 사진 세팅 (image 동그랗게)
         ImageView profile = findViewById(R.id.postProfile);
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
@@ -305,7 +304,10 @@ public class SeePostActivity extends AppCompatActivity {
             //남이 쓴 글일때 - 프로필보기 / 신고
             case R.id.show_profile:
                 Toast.makeText(getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), SeeProfileActivity.class));
+                Intent intent2 = new Intent(getApplicationContext(), SeeProfileActivity.class);
+                intent2.putExtra("nickname", intent.getStringExtra("nickname"));
+                intent2.putExtra("profileImg", intent.getStringExtra("profileImg"));
+                startActivity(intent2);
                 break;
             case R.id.decelerate:
                 Toast.makeText(getApplicationContext(), intent.getStringExtra("nickname") + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();

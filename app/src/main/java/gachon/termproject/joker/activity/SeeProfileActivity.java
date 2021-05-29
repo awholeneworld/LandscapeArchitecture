@@ -1,10 +1,14 @@
 package gachon.termproject.joker.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
@@ -22,10 +26,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Comparator;
+
+import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.adapter.MyInfoTabPostAdapter;
 import gachon.termproject.joker.fragment.MyInfoTabCommentFragment;
 import gachon.termproject.joker.fragment.MyInfoTabPostFragment;
 
@@ -40,7 +57,13 @@ public class SeeProfileActivity extends AppCompatActivity {
     private LinearLayout portfolioLayout;
     static String locationStr;
     Intent intent;
-    String postId;
+    private RecyclerView contents;
+
+    private int successCount = 0;
+    private int failCount = 0;
+    public static MyInfoTabPostAdapter adapter;
+    public static DatabaseReference postsRef;
+    public static OnSuccessListener onSuccessListener;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -57,7 +80,6 @@ public class SeeProfileActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
         intent = getIntent();
-        postId = intent.getStringExtra("postId");
 
         // 레이아웃 가져오기
         refresher = findViewById(R.id.myInfoRefresher);
@@ -72,14 +94,21 @@ public class SeeProfileActivity extends AppCompatActivity {
         if (UserInfo.isPublic)
             portfolioLayout.setVisibility(View.GONE);
 
+        /*
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         profileImg.setClipToOutline(true);
         if (UserInfo.portfolioImg != null && !UserInfo.profileImg.equals("None"))
             Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImg);
 
+         */
+        profileImg.setBackground(new ShapeDrawable(new OvalShape()));
+        profileImg.setClipToOutline(true);
+        if (!intent.getStringExtra("profileImg").equals("None"))
+            Glide.with(this).load(intent.getStringExtra("profileImg")).into(profileImg);
+
         // 닉네임 설정
-        nickname.setText(UserInfo.nickname);
+        nickname.setText(intent.getStringExtra("nickname"));
 
         // 지역 설정
         locationStr = "";
@@ -91,6 +120,94 @@ public class SeeProfileActivity extends AppCompatActivity {
 
         // 한줄 소개 설정
         intro.setText(UserInfo.introduction);
+
+        /*
+        contents = findViewById(R.id.post_check_profile);
+        adapter = new MyInfoTabPostAdapter(getApplicationContext(), MainActivity.userPostsList);
+
+        contents.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3));
+        contents.setHasFixedSize(true);
+        contents.setAdapter(adapter);
+
+        postsRef = FirebaseDatabase.getInstance().getReference("Posts");
+
+        onSuccessListener = new OnSuccessListener<DataSnapshot>() { // DB에 Posts가 있는지 확인하기 위해 가져와본다
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) { // Posts가 없으면 암것도 안함
+
+                } else { // Posts가 있다면 자기가 작성한 게시글 정보 가져오는 작업 수행
+                    MainActivity.userPostsList.clear();
+                    final long categoryNum = dataSnapshot.getChildrenCount(); // 현재 Posts에 있는 category 수
+
+                    dataSnapshot.getRef().addChildEventListener(new ChildEventListener() { // Posts에 있는 카테고리의 데이터를 카테고리 하나씩 가져올거임
+                        @Override
+                        public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                            snapshot.getRef().orderByChild("userId").equalTo(UserInfo.nickname).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                @Override
+                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                    if (!dataSnapshot.exists()) { // 내가 쓴 글이 존재하지 않는다면
+                                        failCount++;
+                                    } else { // 내가 쓴 글이 있다면
+                                        dataSnapshot.getRef().addValueEventListener(new ValueEventListener() { // 정보 저장
+                                            @RequiresApi(api = Build.VERSION_CODES.N)
+                                            @Override
+                                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                                for (DataSnapshot shot : snapshot.getChildren()) {
+                                                    PostContent content = shot.getValue(PostContent.class);
+                                                    MainActivity.userPostsIdList.add(0, content.getPostId());
+                                                    MainActivity.userPostsList.add(0, content);
+                                                }
+                                                successCount++; // 성공 카운트 올리기
+                                                if (failCount + successCount == categoryNum) { // 모든 카테고리 확인 다 끝나면
+                                                    failCount = 0;
+                                                    successCount = 0;
+                                                    MainActivity.userPostsList.sort(new Comparator<PostContent>() {
+                                                        @RequiresApi(api = Build.VERSION_CODES.O)
+                                                        @Override
+                                                        public int compare(PostContent o1, PostContent o2) {
+                                                            long o1Id = Long.parseUnsignedLong(o1.getPostId());
+                                                            long o2Id = Long.parseUnsignedLong(o2.getPostId());
+
+                                                            if (o1Id < o2Id) return 1;
+                                                            else return -1;
+                                                        }
+                                                    });
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+                        }
+                    });
+                }
+            }
+        };
+
+         */
 
     }
 

@@ -113,22 +113,18 @@ public class MyInfoTabPostFragment extends Fragment {
 
                         @Override
                         public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
                         }
 
                         @Override
                         public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
                         }
 
                         @Override
                         public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
                         }
 
                         @Override
                         public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
                         }
                     });
                 }
@@ -136,5 +132,6 @@ public class MyInfoTabPostFragment extends Fragment {
         };
 
         return view;
+        
     }
 }
