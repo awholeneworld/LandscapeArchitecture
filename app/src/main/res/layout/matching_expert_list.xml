@@ -234,25 +234,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <Button
-                android:id="@+id/btn_post_select_location"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="60dp"
-                android:text="확인"
-                android:textColor="@color/white" />
+
 
             <Button
-                android:id="@+id/btn_post_cancel_location"
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:id="@+id/btn_post_select_location"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="60dp"
-                android:layout_marginLeft="20dp"
-                android:text="취소"
-                android:textColor="@color/white" />
+                android:text="확인"
+                android:textColor="@color/white"
+                android:layout_marginLeft="270dp"/>
 
         </LinearLayout>
 
