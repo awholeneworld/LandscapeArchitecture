@@ -24,6 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -101,32 +102,54 @@ public class MatchingTabExpertListFragment extends Fragment {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
                 lp.addRule(RelativeLayout.BELOW, 0);
                 LL.setLayoutParams(lp);
+
+
             }
         });
 
         location_select_OK_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                locationSelected = new ArrayList<>();
                 if(!SU.isChecked() && !IC.isChecked() && !DJ.isChecked() &&
                         !GJ.isChecked() && !DG.isChecked() && !US.isChecked() && !BS.isChecked() &&
                         !JJ.isChecked() && !GG.isChecked() && !GW.isChecked() && !CB.isChecked() &&
                         !CN.isChecked() && !GB.isChecked() && !GN.isChecked() && !JB.isChecked() &&
                         !JN.isChecked() && !SJ.isChecked()){
-                    Toast.makeText(getContext(), "지역을 최소 하나이상 선택해주세요.", Toast.LENGTH_SHORT).show();
-                    return;
+                    locationSelected.add("서울");
+                    locationSelected.add("인천");
+                    locationSelected.add("대전");
+                    locationSelected.add("광주");
+                    locationSelected.add("대구");
+                    locationSelected.add("울산");
+                    locationSelected.add("부산");
+                    locationSelected.add("제주");
+                    locationSelected.add("경기");
+                    locationSelected.add("강원");
+                    locationSelected.add("충북");
+                    locationSelected.add("충남");
+                    locationSelected.add("경북");
+                    locationSelected.add("경남");
+                    locationSelected.add("전북");
+                    locationSelected.add("전남");
+                    locationSelected.add("세종");
+                    location_tv.setText("");
                 }
-                locationSelected = checklocation();
+                else {
+                    locationSelected = checklocation();
+                    location_tv.setText(for_print(locationSelected));
+                }
 
-
-
-                location_tv.setText(for_print(locationSelected));
 
                 //지역선택 뷰를 다시 밑으로 내립니다.
+
                 LinearLayout LL = view.findViewById(R.id.post_select_location);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) LL.getLayoutParams();
                 lp.addRule(RelativeLayout.BELOW, R.id.refresh_layout);
                 lp.addRule(RelativeLayout.ABOVE, 0);
                 LL.setLayoutParams(lp);
+
+
 
                 //그리고 다시 query받아서 adapter를 구성해야 하는데,,,, 할수잇을까???
 
@@ -235,23 +258,23 @@ public class MatchingTabExpertListFragment extends Fragment {
         //선택된 지역을 저장할 리스트
         ArrayList<String> location = new ArrayList<>();
 
-        if(SU.isChecked()) location.add("서울");
-        if(IC.isChecked()) location.add("인천");
-        if(DJ.isChecked()) location.add("대전");
-        if(GJ.isChecked()) location.add("광주");
-        if(DG.isChecked()) location.add("대구");
-        if(US.isChecked()) location.add("울산");
-        if(BS.isChecked()) location.add("부산");
-        if(JJ.isChecked()) location.add("제주");
-        if(GG.isChecked()) location.add("경기");
-        if(GW.isChecked()) location.add("강원");
-        if(CB.isChecked()) location.add("충북");
-        if(CN.isChecked()) location.add("충남");
-        if(GB.isChecked()) location.add("경북");
-        if(GN.isChecked()) location.add("경남");
-        if(JB.isChecked()) location.add("전북");
-        if(JN.isChecked()) location.add("전남");
-        if(SJ.isChecked()) location.add("세종");
+        if (SU.isChecked()) location.add("서울");
+        if (IC.isChecked()) location.add("인천");
+        if (DJ.isChecked()) location.add("대전");
+        if (GJ.isChecked()) location.add("광주");
+        if (DG.isChecked()) location.add("대구");
+        if (US.isChecked()) location.add("울산");
+        if (BS.isChecked()) location.add("부산");
+        if (JJ.isChecked()) location.add("제주");
+        if (GG.isChecked()) location.add("경기");
+        if (GW.isChecked()) location.add("강원");
+        if (CB.isChecked()) location.add("충북");
+        if (CN.isChecked()) location.add("충남");
+        if (GB.isChecked()) location.add("경북");
+        if (GN.isChecked()) location.add("경남");
+        if (JB.isChecked()) location.add("전북");
+        if (JN.isChecked()) location.add("전남");
+        if (SJ.isChecked()) location.add("세종");
 
         return location;
     }
