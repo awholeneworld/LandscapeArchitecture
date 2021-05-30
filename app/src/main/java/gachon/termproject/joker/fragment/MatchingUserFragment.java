@@ -18,17 +18,24 @@ import com.google.android.material.tabs.TabLayout;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.CommunitySearchActivity;
+import gachon.termproject.joker.activity.ExpertCommunitySearchActivity;
+import gachon.termproject.joker.activity.ExpertSearchActivity;
+import gachon.termproject.joker.activity.UserMatchingCommunitySearchActivity;
 import gachon.termproject.joker.adapter.MatchingUserPagerAdapter;
 
 public class MatchingUserFragment extends Fragment {
     private TabLayout tabs;
     private View view;
+    private int status;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_matching, container, false);
+
+        // 액션바 메뉴
+        setHasOptionsMenu(true);
         /*
 //        Button location_update = view.findViewById(R.id.select_location); //지역선택버튼 만들면 id = select_location 으로 해주세연
 //        location_update.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +60,25 @@ public class MatchingUserFragment extends Fragment {
         tabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));
 
+        tabs.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener(){
+            @Override
+            public void onTabSelected(TabLayout.Tab tab){
+                status = tab.getPosition();
+                if(status == 1)
+                    setHasOptionsMenu(false);
+                else
+                    setHasOptionsMenu(true);
+
+
+            }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
         return view;
     }
 
@@ -63,10 +89,15 @@ public class MatchingUserFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        getActivity().startActivity(new Intent(getContext(), CommunitySearchActivity.class));
+        if(status == 0){
+            getActivity().startActivity(new Intent(getContext(), CommunitySearchActivity.class));
+        }
+        else if(status == 2){
+            getActivity().startActivity(new Intent(getContext(), ExpertSearchActivity.class));
+        }
+
         return super.onOptionsItemSelected(item);
     }
 }

@@ -17,10 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
-
 import org.jetbrains.annotations.NotNull;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<PostContent> userPostsList;
     public static ArrayList<String> userCommentsIdList;
     public static ArrayList<PostContent> postsOfCommentsList;
+    private Collator FirebaseMessaging;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -126,17 +126,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 다들 로그인하면 이 코드는 지울거임
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("pushToken", task.getResult());
-                            return;
-                        }
-                    }
-                });
 
         // 일반인인지 전문가인지에 따라 매칭 화면 다르게 설정
         FragmentManager fm = getSupportFragmentManager();

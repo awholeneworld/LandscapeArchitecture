@@ -111,6 +111,18 @@
             android:name=".activity.FullScreenImageActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".activity.ExpertCommunitySearchActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.ExpertSearchActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activity.UserMatchingCommunitySearchActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

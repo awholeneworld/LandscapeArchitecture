@@ -21,7 +21,7 @@
             android:layout_marginVertical="5dp"
             android:layout_marginRight="5dp"
             android:background="@drawable/home_box_border"
-            android:hint="글 제목"
+            android:hint="전문가 이름"
             android:paddingHorizontal="10dp"
             android:singleLine="true" />
 
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/search_img"
             android:layout_centerHorizontal="true"
-            android:text="글을 검색해 보세요"
+            android:text="전문가를 검색해 보세요"
             android:textColor="#80505050"
             android:textSize="20dp" />
 
