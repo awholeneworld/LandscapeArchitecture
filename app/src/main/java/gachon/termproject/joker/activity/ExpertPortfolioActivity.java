@@ -68,7 +68,7 @@ public class ExpertPortfolioActivity extends AppCompatActivity {
         profileImage.setBackground(new ShapeDrawable(new OvalShape()));
         profileImage.setClipToOutline(true);
         if (!expertProfileImg.equals("None"))
-            Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
+            Glide.with(getApplicationContext()).load(expertProfileImg).override(1000).thumbnail(0.1f).into(profileImage);
 
         // 닉네임 설정
         nickname.setText(expertNickname);
