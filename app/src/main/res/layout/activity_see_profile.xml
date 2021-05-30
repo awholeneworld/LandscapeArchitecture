@@ -39,7 +39,7 @@
             android:layout_marginLeft="13dp"
             android:layout_marginRight="10dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_baseline_yard_24" />
+            android:src="@drawable/ic_launcher_background" />
 
         <LinearLayout
             android:layout_width="0dp"
