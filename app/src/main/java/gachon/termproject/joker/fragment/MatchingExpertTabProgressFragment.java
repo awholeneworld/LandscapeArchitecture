@@ -1,6 +1,5 @@
 package gachon.termproject.joker.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,38 +14,30 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 
 import gachon.termproject.joker.Content.MatchingPostContent;
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
-
-import static android.app.Activity.RESULT_OK;
 
 public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
+    public static DatabaseReference databaseReference;
+    public static ValueEventListener postEventListener;
     FirebaseUser user;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
     ArrayList<MatchingPostContent> postContentList;
     MatchingPostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
-    ValueEventListener postEventListener;
-    Boolean topScrolled;
-    Boolean doUpdate;
 
     @Nullable
     @Override
@@ -92,7 +83,6 @@ public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
             }
         };
 
-
         databaseReference.addListenerForSingleValueEvent(postEventListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -105,16 +95,4 @@ public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
 
         return view;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postEventListener);
-            }
-        }
-    }
-
 }

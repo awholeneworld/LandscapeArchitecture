@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
@@ -46,21 +45,12 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     private ArrayList<RequestFromExpertContent> requestsList;
     private int requestsNum = 0; //매칭 요청한 갯수(정확히는 매칭이 진행중인 갯수)
     private String postId;
+    private String pushToken;
+    private String locationStr;
     private boolean isMatched;
     private ArrayList<String> images;
-    private String locationStr;
     Intent intent;
 
-    //해야 할 일!
-//    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도 - clear
-//    2. 매칭요청이 몇건인지 보여주기 - not
-//    3. 추가된 매칭이 있다면 list로 보여주기 => item_matching_request.xml 사용
-//    4. list item들의 button 연결하기.........
-//    5. 4에서 button 들이 연결된다면 "매칭 수락" 버튼을 눌렀을 때 팝업이 뜨게 해야 하는데,,,,,
-//    6. 매칭 수락해서 팝업에서 예 눌렀으면 item_matching_end.xml 을 나타내서 그거 한사람만 남기고 나머지는 다 지워주면 됨
-// 아예 게시글 상태같은걸 지정 해야 할듯?
-
-    //본인이 올린글만 확인가능 -> MatchingUserViewCompleteFragment 수정완료
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +145,6 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     requestsList.clear();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                         RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
                         content.setExpertUserId(snapshot.getKey());
                         requestsList.add(content);
@@ -211,7 +200,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
 
             //자기가 쓴 글이므로 - 삭제
             case R.id.delete:
-                FirebaseHelper.storeDelete(this, "Matching", "userRequests", postId, images);
+                FirebaseHelper.postDelete(this, "Matching", "userRequests", postId, images);
                 finish();
                 break;
         }

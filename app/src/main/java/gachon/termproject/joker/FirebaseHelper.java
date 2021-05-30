@@ -1,79 +1,37 @@
 package gachon.termproject.joker;
 
 import android.app.Activity;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
-import gachon.termproject.joker.Content.PostContent;
+import gachon.termproject.joker.activity.SeePostActivity;
+import gachon.termproject.joker.fragment.CommunityFreeFragment;
+import gachon.termproject.joker.fragment.CommunityReviewFragment;
+import gachon.termproject.joker.fragment.CommunityTipFragment;
+import gachon.termproject.joker.fragment.MatchingUserTabRequestFragment;
 
 public class FirebaseHelper {
-    private Activity activity;
-    private OnPostListener onPostListener;
-    private int successCount;
 
-    public FirebaseHelper(Activity activity) {
-        this.activity = activity;
-    }
-
-    public void setOnPostListener(OnPostListener onPostListener) {
-        this.onPostListener = onPostListener;
-    }
-
-    /*
-    public void storageDelete(final PostContent postContent){
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-
-        // final String id = postContent.getId();
-        ArrayList<String> contentsList = postContent.getContent();
-        for (int i = 0; i < contentsList.size(); i++) {
-            String contents = contentsList.get(i);
-            if (isStorageUrl(contents)) {
-                successCount++;
-                StorageReference desertRef = storageRef.child("posts/" + id + "/" + storageUrlToName(contents));
-                desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        successCount--;
-                        storeDelete(id, postContent);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Toast.makeText(activity, "Error");
-                    }
-                });
-            }
-        }
-        storeDelete(id, postContent);
-    }
-    */
-    public static void storeDelete(Activity activity, final String Bigcategory,  final String category, final String id, final ArrayList<String> imgs) {
+    public static void postDelete(Activity activity, final String Bigcategory,  final String category, final String id, final ArrayList<String> imgs) {
         //Bigcategory => Matching, Posts
         //category => free, review, tip, userRequests...
 
-        //사진있따면 사진도 지워져야함 =-> Storage 사진을 어떻게 지울것인가??? 그것이 문제로다,,,
-        //postContent; => 이걸 이용히서 Storage 삭제해야함
         FirebaseStorage storage = FirebaseStorage.getInstance();
-
-
 
         if(imgs != null){
             String uri = imgs.get(0);
@@ -82,40 +40,51 @@ public class FirebaseHelper {
             uripath = uripath.replace("%2F", "/");
 
             StorageReference storageRef = storage.getReference().child(uripath);
-//
-            storageRef.listAll()
-                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                        @Override
-                        public void onSuccess(ListResult listResult) {
-                            for (StorageReference item : listResult.getItems()) {
-                                // All the items under listRef.
-                                item.delete();
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(activity, "사진 삭제 에러.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
 
-
+            storageRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                @Override
+                public void onSuccess(ListResult listResult) {
+                    for (StorageReference item : listResult.getItems()) {
+                        // All the items under listRef.
+                        item.delete();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(activity, "사진 삭제 에러.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(Bigcategory + "/").child(category).child(id);
-        ref.removeValue();
-        Toast.makeText(activity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-
-
+        FirebaseDatabase.getInstance().getReference(Bigcategory + "/").child(category).child(id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                Toast.makeText(activity, "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                if (Bigcategory.equals("Posts")) {
+                    if (category.equals("free"))
+                        CommunityFreeFragment.databaseReference.addValueEventListener(CommunityFreeFragment.postsListener);
+                    else if (category.equals("review"))
+                        CommunityReviewFragment.databaseReference.addValueEventListener(CommunityReviewFragment.postsListener);
+                    else if (category.equals("tip"))
+                        CommunityTipFragment.databaseReference.addValueEventListener(CommunityTipFragment.postsListener);
+                } else {
+                    MatchingUserTabRequestFragment.databaseReference.addValueEventListener(MatchingUserTabRequestFragment.postsListener);
+                }
+            }
+        });
     }
 
-    public static void commentDelete(DatabaseReference databaseReference, final String commentid) {
+    public static void commentDelete(Activity activity, DatabaseReference databaseReference, final String commentid) {
         //Bigcategory => Matching, Posts
         //category => free, review, tip, userRequests...
-
-
-        databaseReference.child(commentid).removeValue();
+        databaseReference.child(commentid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                Toast.makeText(activity, "댓글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                SeePostActivity.databaseReference.addValueEventListener(SeePostActivity.commentsListener);
+            }
+        });
     }
 }

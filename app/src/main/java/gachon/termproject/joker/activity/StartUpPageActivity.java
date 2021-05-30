@@ -156,7 +156,17 @@ public class StartUpPageActivity extends AppCompatActivity {
                                                                                             for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) { // 정보 담기
                                                                                                 if (snapshot2.child("userId").getValue().equals(UserInfo.userId)) {
                                                                                                     userCommentsIdList.add(0, snapshot2.getKey());
-                                                                                                    postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                    int length = postsOfCommentsList.size();
+                                                                                                    if (length == 0)
+                                                                                                        postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                    else {
+                                                                                                        for (int i = 0; i < length; i++) {
+                                                                                                            if (postsOfCommentsList.get(i).getPostId().equals(snapshot.getKey()))
+                                                                                                                break;
+                                                                                                            else if (i == length - 1)
+                                                                                                                postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                        }
+                                                                                                    }
                                                                                                 }
                                                                                             }
                                                                                             if (categorySnapshot.getKey().equals("free")) successCountFree++;
@@ -274,7 +284,17 @@ public class StartUpPageActivity extends AppCompatActivity {
                                                                                                     for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) { // 정보 담기
                                                                                                         if (snapshot2.child("userId").getValue().equals(UserInfo.userId)) {
                                                                                                             userCommentsIdList.add(0, snapshot2.getKey());
-                                                                                                            postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                            int length = postsOfCommentsList.size();
+                                                                                                            if (length == 0)
+                                                                                                                postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                            else {
+                                                                                                                for (int i = 0; i < length; i++) {
+                                                                                                                    if (postsOfCommentsList.get(i).getPostId().equals(snapshot.getKey()))
+                                                                                                                        break;
+                                                                                                                    else if (i == length - 1)
+                                                                                                                        postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
+                                                                                                                }
+                                                                                                            }
                                                                                                         }
                                                                                                     }
                                                                                                     if (categorySnapshot.getKey().equals("free")) successCountFree++;

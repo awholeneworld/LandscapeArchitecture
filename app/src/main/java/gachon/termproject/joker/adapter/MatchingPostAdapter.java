@@ -1,6 +1,5 @@
 package gachon.termproject.joker.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,22 +11,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 
 import gachon.termproject.joker.Content.MatchingPostContent;
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.MatchingExpertSeePostActivity;
 import gachon.termproject.joker.activity.MatchingUserSeePostActivity;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.FirebaseHelper;
 
 public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapter.ViewHolder>
 {
     private Context context;
-    private FirebaseHelper firebaseHelper;
     ArrayList<MatchingPostContent> postContentList;
     String category;
 
@@ -37,10 +31,6 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         this.context = context;
         this.postContentList = postContentList;
         this.category = category;
-    }
-
-    public void setOnPostListener(OnPostListener onPostListener){
-        firebaseHelper.setOnPostListener(onPostListener);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
@@ -55,6 +45,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         String nicknameInPost;
         String timeInPost;
         String postIdInPost;
+        String pushToken;
         boolean isMatched;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
@@ -86,12 +77,12 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
+                    intent.putExtra("pushToken", pushToken);
                     intent.putExtra("isMatched", isMatched);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putExtra("location", locationStr);
-
-                    ((Activity) context).startActivityForResult(intent, 1);
+                    context.startActivity(intent);
                 }
             });
         }
@@ -127,6 +118,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         holder.imagesInPost = imagesList;
         holder.isMatched = content.getIsMatched();
         holder.locationOfUser = locationList;
+        holder.pushToken = content.getPushToken();
 
         // 목록에 나타나는 글의 제목, 작성자, 지역, 작성 시간 표시
         if (contentTitle.length() > 15)
@@ -148,36 +140,6 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         }
 
         holder.date.setText(contentTime);
-
-//        /*
-//        // 목록에 나타나는 글의 내용 표시
-//        // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.
-//        int inputLetters = 0;
-//        int inputImage = 0;
-//        String contents = "";
-//        for (int i = 0; i < contentsList.size(); i++) {
-//            String writings = contentsList.get(i);
-//
-//            if (writings.contains("\n")) {
-//                contents += writings.substring(0, writings.indexOf("\n")) + "...";
-//                inputLetters = 16;
-//            } else if (inputLetters <= 15 && writings.length() > 0){
-//                int writingsLength = writings.length();
-//
-//                if (inputLetters + writingsLength > 15)
-//                    contents += (" " + writings.substring(0, 15 - inputLetters) + "...");
-//                else
-//                    contents += (" " + writings);
-//
-//                inputLetters += writingsLength;
-//            } else if (inputImage == 0 && writings.length() == 0){
-//                Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.image);
-//                inputImage++;
-//            }
-//        }
-//
-//        holder.content.setText(contents);
-//         */
     }
 
     @Override

@@ -75,7 +75,7 @@ public class MyInfoPortfolioActivity extends AppCompatActivity {
             Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
 
         if (!UserInfo.portfolioImg.equals("None"))
-            Glide.with(getApplicationContext()).load(UserInfo.portfolioImg).into(mainImg);
+            Glide.with(getApplicationContext()).load(UserInfo.portfolioImg).override(1000).thumbnail(0.1f).into(mainImg);
 
 
         nickname.setText(UserInfo.nickname);

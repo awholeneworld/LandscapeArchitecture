@@ -31,31 +31,35 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import gachon.termproject.joker.Content.NotificationContent;
 import gachon.termproject.joker.Content.RequestFromExpertContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.fragment.MatchingExpertTabProgressFragment;
+import gachon.termproject.joker.fragment.MatchingExpertTabRequestFragment;
 
 public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
     private Button matching_btn;
     private HashMap<String, RequestFromExpertContent> requestsList;
     private RequestFromExpertContent request;
+    private String pushToken;
     private int state = 0; //0 - 매칭요청 / 1 - 취소 / 2 - 완료 (가능한 액션)
     Intent intent;
-
-    //해야 할 일!
-//    1. 선택한 지역 보여주기 (한글로) => 서울 | 경기도 | 전라남도
-//    2. 게시글 상태에 따라 버튼의 모양을 "매칭 신청", "매칭 대기", "매칭 완료"를 보여주어야 함. => 들어가있는 게시글 카테고리도 달라야 함.
-    // 이때, 매칭 완료인 경우는 그 전문가와 유저가 매칭 완료된 경우만 가능!
-    //다른 전문가에 의해 매칭이 완료되었다면 그냥 글 자체가 안보임.
-    //헷깔리면 바로 카톡 ㄱ
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,6 +80,7 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         String category = intent.getStringExtra("category");
         String postId = intent.getStringExtra("postId");
         String profileImg = intent.getStringExtra("profileImg");
+        pushToken = intent.getStringExtra("pushToken");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
         requestsList = intent.getParcelableExtra("requests");
@@ -155,17 +160,13 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
                     dlg.setPositiveButton("신청", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int which) {
                             if (requestsList == null) requestsList = new HashMap<>();
-                            if (request == null) request = new RequestFromExpertContent();
-                            request.setExpertProfileImg(UserInfo.profileImg);
-                            request.setExpertNickname(UserInfo.nickname);
-                            request.setExpertPortfolioImg(UserInfo.portfolioImg);
-                            request.setExpertPortfolioWeb(UserInfo.portfolioWeb);
-                            request.setExpertLocation(UserInfo.location);
+                            if (request == null) request = new RequestFromExpertContent(UserInfo.nickname, UserInfo.profileImg, UserInfo.portfolioImg, UserInfo.portfolioWeb, UserInfo.pushToken, UserInfo.location, false);
                             requestsList.put(UserInfo.userId, request);
 
                             FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests").setValue(requestsList).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                    sendFCM();
                                 }
                             });
                             matching_btn.setText("취소");
@@ -251,8 +252,42 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OK);
+        if (state == 1)
+            MatchingExpertTabRequestFragment.databaseReference.addValueEventListener(MatchingExpertTabRequestFragment.postEventListener);
+        else if (state == 0)
+            MatchingExpertTabProgressFragment.databaseReference.addValueEventListener(MatchingExpertTabProgressFragment.postEventListener);
         finish();
+    }
+
+    public void sendFCM() {
+        Gson gson = new Gson();
+
+        NotificationContent notificationContent = new NotificationContent();
+        notificationContent.to = pushToken;
+        notificationContent.notification.title = "매칭 신청 도착";
+        notificationContent.notification.body = UserInfo.nickname + "님의 매칭 신청";
+        notificationContent.data.title = "매칭 신청 도착";
+        notificationContent.data.body = UserInfo.nickname + "님의 매칭 신청";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));
+        Request request = new Request.Builder().header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AAAAm5WD8Bo:APA91bFr1BYENkzDe9KpX7JCk50IPp3ZtVc8LKSUvMmCxAZVadIB76K1OveBIm027j7ZH3naHZ65tuc9KeTNBqyWLOh6Ox0EyeRtBx2IdpVkl0n8ihZUMLY-I32WWAdObT-Mq-k2SUxV")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody).build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+            }
+        });
     }
 
     public static int dpToPx(int dp){

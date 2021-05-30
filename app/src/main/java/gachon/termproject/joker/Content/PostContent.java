@@ -15,15 +15,17 @@ public class PostContent implements Parcelable {
     public String postTime;
     public String postId;
     public String pushToken;
+    public String intro;
+    public String expertId; // 리뷰 게시판 작성에 필요한 변수
     public ArrayList<String> content;
     public ArrayList<String> images;
-    public String expertId; // 리뷰 게시판 작성에 필요한 변수
+    public ArrayList<String> location;
 
     // CommunityListStyle 에서 snapshot.getValue(PostContent.class) 사용할 때 Default Constructor 꼭 있어야함
     public PostContent() {
     }
 
-    public PostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, String pushToken, ArrayList<String> content, ArrayList<String> images, String expertId) {
+    public PostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, String pushToken, ArrayList<String> content, ArrayList<String> images, String expertId, String intro, ArrayList<String> location) {
         this.category = category;
         this.userId = userId;
         this.profileImg = profileImg;
@@ -35,6 +37,8 @@ public class PostContent implements Parcelable {
         this.content = content;
         this.images = images;
         this.expertId = expertId;
+        this.intro = intro;
+        this.location = location;
     }
 
     protected PostContent(Parcel in) {
@@ -49,6 +53,8 @@ public class PostContent implements Parcelable {
         content = in.createStringArrayList();
         images = in.createStringArrayList();
         expertId = in.readString();
+        intro = in.readString();
+        location = in.createStringArrayList();
     }
 
     @Override
@@ -64,6 +70,8 @@ public class PostContent implements Parcelable {
         dest.writeStringList(content);
         dest.writeStringList(images);
         dest.writeString(expertId);
+        dest.writeString(intro);
+        dest.writeStringList(location);
     }
 
     @Override
@@ -93,9 +101,11 @@ public class PostContent implements Parcelable {
     public String getPostTime() { return postTime; }
     public String getPostId() { return postId; }
     public String getPushToken() { return pushToken; }
+    public String getExpertId() { return expertId; }
+    public String getIntro() { return intro; }
     public ArrayList<String> getContent() { return content; }
     public ArrayList<String> getImages() { return images; }
-    public String getExpertId() { return expertId; }
+    public ArrayList<String> getLocation(){ return location; }
     public void setCategory() { this.category = category; }
     public void setUserId(String userId) { this.userId = userId; }
     public void setProfileImg(String url) { this.profileImg = url; }

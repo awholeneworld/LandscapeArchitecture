@@ -43,7 +43,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         String opponentUid;
         String opponentNickname;
         String opponentProfileImg;
+        String opponentIntro;
         String opponentPushToken;
+        ArrayList<String> opponentLocation;
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         ViewHolder(View itemView) {
@@ -61,7 +63,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                     intent.putExtra("userId", opponentUid);
                     intent.putExtra("nickname", opponentNickname);
                     intent.putExtra("profileImg", opponentProfileImg);
+                    intent.putExtra("intro", opponentIntro);
                     intent.putExtra("pushToken", opponentPushToken);
+                    intent.putStringArrayListExtra("location", opponentLocation);
                     context.startActivity(intent);
                 }
             });
@@ -86,7 +90,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 holder.opponentUid = user;
                 holder.opponentNickname = content.users.get(user).nickname;
                 holder.opponentProfileImg = content.users.get(user).profileImg;
+                holder.opponentIntro = content.users.get(user).introduction;
                 holder.opponentPushToken = content.users.get(user).pushToken;
+                holder.opponentLocation = content.users.get(user).location;
                 holder.roomName.setText(holder.opponentNickname);
 
                 if (!holder.opponentProfileImg.equals("None"))

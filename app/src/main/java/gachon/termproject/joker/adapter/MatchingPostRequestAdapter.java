@@ -28,23 +28,31 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import gachon.termproject.joker.Content.NotificationContent;
 import gachon.termproject.joker.Content.RequestFromExpertContent;
-import gachon.termproject.joker.FirebaseHelper;
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.ChatActivity;
 import gachon.termproject.joker.activity.ExpertPortfolioActivity;
+import gachon.termproject.joker.fragment.MatchingUserTabRequestFragment;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPostRequestAdapter.ViewHolder> {
     private Context context;
-    private FirebaseHelper firebaseHelper;
     private ArrayList<RequestFromExpertContent> requestsList;
     private String postId;
     private Activity activity;
@@ -57,21 +65,18 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
         this.activity = activity;
     }
 
-    public void setOnPostListener(OnPostListener onPostListener){
-        firebaseHelper.setOnPostListener(onPostListener);
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder  {
         ImageView profileImg;
         TextView nickname;
         Button viewPortfolio;
-        Button chatbtn;
+        Button chatBtn;
         Button matching_btn;
         String expertNickname;
         String expertProfileImg;
         String expertUserId;
         String expertPortfolioImg;
         String expertPortfolioWeb;
+        String expertPushToken;
         boolean expertIsMatched;
         ArrayList<String> expertLocation;
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId);
@@ -81,7 +86,7 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
             profileImg = itemView.findViewById(R.id.requestImg);
             nickname = itemView.findViewById(R.id.requestNickname);
             viewPortfolio = itemView.findViewById(R.id.matching_request_item_pofol);
-            chatbtn = itemView.findViewById(R.id.matching_request_item_chat);
+            chatBtn = itemView.findViewById(R.id.matching_request_item_chat);
             matching_btn = itemView.findViewById(R.id.matching_request_item_accept_cancel);
 
             viewPortfolio.setOnClickListener(new View.OnClickListener() {
@@ -100,15 +105,14 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
             });
 
 
-            chatbtn.setOnClickListener(new View.OnClickListener() {
+            chatBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("userId", expertUserId);
                     intent.putExtra("nickname", expertNickname);
                     intent.putExtra("profileImg", expertProfileImg);
+                    intent.putExtra("pushToken", expertPushToken);
                     context.startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK));
                 }
             });
@@ -131,6 +135,8 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                                     snapshot.getRef().child("isMatched").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                            sendFCM(expertPushToken);
+                                            MatchingUserTabRequestFragment.databaseReference.addValueEventListener(MatchingUserTabRequestFragment.postsListener);
                                             activity.finish();
                                         }
                                     });
@@ -181,6 +187,7 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
         holder.expertProfileImg = request.getExpertProfileImg();
         holder.expertPortfolioImg = request.getExpertPortfolioImg();
         holder.expertPortfolioWeb = request.getExpertPortfolioWeb();
+        holder.expertPushToken = request.getExpertPushToken();
         holder.expertLocation = request.getExpertLocation();
         holder.expertUserId = request.getExpertUserId();
         holder.expertIsMatched = request.getIsMatched();
@@ -213,5 +220,36 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    public void sendFCM(String expertPushToken) {
+        Gson gson = new Gson();
+
+        NotificationContent notificationContent = new NotificationContent();
+        notificationContent.to = expertPushToken;
+        notificationContent.notification.title = "매칭 성공";
+        notificationContent.notification.body = UserInfo.nickname + "님과의 매칭이 완료되었습니다.";
+        notificationContent.data.title = "매칭 성공";
+        notificationContent.data.body = UserInfo.nickname + "님과의 매칭이 완료되었습니다.";
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));
+        Request request = new Request.Builder().header("Content-Type", "application/json")
+                .addHeader("Authorization", "key=AAAAm5WD8Bo:APA91bFr1BYENkzDe9KpX7JCk50IPp3ZtVc8LKSUvMmCxAZVadIB76K1OveBIm027j7ZH3naHZ65tuc9KeTNBqyWLOh6Ox0EyeRtBx2IdpVkl0n8ihZUMLY-I32WWAdObT-Mq-k2SUxV")
+                .url("https://fcm.googleapis.com/fcm/send")
+                .post(requestBody).build();
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+
+            }
+        });
     }
 }

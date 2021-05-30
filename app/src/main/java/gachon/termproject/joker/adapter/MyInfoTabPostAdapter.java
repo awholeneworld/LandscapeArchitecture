@@ -57,6 +57,7 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putIntegerArrayListExtra("order", orderInPost);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             });

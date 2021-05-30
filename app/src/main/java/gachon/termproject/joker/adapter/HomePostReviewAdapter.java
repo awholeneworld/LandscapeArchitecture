@@ -16,15 +16,12 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.Content.PostContent;
-import gachon.termproject.joker.FirebaseHelper;
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.SeePostActivity;
 
 public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAdapter.ViewHolder>
 {
     private Context context;
-    private FirebaseHelper firebaseHelper;
     ArrayList<PostContent> postContentList;
 
     public HomePostReviewAdapter(Context context, ArrayList<PostContent> postContentList)
@@ -33,15 +30,8 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
         this.postContentList = postContentList;
     }
 
-    public void setOnPostListener(OnPostListener onPostListener){
-        firebaseHelper.setOnPostListener(onPostListener);
-    }
-
     public class ViewHolder extends RecyclerView.ViewHolder  {
         TextView title;
-        TextView nickname;
-        TextView date;
-        TextView content;
         ImageView image;
         String categoryOfPost;
         String userIdInPost;
@@ -114,7 +104,7 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
         holder.expertIdOfPost = content.getExpertId();
 
 
-        Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).centerCrop() .into(holder.image);
+        Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).centerCrop().into(holder.image);
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         if (contentTitle.length() > 15)

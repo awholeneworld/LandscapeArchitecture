@@ -66,23 +66,29 @@ import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.fragment.MyInfoFragment;
 
 public class SeePostActivity extends AppCompatActivity {
+    public static DatabaseReference databaseReference;
+    public static ValueEventListener commentsListener;
     private LinearLayout container;
     private RecyclerView commentSection;
-    private DatabaseReference databaseReference;
     private SwipeRefreshLayout refresher;
     private ArrayList<PostCommentContent> postCommentList;
     private PostContent postContent;
     private PostCommentAdapter postCommentAdapter;
     private PostCommentContent postComment;
-    private ValueEventListener commentsListener;
     private boolean isWriter;
     private Intent intent;
     private String pushToken;
     private String postId;
     private String category;
+    private String userId;
+    private String profileImg;
+    private String nickname;
     private String expertName;
+    private String intro;
     private String comment;
+    private ArrayList<String> content;
     private ArrayList<String> images;
+    public ArrayList<String> location;
     private List<ImageView> iv = new ArrayList<ImageView>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -104,9 +110,13 @@ public class SeePostActivity extends AppCompatActivity {
         category = intent.getStringExtra("category");
         postId = intent.getStringExtra("postId");
         pushToken = intent.getStringExtra("pushToken");
-        String profileImg = intent.getStringExtra("profileImg");
-        ArrayList<String> content = intent.getStringArrayListExtra("content");
+        userId = intent.getStringExtra("userId");
+        profileImg = intent.getStringExtra("profileImg");
+        nickname = intent.getStringExtra("nickname");
+        intro = intent.getStringExtra("intro");
+        content = intent.getStringArrayListExtra("content");
         images = intent.getStringArrayListExtra("images");
+        location = intent.getStringArrayListExtra("location");
         postContent = intent.getParcelableExtra("postContent");
 
         // 작성자 본인 확인
@@ -234,6 +244,7 @@ public class SeePostActivity extends AppCompatActivity {
                 postCommentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postComment = snapshot.getValue(PostCommentContent.class);
+                    postComment.setUserId(snapshot.child("userId").getValue().toString());
                     postCommentList.add(postComment);
                 }
                 postCommentAdapter.notifyDataSetChanged();
@@ -267,7 +278,7 @@ public class SeePostActivity extends AppCompatActivity {
                 Date currentTime = new Date();
                 String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
                 String commentId = String.valueOf(System.currentTimeMillis());
-                PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment);
+                PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment, UserInfo.introduction, UserInfo.location);
 
                 //키보드 내리기
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -284,11 +295,21 @@ public class SeePostActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 MainActivity.userCommentsIdList.add(0, commentId);
-                                MainActivity.postsOfCommentsList.add(0, postContent);
+                                int length = MainActivity.postsOfCommentsList.size();
+                                if (length == 0) {
+                                    MainActivity.postsOfCommentsList.add(0, postContent);
+                                } else {
+                                    for (int i = 0; i < length; i++) {
+                                        if (MainActivity.postsOfCommentsList.get(i).getPostId().equals(postId))
+                                            break;
+                                        else if (i == length - 1)
+                                            MainActivity.postsOfCommentsList.add(0, postContent);
+                                    }
+                                }
                                 if (MyInfoFragment.comment != null)
                                     MyInfoFragment.comment.adapter.notifyDataSetChanged();
 
-                                sendFCM();
+                                if (!isWriter) sendFCM();
                                 databaseReference.addListenerForSingleValueEvent(commentsListener);
                             }
                         });
@@ -309,16 +330,18 @@ public class SeePostActivity extends AppCompatActivity {
 
             //자기가 쓴 글일때 - 삭제
             case R.id.delete:
-                FirebaseHelper.storeDelete(this, "Posts", category, postId, images);
+                FirebaseHelper.postDelete(this, "Posts", category, postId, images);
                 finish();
                 break;
 
             //남이 쓴 글일때 - 프로필보기 / 신고
             case R.id.show_profile:
-                Toast.makeText(getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
                 Intent intent2 = new Intent(getApplicationContext(), SeeProfileActivity.class);
-                intent2.putExtra("nickname", intent.getStringExtra("nickname"));
-                intent2.putExtra("profileImg", intent.getStringExtra("profileImg"));
+                intent2.putExtra("userId", userId);
+                intent2.putExtra("nickname", nickname);
+                intent2.putExtra("profileImg", profileImg);
+                intent2.putExtra("intro", intro);
+                intent2.putStringArrayListExtra("location", location);
                 startActivity(intent2);
                 break;
             case R.id.decelerate:

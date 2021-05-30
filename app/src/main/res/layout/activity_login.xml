@@ -25,11 +25,11 @@
 
         <TextView
             android:id="@+id/login_text02"
-            android:layout_width="35dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_gravity="left"
-            android:text="ID" />
+            android:text="아이디" />
 
         <EditText
             android:id="@+id/login_editText_ID"
@@ -37,7 +37,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:textSize="18dp"
-            android:hint="Enter ID"
+            android:hint="이메일을 입력해주세요"
             android:inputType="textEmailAddress"
             android:singleLine="true"
             android:backgroundTint="@color/mainGreen" />
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_gravity="left"
-            android:text="Password" />
+            android:text="비밀번호" />
 
         <EditText
             android:id="@+id/login_editText_PW"
@@ -56,7 +56,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:textSize="18dp"
-            android:hint="Enter Password"
+            android:hint="비밀번호를 입력해주세요"
             android:singleLine="true"
             android:inputType="textPassword"
             android:backgroundTint="@color/mainGreen"/>
@@ -66,7 +66,7 @@
             android:layout_width="280dp"
             android:layout_height="40dp"
             android:layout_marginTop="15dp"
-            android:text="LOGIN"
+            android:text="로그인"
             android:background="@drawable/all_button_bg_ripple_round_15"
             android:textColor="@color/white"
             android:textSize="15dp"/>
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Forget Password?"
+            android:text="비밀번호를 잊으셨나요?"
             android:textColor="@color/gray"
             android:textSize="10dp" />
 
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Don't you have an account?"
+                android:text="회원가입을 안하셨나요?"
                 android:textSize="11dp"
                 android:textColor="#4D4D4D" />
 
@@ -103,7 +103,7 @@
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Sign Up"
+                android:text="회원가입"
                 android:textSize="11dp"
                 android:textColor="@color/gray" />
 

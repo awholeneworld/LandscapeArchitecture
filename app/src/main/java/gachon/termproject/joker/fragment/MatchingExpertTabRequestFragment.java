@@ -1,7 +1,5 @@
 package gachon.termproject.joker.fragment;
 
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,59 +12,38 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import gachon.termproject.joker.Content.ExpertListContent;
 import gachon.termproject.joker.Content.MatchingPostContent;
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
-
-import static android.app.Activity.RESULT_OK;
 
 public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
-    private FirebaseUser user;
     private Button location_btn;
     private TextView location_tv;
     private CheckBox SU, IC, DJ, GJ, DG, US, BS, JJ, GG, GW, CB, CN, GB, GN, JB, JN, SJ;
     private Button location_select_OK_btn;
-
-
+    public static DatabaseReference databaseReference;
+    public static ValueEventListener postEventListener;
     FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
     ArrayList<MatchingPostContent> postContentList;
     MatchingPostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
-    ValueEventListener postEventListener;
-    Boolean topScrolled;
-    Boolean doUpdate;
     ArrayList<String> locationSelected = new ArrayList<>();
 
     @Nullable
@@ -141,15 +118,11 @@ public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
             }
         });
 
-
-
-        user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
         postContentList = new ArrayList<>();
         matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "needed");
-        // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
@@ -163,7 +136,6 @@ public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
                     postContent = snapshot.getValue(MatchingPostContent.class);
                     if (!postContent.getIsMatched()){
                         //아직 게시글은 매칭이 안되었는데
-
                         //매칭 대기 목록에 앗 내가 없네 => 그럼 매칭 신청 탭에
                         if(!snapshot.child("requests/" + UserInfo.userId).exists()){
 
@@ -172,8 +144,8 @@ public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
                                 postContentList.add(0, postContent);
                             }
                             else{ //지역 조건이 존재한다면?
-                                for(String loca : postContent.getLocation()){
-                                    if(locationSelected.contains(loca)){ //만약 글이 가지고 있는 지역이 선택범위에 있다면
+                                for(String loc : postContent.getLocation()){
+                                    if(locationSelected.contains(loc)){ //만약 글이 가지고 있는 지역이 선택범위에 있다면
                                         postContentList.add(0, postContent);
                                     }
                                 }
@@ -192,7 +164,6 @@ public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
             }
         };
 
-
         databaseReference.addListenerForSingleValueEvent(postEventListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -205,50 +176,6 @@ public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
 
         return view;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postEventListener);
-            }
-        }
-    }
-
-    /*
-    private void loadPosts(final boolean clear) {
-        doUpdate = true;
-        Date date = postContentList.size() == 0 || clear ? new Date() : postContentList.get(postContentList.size() - 1).getCreatedAt();
-        CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("posts");
-        collectionReference.orderBy("createdAt", Query.Direction.DESCENDING).whereLessThan("createdAt", date).limit(10).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if(clear){
-                                postContentList.clear();
-                            }
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Log.d(TAG, document.getId() + " => " + document.getData());
-                                postContentList.add(new PostContent(
-                                        document.getData().get("title").toString(),
-                                        (ArrayList<String>) document.getData().get("contents"),
-                                        (ArrayList<String>) document.getData().get("formats"),
-                                        document.getData().get("publisher").toString(),
-                                        new Date(document.getDate("createdAt").getTime()),
-                                        document.getId()));
-                            }
-                            postAdapter.notifyDataSetChanged();
-                        } else {
-                            //Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                        doUpdate = false;
-                    }
-                });
-    }
-    */
 
     public ArrayList<String> checkLocation() {
         //선택된 지역을 저장할 리스트

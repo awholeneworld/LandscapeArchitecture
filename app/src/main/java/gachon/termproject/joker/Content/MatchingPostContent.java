@@ -11,17 +11,16 @@ public class MatchingPostContent {
     public String nickname;
     public String postTime;
     public String postId;
+    public String pushToken;
     public ArrayList<String> content;
     public ArrayList<String> images;
-    public String expertId; // 리뷰 게시판 작성에 필요한 변수
     public ArrayList<String> location;
     public HashMap<String, RequestFromExpertContent> requests = new HashMap<>();
     public boolean isMatched; // 매칭 게시판 작성에 필요한 변수
 
-    public MatchingPostContent() {
-    }
+    public MatchingPostContent() {}
 
-    public MatchingPostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, String expertId, ArrayList<String> location, boolean isMatched) {
+    public MatchingPostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, String pushToken, ArrayList<String> content, ArrayList<String> images, ArrayList<String> location, boolean isMatched, HashMap<String, RequestFromExpertContent> requests) {
         this.category = category;
         this.userId = userId;
         this.profileImg = profileImg;
@@ -29,24 +28,9 @@ public class MatchingPostContent {
         this.nickname = nickname;
         this.postTime = postTime;
         this.postId = postId;
+        this.pushToken = pushToken;
         this.content = content;
         this.images = images;
-        this.expertId = expertId;
-        this.location = location;
-        this.isMatched = isMatched;
-    }
-
-    public MatchingPostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, ArrayList<String> content, ArrayList<String> images, String expertId, ArrayList<String> location, boolean isMatched, HashMap<String, RequestFromExpertContent> requests) {
-        this.category = category;
-        this.userId = userId;
-        this.profileImg = profileImg;
-        this.title = title;
-        this.nickname = nickname;
-        this.postTime = postTime;
-        this.postId = postId;
-        this.content = content;
-        this.images = images;
-        this.expertId = expertId;
         this.location = location;
         this.isMatched = isMatched;
         this.requests = requests;
@@ -61,11 +45,11 @@ public class MatchingPostContent {
     public String getNickname() { return nickname; }
     public String getPostTime() { return postTime; }
     public String getPostId() { return postId; }
+    public String getPushToken() { return pushToken; }
     public ArrayList<String> getContent() { return content; }
     public ArrayList<String> getImages() { return images; }
     public ArrayList<String> getLocation(){ return location; }
     public HashMap<String, RequestFromExpertContent> getRequests(){ return requests; }
-    public String getExpertId() { return expertId; }
     public Boolean getIsMatched(){ return isMatched; }
     public void setCategory() { this.category = category; }
     public void setUserId(String userId) { this.userId = userId; }
@@ -78,6 +62,5 @@ public class MatchingPostContent {
     public void setImages(int index, String image) { this.images.set(index, image); }
     public void setLocation(ArrayList<String> location) { this.location = location; }
     public void setRequests(HashMap<String, RequestFromExpertContent> requestsList) { this.requests = requests; };
-    public void setExpertId(String expertId) { this.expertId = expertId; }
     public void setIsMatched(Boolean isMatched) { this.isMatched = isMatched; }
 }

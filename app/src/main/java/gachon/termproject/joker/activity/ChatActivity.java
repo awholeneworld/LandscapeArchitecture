@@ -41,6 +41,7 @@ import com.squareup.okhttp.Response;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import gachon.termproject.joker.Content.NotificationContent;
 import gachon.termproject.joker.R;
@@ -56,8 +57,10 @@ public class ChatActivity extends AppCompatActivity {
     private TextView actionBarName;
     private ImageView sendButton;
     private EditText messageArea;
+    private ArrayList<String> opponentLocation;
     private String opponentPushToken;
     private String opponentUserId;
+    private String opponentIntro;
     private String message;
     private boolean send = false;
 
@@ -78,6 +81,8 @@ public class ChatActivity extends AppCompatActivity {
         opponentUserId = intent.getStringExtra("userId");
         opponentNickname = intent.getStringExtra("nickname");
         opponentProfileImg = intent.getStringExtra("profileImg");
+        opponentIntro = intent.getStringExtra("intro");
+        opponentLocation = intent.getStringArrayListExtra("location");
         opponentPushToken = intent.getStringExtra("pushToken");
 
 
@@ -102,13 +107,18 @@ public class ChatActivity extends AppCompatActivity {
                         // 나의 정보
                         user.nickname = UserInfo.nickname;
                         user.profileImg = UserInfo.profileImg;
+                        user.introduction = UserInfo.introduction;
                         user.pushToken = UserInfo.pushToken;
+                        user.location = UserInfo.location;
                         chatMessageContent.users.put(UserInfo.userId, user);
 
                         // 상대방 정보
                         opponent.nickname = opponentNickname;
                         opponent.profileImg = opponentProfileImg;
+                        opponent.introduction = opponentIntro;
+                        opponent.location = opponentLocation;
                         opponent.pushToken = opponentPushToken;
+
                         chatMessageContent.users.put(opponentUserId, opponent);
 
                         sendButton.setEnabled(false);
@@ -143,7 +153,13 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.show_profile:
-                Toast.makeText(this, "프로필 보기", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), SeeProfileActivity.class);
+                intent.putExtra("userId", opponentUserId);
+                intent.putExtra("nickname", opponentNickname);
+                intent.putExtra("profileImg", opponentProfileImg);
+                intent.putExtra("intro", opponentIntro);
+                intent.putStringArrayListExtra("location", opponentLocation);
+                startActivity(intent);
                 break;
             case R.id.decelerate:
                 Toast.makeText(this, opponentNickname + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();

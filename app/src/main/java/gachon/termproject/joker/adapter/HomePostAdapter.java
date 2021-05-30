@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import gachon.termproject.joker.FirebaseHelper;
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.SeePostActivity;
 import gachon.termproject.joker.Content.PostContent;
@@ -22,17 +20,12 @@ import gachon.termproject.joker.Content.PostContent;
 public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHolder>
 {
     private Context context;
-    private FirebaseHelper firebaseHelper;
     ArrayList<PostContent> postContentList;
 
     public HomePostAdapter(Context context, ArrayList<PostContent> postContentList)
     {
         this.context = context;
         this.postContentList = postContentList;
-    }
-
-    public void setOnPostListener(OnPostListener onPostListener){
-        firebaseHelper.setOnPostListener(onPostListener);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {

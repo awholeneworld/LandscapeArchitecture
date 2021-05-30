@@ -15,26 +15,19 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.activity.SeePostActivity;
-import gachon.termproject.joker.FirebaseHelper;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
 {
     private Context context;
-    private FirebaseHelper firebaseHelper;
     ArrayList<PostContent> postContentList;
 
     public PostAdapter(Context context, ArrayList<PostContent> postContentList)
     {
         this.context = context;
         this.postContentList = postContentList;
-    }
-
-    public void setOnPostListener(OnPostListener onPostListener){
-        firebaseHelper.setOnPostListener(onPostListener);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
@@ -52,8 +45,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         String postIdInPost;
         String expertIdOfPost;
         String pushToken;
+        String intro;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
+        ArrayList<String> locationOfUser;
         PostContent postContent;
 
         ViewHolder(View itemView) {
@@ -77,8 +72,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
                     intent.putExtra("postId", postIdInPost);
                     intent.putExtra("expertId", expertIdOfPost);
                     intent.putExtra("pushToken", pushToken);
+                    intent.putExtra("intro", intro);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
+                    intent.putStringArrayListExtra("location", locationOfUser);
                     intent.putExtra("postContent", postContent);
                     context.startActivity(intent);
                 }
@@ -115,6 +112,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder>
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
+        holder.intro = content.getIntro();
+        holder.locationOfUser = content.getLocation();
         holder.postContent = content;
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시

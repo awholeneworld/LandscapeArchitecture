@@ -36,15 +36,7 @@ public class MatchingUserFragment extends Fragment {
 
         // 액션바 메뉴
         setHasOptionsMenu(true);
-        /*
-//        Button location_update = view.findViewById(R.id.select_location); //지역선택버튼 만들면 id = select_location 으로 해주세연
-//        location_update.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //matching_user_view_see로 이동,
-//            }
-//        });
-        */
+
         tabs = view.findViewById(R.id.tabs);
 
         tabs.addTab(tabs.newTab().setText("매칭요청"));

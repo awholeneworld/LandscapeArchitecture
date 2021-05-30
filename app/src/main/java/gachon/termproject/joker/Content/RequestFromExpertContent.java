@@ -8,24 +8,23 @@ public class RequestFromExpertContent {
     String expertProfileImg;
     String expertPortfolioImg;
     String expertPortfolioWeb;
+    String expertPushToken;
     ArrayList<String> expertLocation;
     boolean isMatched;
     
     public RequestFromExpertContent() {}
     
-    public RequestFromExpertContent(String expertUserId, String expertNickname, String expertProfileImg, String expertPortfolioImg, String expertPortfolioWeb, ArrayList<String> expertLocation, boolean isMatched) {
-        this.expertUserId =  expertUserId;
+    public RequestFromExpertContent(String expertNickname, String expertProfileImg, String expertPortfolioImg, String expertPortfolioWeb, String expertPushToken, ArrayList<String> expertLocation, boolean isMatched) {
         this.expertNickname = expertNickname;
         this.expertProfileImg = expertProfileImg;
         this.expertPortfolioImg = expertPortfolioImg;
         this.expertPortfolioWeb = expertPortfolioWeb;
+        this.expertPushToken = expertPushToken;
         this.expertLocation = expertLocation;
         this.isMatched = isMatched;
     }
 
-    public String getExpertUserId() {
-        return expertUserId;
-    }
+    public String getExpertUserId() { return expertUserId; }
 
     public String getExpertNickname() {
         return expertNickname;
@@ -43,6 +42,8 @@ public class RequestFromExpertContent {
         return expertPortfolioWeb;
     }
 
+    public String getExpertPushToken() { return expertPushToken; }
+
     public ArrayList<String> getExpertLocation() {
         return expertLocation;
     }
@@ -51,9 +52,7 @@ public class RequestFromExpertContent {
         return isMatched;
     }
 
-    public void setExpertUserId(String expertUserId) {
-        this.expertUserId = expertUserId;
-    }
+    public void setExpertUserId(String expertUserId) { this.expertUserId = expertUserId; }
 
     public void setExpertNickname(String expertNickname) {
         this.expertNickname = expertNickname;

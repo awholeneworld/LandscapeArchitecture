@@ -1,6 +1,5 @@
 package gachon.termproject.joker.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +28,6 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.MatchingPostAdapter;
 
-import static android.app.Activity.RESULT_OK;
-
 public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
     private View view;
     private SwipeRefreshLayout refresher;
@@ -42,8 +39,6 @@ public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
     MatchingPostContent postContent;
     MatchingPostAdapter matchingpostAdapter;
     ValueEventListener postEventListener;
-    Boolean topScrolled;
-    Boolean doUpdate;
 
     @Nullable
     @Override
@@ -59,7 +54,6 @@ public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
 
         postContentList = new ArrayList<>();
         matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "complete");
-        // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
@@ -93,7 +87,6 @@ public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
             }
         };
 
-
         databaseReference.addListenerForSingleValueEvent(postEventListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -106,16 +99,4 @@ public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
 
         return view;
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                databaseReference.addListenerForSingleValueEvent(postEventListener);
-            }
-        }
-    }
-
 }

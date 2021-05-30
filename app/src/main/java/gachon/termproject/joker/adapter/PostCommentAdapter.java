@@ -2,11 +2,11 @@ package gachon.termproject.joker.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.FirebaseHelper;
-import gachon.termproject.joker.OnPostListener;
 import gachon.termproject.joker.Content.PostCommentContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
+import gachon.termproject.joker.activity.SeeProfileActivity;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.CommentViewHolder>
 {
@@ -47,20 +49,20 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         this.databaseReference = databaseReference;
     }
 
-    public void setOnPostListener(OnPostListener onPostListener){
-        firebaseHelper.setOnPostListener(onPostListener);
-    }
-
     public class CommentViewHolder extends RecyclerView.ViewHolder  {
         ImageView profileImg;
         TextView nickname;
         TextView date;
         TextView content;
+        String commentId;
         String categoryOfComment;
         String userIdInComment;
         String nicknameInComment;
+        String profileImgInComment;
         String timeInComment;
         String comment;
+        String intro;
+        ArrayList<String> location;
         Button btn;
 
         CommentViewHolder(View itemView) {
@@ -70,6 +72,52 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             date = itemView.findViewById(R.id.comment_writetime);
             content = itemView.findViewById(R.id.comment_content);
             btn = itemView.findViewById(R.id.comment_movevert);
+
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    //creating a popup menu
+                    PopupMenu popup= new PopupMenu(parent.getContext(), view);//v는 클릭된 뷰를 의미
+
+                    //inflating menu from xml resource
+                    if (UserInfo.userId.equals(userIdInComment))
+                        popup.inflate(R.menu.my_post_menu);
+                    else
+                        popup.inflate(R.menu.others_post_menu);
+
+                    //adding click listener
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.show_profile:
+                                    Intent intent = new Intent(context, SeeProfileActivity.class);
+                                    intent.putExtra("userId", userIdInComment);
+                                    intent.putExtra("nickname", nicknameInComment);
+                                    intent.putExtra("profileImg", profileImgInComment);
+                                    intent.putExtra("intro", intro);
+                                    intent.putStringArrayListExtra("location", location);
+                                    intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                    break;
+                                case R.id.decelerate:
+                                    Toast.makeText(context.getApplicationContext(), nicknameInComment + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case R.id.delete:
+                                    firebaseHelper.commentDelete((Activity) context, databaseReference, commentId);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    //displaying the popup
+                    popup.show();
+
+                }
+            });
         }
     }
 
@@ -95,9 +143,13 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
         holder.categoryOfComment = commentContent.getCategory();
         holder.userIdInComment = commentContent.getUserId();
+        holder.profileImgInComment = commentProfileImg;
         holder.nicknameInComment = commentNickname;
         holder.timeInComment = commentTime;
+        holder.commentId = commentId;
         holder.comment = comment;
+        holder.intro = commentContent.getIntro();
+        holder.location = commentContent.getLocation();
 
         // 댓글의 작성자, 작성 시간, 내용 표시
         holder.nickname.setText(commentNickname);
@@ -109,46 +161,6 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         holder.profileImg.setClipToOutline(true);
         if (!commentProfileImg.equals("None"))
             Glide.with(context).load(commentProfileImg).into(holder.profileImg);
-
-        holder.btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //creating a popup menu
-                PopupMenu popup= new PopupMenu(parent.getContext(), view);//v는 클릭된 뷰를 의미
-
-                //inflating menu from xml resource
-                if (UserInfo.userId.equals(holder.userIdInComment))
-                    popup.inflate(R.menu.my_post_menu);
-                else
-                    popup.inflate(R.menu.others_post_menu);
-
-                //adding click listener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.show_profile:
-                                Toast.makeText(context.getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
-                                break;
-                            case R.id.decelerate:
-                                Toast.makeText(context.getApplicationContext(), commentNickname + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
-                                break;
-                            case R.id.delete:
-                                firebaseHelper.commentDelete(databaseReference, commentId);
-                                Toast.makeText(context.getApplicationContext(),"삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                                break;
-                            default:
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                //displaying the popup
-                popup.show();
-
-            }
-        });
     }
 
     @Override

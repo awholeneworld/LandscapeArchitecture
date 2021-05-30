@@ -1,5 +1,7 @@
 package gachon.termproject.joker.Content;
 
+import java.util.ArrayList;
+
 public class PostCommentContent {
     public String category;
     public String userId;
@@ -8,12 +10,14 @@ public class PostCommentContent {
     public String commentTime;
     public String commentId;
     public String content;
+    public String intro;
+    public ArrayList<String> location;
 
     // SeePostActivity 에서 snapshot.getValue(PostCommentContent.class) 사용할 때 Default Constructor 꼭 있어야함
     public PostCommentContent() {
     }
 
-    public PostCommentContent(String category, String userId, String nickname, String profileImg, String commentTime, String commentId, String content) {
+    public PostCommentContent(String category, String userId, String nickname, String profileImg, String commentTime, String commentId, String content, String intro, ArrayList<String> location) {
         this.category = category;
         this.userId = userId;
         this.nickname = nickname;
@@ -21,6 +25,8 @@ public class PostCommentContent {
         this.commentTime = commentTime;
         this.commentId = commentId;
         this.content = content;
+        this.intro = intro;
+        this.location = location;
     }
 
     public String getCategory() { return category; }
@@ -30,6 +36,8 @@ public class PostCommentContent {
     public String getCommentTime() { return commentTime; }
     public String getCommentId() { return commentId; }
     public String getContent() { return content; }
+    public String getIntro() { return intro; }
+    public ArrayList<String> getLocation(){ return location; }
     public void setCategory() { this.category = category; }
     public void setUserId(String userId) { this.userId = userId; }
     public void setNickname(String nickname) { this.nickname = nickname; }

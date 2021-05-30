@@ -41,6 +41,7 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
         String expertIdOfPost;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
+        ArrayList<String> locationOfUser;
         PostContent postContent;
 
         ViewHolder(View itemView) {
@@ -62,6 +63,7 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
                     intent.putExtra("expertId", expertIdOfPost);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
+                    intent.putStringArrayListExtra("location", locationOfUser);
                     intent.putExtra("postContent", postContent);
                     context.startActivity(intent);
                 }
@@ -97,6 +99,7 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
+        holder.locationOfUser = content.getLocation();
         holder.postContent = content;
 
         // 이미지 있을 시 첫번째 것 표시. 없을 시 표시 안함.

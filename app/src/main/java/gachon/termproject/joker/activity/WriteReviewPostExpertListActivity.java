@@ -14,7 +14,7 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.WriteReviewPostExpertListFragment;
 
 public class WriteReviewPostExpertListActivity extends AppCompatActivity {
-    private WriteReviewPostExpertListFragment writeReviewPostExpertListActivity;
+    private WriteReviewPostExpertListFragment writeReviewPostExpertList;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -31,10 +31,10 @@ public class WriteReviewPostExpertListActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
 
         FragmentManager fm = getSupportFragmentManager(); // 프래그먼트 간의 이동을 도와주는 것
-        if (writeReviewPostExpertListActivity == null) {
-            writeReviewPostExpertListActivity = new WriteReviewPostExpertListFragment();
-            fm.beginTransaction().add(R.id.write_review_post_expert_list_frame, writeReviewPostExpertListActivity).commit();
-            fm.beginTransaction().show(writeReviewPostExpertListActivity).commit();
+        if (writeReviewPostExpertList == null) {
+            writeReviewPostExpertList = new WriteReviewPostExpertListFragment();
+            fm.beginTransaction().add(R.id.write_review_post_expert_list_frame, writeReviewPostExpertList).commit();
+            fm.beginTransaction().show(writeReviewPostExpertList).commit();
         }
     }
 
