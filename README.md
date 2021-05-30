@@ -38,10 +38,10 @@ Expert List           |  Chatting    |  my info  |  Portfolio
 
 
 ## Built With
-* [김승윤](@awholeneworld) : blackjjang12@naver.com
-* [고지민](@JM2308) : wlals2987@naver.com
-* [김수현](@catsaveearth) : kih629@gachon.ac.kr
-* [박승민](@smpark0213) : smpark0213@naver.com
+* [김승윤] @awholeneworld : blackjjang12@naver.com
+* [고지민] @JM2308 : wlals2987@naver.com
+* [김수현] @catsaveearth : kih629@gachon.ac.kr
+* [박승민] @smpark0213 : smpark0213@naver.com
 
 ## YOUTUBE LINK
 [Trailer Video](link here)
