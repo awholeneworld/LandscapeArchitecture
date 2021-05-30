@@ -1,7 +1,7 @@
 # JOKER
 <center><img src="https://user-images.githubusercontent.com/50789540/120122732-80f2cf00-c1e5-11eb-835e-803b8695d3d3.png" width="100" height="100"></center>
 
-Mobile Programming Term project, Team 7, Gachon Univ. (2021 Spring semester)<br />
+Mobile Programming Term project by Team 4. Gachon Univ. (2021 Spring semester)<br />
 
 ## Introduction
 This is an android application for Landscaping experts and customers who need them.
