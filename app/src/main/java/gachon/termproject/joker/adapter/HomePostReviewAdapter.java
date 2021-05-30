@@ -44,6 +44,7 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationPost;
+
         boolean isMatched;
 
         ViewHolder(View itemView) {
@@ -102,6 +103,7 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
+        holder.locationPost = content.getLocation();
 
 
         Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).centerCrop().into(holder.image);

@@ -133,6 +133,7 @@ public class SeeProfileActivity extends AppCompatActivity {
                                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                                                 for (DataSnapshot shot : snapshot.getChildren()) {
                                                     PostContent content = shot.getValue(PostContent.class);
+                                                    if(content.getUserId().equals(userId))
                                                     postsList.add(0, content);
                                                 }
                                                 successCount++; // 성공 카운트 올리기

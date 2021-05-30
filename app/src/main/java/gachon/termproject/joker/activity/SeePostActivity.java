@@ -337,6 +337,9 @@ public class SeePostActivity extends AppCompatActivity {
             //남이 쓴 글일때 - 프로필보기 / 신고
             case R.id.show_profile:
                 Intent intent2 = new Intent(getApplicationContext(), SeeProfileActivity.class);
+                System.out.println("yaya " + userId);
+                System.out.println("yaya " + location);
+
                 intent2.putExtra("userId", userId);
                 intent2.putExtra("nickname", nickname);
                 intent2.putExtra("profileImg", profileImg);
