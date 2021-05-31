@@ -45,7 +45,7 @@ Expert List           |  Chatting    |  my info  |  Portfolio
 * [박승민] @smpark0213 : smpark0213@naver.com
 
 ## Youtube LINK
-[Trailer Video](link here)
+[Trailer Video](https://youtu.be/oashEO3fT5A)
 
 ## License
 JOKER is released under the MIT License. http://www.opensource.org/licenses/mit-license
