@@ -60,6 +60,7 @@ public class MatchingUserTabCompleteFragment extends Fragment {
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(MatchingPostContent.class);
+                    postContent.setUserId(snapshot.child("userId").getValue().toString());
                     if (postContent.getIsMatched())
                         postContentList.add(0, postContent);
                 }

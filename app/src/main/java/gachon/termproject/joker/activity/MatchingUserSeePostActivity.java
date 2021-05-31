@@ -45,7 +45,6 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     private ArrayList<RequestFromExpertContent> requestsList;
     private int requestsNum = 0; //매칭 요청한 갯수(정확히는 매칭이 진행중인 갯수)
     private String postId;
-    private String pushToken;
     private String locationStr;
     private boolean isMatched;
     private ArrayList<String> images;
@@ -64,7 +63,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         images = intent.getStringArrayListExtra("images");
         isMatched = intent.getBooleanExtra("isMatched", false);
-        locationStr = intent.getStringExtra("location");
+        locationStr = intent.getStringExtra("locationInPost");
 
         //toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -230,5 +229,4 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     public static int dpToPx(int dp){
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
-
 }

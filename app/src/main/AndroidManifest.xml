@@ -106,9 +106,6 @@
             android:name=".activity.ExpertPortfolioActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.ReWritePostActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.FullScreenImageActivity"
             android:screenOrientation="portrait" />
 

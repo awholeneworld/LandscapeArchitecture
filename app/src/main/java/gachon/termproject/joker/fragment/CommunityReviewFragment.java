@@ -62,6 +62,7 @@ public class CommunityReviewFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList.clear();
+                contents.setAdapter(postAdapter);
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(PostContent.class);
                     postContent.setUserId(snapshot.child("userId").getValue().toString());

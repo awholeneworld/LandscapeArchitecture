@@ -47,6 +47,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         String postIdInPost;
         String pushToken;
         boolean isMatched;
+        ArrayList<String> location;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationOfUser;
@@ -79,9 +80,10 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
                     intent.putExtra("postId", postIdInPost);
                     intent.putExtra("pushToken", pushToken);
                     intent.putExtra("isMatched", isMatched);
+                    intent.putStringArrayListExtra("location", location);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putExtra("location", locationStr);
+                    intent.putExtra("locationInPost", locationStr);
                     context.startActivity(intent);
                 }
             });
@@ -105,7 +107,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         String contentTime = content.getPostTime();
         ArrayList<String> contentsList = content.getContent();
         ArrayList<String> imagesList = content.getImages();
-        ArrayList<String> locationList = content.getLocation();
+        ArrayList<String> locationList = content.getLocationSelected();
 
         // 뷰홀더 클래스의 전역 변수 설정
         holder.userIdInPost = content.getUserId();
@@ -117,6 +119,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.isMatched = content.getIsMatched();
+        holder.location = content.getLocation();
         holder.locationOfUser = locationList;
         holder.pushToken = content.getPushToken();
 

@@ -57,7 +57,14 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private Button matching_btn;
     private HashMap<String, RequestFromExpertContent> requestsList;
     private RequestFromExpertContent request;
+    private String category;
+    private String postId;
+    private String userId;
+    private String nickname;
+    private String profileImg;
+    private String intro;
     private String pushToken;
+    private ArrayList<String> location;
     private int state = 0; //0 - 매칭요청 / 1 - 취소 / 2 - 완료 (가능한 액션)
     Intent intent;
 
@@ -77,18 +84,22 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
 
         // 인텐트 데이터 가져오기
         intent = getIntent();
-        String category = intent.getStringExtra("category");
-        String postId = intent.getStringExtra("postId");
-        String profileImg = intent.getStringExtra("profileImg");
+        category = intent.getStringExtra("category");
+        postId = intent.getStringExtra("postId");
+        userId = intent.getStringExtra("userId");
+        nickname = intent.getStringExtra("nickname");
+        profileImg = intent.getStringExtra("profileImg");
+        intro = intent.getStringExtra("intro");
         pushToken = intent.getStringExtra("pushToken");
+        location = intent.getStringArrayListExtra("location");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
         requestsList = intent.getParcelableExtra("requests");
 
         // 레이아웃 가져오기
-        ImageView profile = findViewById(R.id.postProfile);
-        TextView title = findViewById(R.id.title);
-        TextView nickname = findViewById(R.id.postNickname);
+        ImageView profileView = findViewById(R.id.postProfile);
+        TextView titleView = findViewById(R.id.title);
+        TextView nicknameView = findViewById(R.id.postNickname);
         TextView time = findViewById(R.id.postTime);
         TextView loca = findViewById(R.id.see_post_location_name);
         container = findViewById(R.id.see_post_content);
@@ -109,16 +120,16 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         }
 
         // 제목, 닉네임, 작성시간 세팅
-        title.setText(intent.getStringExtra("title"));
-        nickname.setText(intent.getStringExtra("nickname"));
+        titleView.setText(intent.getStringExtra("title"));
+        nicknameView.setText(nickname);
         time.setText(intent.getStringExtra("time"));
-        loca.setText(intent.getStringExtra("location"));
+        loca.setText(intent.getStringExtra("locationInPost"));
 
         // 프로필 사진 세팅 (oimage 동그랗게)
-        profile.setBackground(new ShapeDrawable(new OvalShape()));
-        profile.setClipToOutline(true);
+        profileView.setBackground(new ShapeDrawable(new OvalShape()));
+        profileView.setClipToOutline(true);
         if (!profileImg.equals("None"))
-            Glide.with(this).load(profileImg).into(profile);
+            Glide.with(this).load(profileImg).into(profileView);
 
         //TextView 생성 후 layout_width, layout_height, gravity, 내용 등 설정
         TextView text_content = new TextView(MatchingExpertSeePostActivity.this);
@@ -225,8 +236,14 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
 
             //남이 쓴 글일때 - 프로필보기 / 신고
             case R.id.show_profile:
-                Toast.makeText(getApplicationContext(), "프로필 보기", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), SeeProfileActivity.class));
+                Intent intent2 = new Intent(getApplicationContext(), SeeProfileActivity.class);
+                intent2.putExtra("userId", userId);
+                intent2.putExtra("nickname", nickname);
+                intent2.putExtra("profileImg", profileImg);
+                intent2.putExtra("intro", intro);
+                intent2.putStringArrayListExtra("location", location);
+                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent2);
                 break;
             case R.id.decelerate:
                 Toast.makeText(getApplicationContext(), intent.getStringExtra("nickname") + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
@@ -293,5 +310,4 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
     public static int dpToPx(int dp){
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
-
 }

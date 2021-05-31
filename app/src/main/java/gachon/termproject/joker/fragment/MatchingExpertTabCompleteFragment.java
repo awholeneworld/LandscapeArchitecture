@@ -65,7 +65,7 @@ public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(MatchingPostContent.class);
-
+                    postContent.setUserId(snapshot.child("userId").getValue().toString());
                     //글 상태가 매칭 완료인뎅
                     if (postContent.getIsMatched()){
                         //매칭 대기 목록에 앗 내가 잇네?

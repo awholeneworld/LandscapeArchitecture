@@ -98,6 +98,7 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                     intent.putExtra("profileImg", expertProfileImg);
                     intent.putExtra("portfolioImg", expertPortfolioImg);
                     intent.putExtra("portfolioWeb", expertPortfolioWeb);
+                    intent.putExtra("pushToken", expertPushToken);
                     intent.putStringArrayListExtra("location", expertLocation);
                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);

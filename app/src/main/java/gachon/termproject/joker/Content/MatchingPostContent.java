@@ -12,15 +12,16 @@ public class MatchingPostContent {
     public String postTime;
     public String postId;
     public String pushToken;
+    public ArrayList<String> location;
     public ArrayList<String> content;
     public ArrayList<String> images;
-    public ArrayList<String> location;
+    public ArrayList<String> locationOfPost;
     public HashMap<String, RequestFromExpertContent> requests = new HashMap<>();
     public boolean isMatched; // 매칭 게시판 작성에 필요한 변수
 
     public MatchingPostContent() {}
 
-    public MatchingPostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, String pushToken, ArrayList<String> content, ArrayList<String> images, ArrayList<String> location, boolean isMatched, HashMap<String, RequestFromExpertContent> requests) {
+    public MatchingPostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, String pushToken, ArrayList<String> location, ArrayList<String> content, ArrayList<String> images, ArrayList<String> locationOfPost, boolean isMatched, HashMap<String, RequestFromExpertContent> requests) {
         this.category = category;
         this.userId = userId;
         this.profileImg = profileImg;
@@ -29,9 +30,10 @@ public class MatchingPostContent {
         this.postTime = postTime;
         this.postId = postId;
         this.pushToken = pushToken;
+        this.location = location;
         this.content = content;
         this.images = images;
-        this.location = location;
+        this.locationOfPost = locationOfPost;
         this.isMatched = isMatched;
         this.requests = requests;
     }
@@ -46,9 +48,10 @@ public class MatchingPostContent {
     public String getPostTime() { return postTime; }
     public String getPostId() { return postId; }
     public String getPushToken() { return pushToken; }
+    public ArrayList<String> getLocation() { return location; }
     public ArrayList<String> getContent() { return content; }
     public ArrayList<String> getImages() { return images; }
-    public ArrayList<String> getLocation(){ return location; }
+    public ArrayList<String> getLocationSelected(){ return locationOfPost; }
     public HashMap<String, RequestFromExpertContent> getRequests(){ return requests; }
     public Boolean getIsMatched(){ return isMatched; }
     public void setCategory() { this.category = category; }
@@ -60,7 +63,6 @@ public class MatchingPostContent {
     public void setPostId(String postId) { this.postId = postId; }
     public void setContent(ArrayList<String> content) { this.content = content; }
     public void setImages(int index, String image) { this.images.set(index, image); }
-    public void setLocation(ArrayList<String> location) { this.location = location; }
-    public void setRequests(HashMap<String, RequestFromExpertContent> requestsList) { this.requests = requests; };
+    public void setRequests(HashMap<String, RequestFromExpertContent> requestsList) { this.requests = requests; }
     public void setIsMatched(Boolean isMatched) { this.isMatched = isMatched; }
 }

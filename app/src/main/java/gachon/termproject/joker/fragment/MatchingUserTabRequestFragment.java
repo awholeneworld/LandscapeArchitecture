@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +34,6 @@ public class MatchingUserTabRequestFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
-    private FirebaseUser user;
     private FloatingActionButton button;
     public static DatabaseReference databaseReference;
     public static ValueEventListener postsListener;
@@ -54,7 +51,6 @@ public class MatchingUserTabRequestFragment extends Fragment {
         refresher = view.findViewById(R.id.refresh_layout);
         button = view.findViewById(R.id.fab);
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Matching/userRequests");
 
@@ -71,6 +67,7 @@ public class MatchingUserTabRequestFragment extends Fragment {
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(MatchingPostContent.class);
+                    postContent.setUserId(snapshot.child("userId").getValue().toString());
                     if (!postContent.getIsMatched())
                         postContentList.add(0, postContent);
                 }

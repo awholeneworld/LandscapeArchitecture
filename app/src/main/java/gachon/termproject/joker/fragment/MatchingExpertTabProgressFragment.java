@@ -53,7 +53,6 @@ public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
 
         postContentList = new ArrayList<>();
         matchingpostAdapter = new MatchingPostAdapter(getActivity(), postContentList, "awaiting");
-        // postAdapter.setOnPostListener(onPostListener);
 
         contents.setLayoutManager(new LinearLayoutManager(getActivity()));
         contents.setHasFixedSize(true);
@@ -65,6 +64,7 @@ public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
                 postContentList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(MatchingPostContent.class);
+                    postContent.setUserId(snapshot.child("userId").getValue().toString());
                     if (!postContent.getIsMatched()){
                         //아직 게시글은 매칭이 안되었는데
 

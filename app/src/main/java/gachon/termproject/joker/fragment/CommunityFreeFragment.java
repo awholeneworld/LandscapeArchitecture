@@ -32,7 +32,7 @@ public class CommunityFreeFragment extends Fragment {
     private static RecyclerView contents;
     private ArrayList<PostContent> postContentList;
     private PostContent postContent;
-    private static PostAdapter postAdapter;
+    public static PostAdapter postAdapter;
     private static PostAlbumAdapter postAlbumAdapter;
     private static boolean clicked = false;
     public static DatabaseReference databaseReference;
@@ -62,6 +62,7 @@ public class CommunityFreeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList.clear();
+                contents.setAdapter(postAdapter);
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     postContent = snapshot.getValue(PostContent.class);
                     postContent.setUserId(snapshot.child("userId").getValue().toString());
