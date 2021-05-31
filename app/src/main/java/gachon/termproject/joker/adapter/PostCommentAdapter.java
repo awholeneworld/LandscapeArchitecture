@@ -105,7 +105,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                                     Toast.makeText(context.getApplicationContext(), nicknameInComment + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
                                     break;
                                 case R.id.delete:
-                                    firebaseHelper.commentDelete((Activity) context, databaseReference, commentId);
+                                    firebaseHelper.commentDelete(databaseReference, commentId);
                                     break;
                                 default:
                                     break;

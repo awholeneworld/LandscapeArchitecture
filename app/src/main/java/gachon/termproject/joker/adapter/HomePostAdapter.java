@@ -42,6 +42,7 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
         String timeInPost;
         String postIdInPost;
         String expertIdOfPost;
+        String pushToken;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationOfUser;
@@ -68,6 +69,7 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
                     intent.putExtra("expertId", expertIdOfPost);
+                    intent.putExtra("pushToken", pushToken);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putStringArrayListExtra("location", locationOfUser);
@@ -96,13 +98,13 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
 
         // 뷰홀더 클래스의 전역 변수 설정
         holder.titleInPost = contentTitle;
-
         holder.categoryOfPost = content.getCategory();
         holder.userIdInPost = content.getUserId();
         holder.profileImgInPost = content.getProfileImg();
         holder.nicknameInPost = contentNickname;
         holder.timeInPost = contentTime;
         holder.postIdInPost = content.getPostId();
+        holder.pushToken = content.getPushToken();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();

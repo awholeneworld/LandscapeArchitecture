@@ -36,9 +36,13 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
         String nicknameInPost;
         String timeInPost;
         String postIdInPost;
+        String expertIdOfPost;
+        String pushToken;
+        String intro;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
-        ArrayList<Integer> orderInPost;
+        ArrayList<String> locationOfUser;
+        PostContent postContent;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -54,9 +58,11 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
+                    intent.putExtra("pushToken", pushToken);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putIntegerArrayListExtra("order", orderInPost);
+                    intent.putStringArrayListExtra("location", locationOfUser);
+                    intent.putExtra("postContent", postContent);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
@@ -89,8 +95,13 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
         holder.nicknameInPost = contentNickname;
         holder.timeInPost = contentTime;
         holder.postIdInPost = content.getPostId();
+        holder.pushToken = content.getPushToken();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
+        holder.expertIdOfPost = content.getExpertId();
+        holder.intro = content.getIntro();
+        holder.locationOfUser = content.getLocation();
+        holder.postContent = content;
 
         if (imagesList != null)
             Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.imageView);

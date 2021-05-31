@@ -17,9 +17,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
-import org.jetbrains.annotations.NotNull;
+import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -27,7 +26,7 @@ import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.fragment.ChatFragment;
 import gachon.termproject.joker.fragment.CommunityFragment;
-import gachon.termproject.joker.fragment.MainHomeFragment;
+import gachon.termproject.joker.fragment.HomeFragment;
 import gachon.termproject.joker.fragment.MatchingExpertFragment;
 import gachon.termproject.joker.fragment.MatchingUserFragment;
 import gachon.termproject.joker.fragment.MyInfoFragment;
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
     private TextView action_bar_title;
     private BottomNavigationView bottomNavigationView;
-    private MainHomeFragment home;
+    private HomeFragment home;
     private CommunityFragment community;
     private MatchingUserFragment matchingUser;
     private MatchingExpertFragment matchingExpert;
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<PostContent> userPostsList;
     public static ArrayList<String> userCommentsIdList;
     public static ArrayList<PostContent> postsOfCommentsList;
-    private Collator FirebaseMessaging;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -57,13 +55,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 토큰은 기기당 하나에 배정돼서 다른 기기에서 앱 로그인했을 때 새 토큰 줘야함
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()) {
+                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("pushToken", task.getResult());
+                    return;
+                }
+            }
+        });
+
         //toolbar~~~~~~~~~~toolbar를 activity bar로 지정!
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
-
         action_bar_title = findViewById(R.id.main_toolbar_textview);
         //toolbar~~~~~~~~~end
 
@@ -195,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         switch (n) {
             case 0:
                 if (home == null) {
-                    home = new MainHomeFragment();
+                    home = new HomeFragment();
                     fm.beginTransaction().add(R.id.main_frame, home).commit();
                 }
                 if (home != null) fm.beginTransaction().show(home).commit();

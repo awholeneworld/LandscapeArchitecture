@@ -27,7 +27,7 @@ import gachon.termproject.joker.adapter.HomePostAdapter;
 import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.adapter.HomePostReviewAdapter;
 
-public class MainHomeFragment extends Fragment {
+public class HomeFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RelativeLayout expert;
@@ -107,11 +107,18 @@ public class MainHomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList_free.clear();
+                int i = 0;
+                long length = dataSnapshot.getChildrenCount();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postContent_free = snapshot.getValue(PostContent.class);
-                    postContentList_free.add(0, postContent_free);
+                    if (length > 6 && i > length - 6) {
+                        postContent_free = snapshot.getValue(PostContent.class);
+                        postContentList_free.add(0, postContent_free);
+                    } else if (length <= 6) {
+                        postContent_free = snapshot.getValue(PostContent.class);
+                        postContentList_free.add(0, postContent_free);
+                    }
+                    i++;
                 }
-                if (postContentList_free.size() > 6) postContentList_free.subList(0, 6);
                 postAdapter_free.notifyDataSetChanged();
             }
 
@@ -124,11 +131,18 @@ public class MainHomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList_tip.clear();
+                int i = 0;
+                long length = dataSnapshot.getChildrenCount();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postContent_tip = snapshot.getValue(PostContent.class);
-                    postContentList_tip.add(0, postContent_tip);
+                    if (length > 6 && i > length - 6) {
+                        postContent_tip = snapshot.getValue(PostContent.class);
+                        postContentList_tip.add(0, postContent_tip);
+                    } else if (length <= 6) {
+                        postContent_tip = snapshot.getValue(PostContent.class);
+                        postContentList_tip.add(0, postContent_tip);
+                    }
+                    i++;
                 }
-                if (postContentList_tip.size() > 6) postContentList_tip.subList(0, 6);
                 postAdapter_tip.notifyDataSetChanged();
             }
 
@@ -141,11 +155,17 @@ public class MainHomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 postContentList_review.clear();
+                int i = 0;
+                long length = dataSnapshot.getChildrenCount();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    postContent_review = snapshot.getValue(PostContent.class);
-                    postContentList_review.add(0, postContent_review);
+                    if (length > 6 && i > length - 6) {
+                        postContent_review = snapshot.getValue(PostContent.class);
+                        postContentList_review.add(0, postContent_review);
+                    } else if (length <= 6) {
+                        postContent_review = snapshot.getValue(PostContent.class);
+                        postContentList_review.add(0, postContent_review);
+                    }
                 }
-                if (postContentList_review.size() > 6) postContentList_review.subList(0, 6);
                 postAdapter_review.notifyDataSetChanged();
             }
 

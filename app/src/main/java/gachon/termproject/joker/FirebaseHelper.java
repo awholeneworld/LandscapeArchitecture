@@ -76,13 +76,12 @@ public class FirebaseHelper {
         });
     }
 
-    public static void commentDelete(Activity activity, DatabaseReference databaseReference, final String commentid) {
+    public static void commentDelete(DatabaseReference databaseReference, final String commentid) {
         //Bigcategory => Matching, Posts
         //category => free, review, tip, userRequests...
         databaseReference.child(commentid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<Void> task) {
-                Toast.makeText(activity, "댓글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                 SeePostActivity.databaseReference.addValueEventListener(SeePostActivity.commentsListener);
             }
         });

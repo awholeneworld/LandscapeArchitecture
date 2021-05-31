@@ -114,7 +114,7 @@ public class Signup04Activity extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<String> task) {
                                                     if (task.isSuccessful()) {
-                                                        FirebaseFirestore.getInstance().collection("users").document(ID).update("pushToken", task.getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        FirebaseFirestore.getInstance().collection("users").document(userID).update("pushToken", task.getResult()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                 // 가입완료 페이지로 이동

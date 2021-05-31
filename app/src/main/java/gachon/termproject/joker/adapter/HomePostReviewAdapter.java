@@ -41,9 +41,11 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
         String timeInPost;
         String postIdInPost;
         String expertIdOfPost;
+        String pushToken;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationPost;
+        PostContent postContent;
 
         boolean isMatched;
 
@@ -64,9 +66,11 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
                     intent.putExtra("expertId", expertIdOfPost);
+                    intent.putExtra("pushToken", pushToken);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putStringArrayListExtra("location", locationPost);
+                    intent.putExtra("postContent", postContent);
                     context.startActivity(intent);
                 }
             });
@@ -93,7 +97,6 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
 
         // 뷰홀더 클래스의 전역 변수 설정
         holder.titleInPost = contentTitle;
-
         holder.categoryOfPost = content.getCategory();
         holder.userIdInPost = content.getUserId();
         holder.profileImgInPost = content.getProfileImg();
@@ -104,7 +107,8 @@ public class HomePostReviewAdapter extends RecyclerView.Adapter<HomePostReviewAd
         holder.imagesInPost = imagesList;
         holder.expertIdOfPost = content.getExpertId();
         holder.locationPost = content.getLocation();
-
+        holder.pushToken = content.getPushToken();
+        holder.postContent = content;
 
         Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).centerCrop().into(holder.image);
 

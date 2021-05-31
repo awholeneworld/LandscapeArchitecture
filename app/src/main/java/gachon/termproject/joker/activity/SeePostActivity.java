@@ -120,10 +120,13 @@ public class SeePostActivity extends AppCompatActivity {
         postContent = intent.getParcelableExtra("postContent");
 
         // 작성자 본인 확인
-        for (String myPostId : MainActivity.userPostsIdList) {
-            if (postId.equals(myPostId))
-                isWriter = true;
+        if (MainActivity.userPostsIdList != null) {
+            for (String myPostId : MainActivity.userPostsIdList) {
+                if (postId.equals(myPostId))
+                    isWriter = true;
+            }
         }
+
 
         refresher = findViewById(R.id.refresh_layout);
 
@@ -337,14 +340,12 @@ public class SeePostActivity extends AppCompatActivity {
             //남이 쓴 글일때 - 프로필보기 / 신고
             case R.id.show_profile:
                 Intent intent2 = new Intent(getApplicationContext(), SeeProfileActivity.class);
-                System.out.println("yaya " + userId);
-                System.out.println("yaya " + location);
-
                 intent2.putExtra("userId", userId);
                 intent2.putExtra("nickname", nickname);
                 intent2.putExtra("profileImg", profileImg);
                 intent2.putExtra("intro", intro);
                 intent2.putStringArrayListExtra("location", location);
+                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent2);
                 break;
             case R.id.decelerate:
