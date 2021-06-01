@@ -105,8 +105,6 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
 
         if (imagesList != null)
             Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.imageView);
-        else
-            holder.imageView.setImageResource(R.mipmap.ic_launcher);
     }
 
     @Override

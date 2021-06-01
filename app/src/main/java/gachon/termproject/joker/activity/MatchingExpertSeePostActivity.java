@@ -281,9 +281,9 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
 
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = pushToken;
-        notificationContent.notification.title = "매칭 신청 도착";
+        notificationContent.notification.title = "매칭 알림";
         notificationContent.notification.body = UserInfo.nickname + "님의 매칭 신청";
-        notificationContent.data.title = "매칭 신청 도착";
+        notificationContent.data.title = "매칭 알림";
         notificationContent.data.body = UserInfo.nickname + "님의 매칭 신청";
 
 

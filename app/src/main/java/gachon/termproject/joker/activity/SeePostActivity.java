@@ -386,10 +386,10 @@ public class SeePostActivity extends AppCompatActivity {
 
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = pushToken;
-        notificationContent.notification.title = UserInfo.nickname;
-        notificationContent.notification.body = comment;
-        notificationContent.data.title = UserInfo.nickname;
-        notificationContent.data.body = comment;
+        notificationContent.notification.title = "댓글 알림";
+        notificationContent.notification.body = UserInfo.nickname + "님이 댓글을 남겼습니다.";
+        notificationContent.data.title = "댓글 알림";
+        notificationContent.data.body = UserInfo.nickname + "님이 댓글을 남겼습니다.";
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));

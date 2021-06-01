@@ -9,10 +9,11 @@
     app:cardBackgroundColor="@android:color/white">
 
     <ImageView
-        android:background="@drawable/myinfo_post_border"
+        android:id="@+id/image"
         android:layout_width="130dp"
         android:layout_height="150dp"
-        android:id="@+id/image"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/myinfo_post_border"
+        android:src="@drawable/ic_balance" />
 
 </androidx.cardview.widget.CardView>

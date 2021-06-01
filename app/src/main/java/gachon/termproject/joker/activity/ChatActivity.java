@@ -229,10 +229,10 @@ public class ChatActivity extends AppCompatActivity {
 
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = opponentPushToken;
-        notificationContent.notification.title = UserInfo.nickname;
-        notificationContent.notification.body = message;
-        notificationContent.data.title = UserInfo.nickname;
-        notificationContent.data.body = message;
+        notificationContent.notification.title = "채팅 알림";
+        notificationContent.notification.body = UserInfo.nickname + "님의 채팅";
+        notificationContent.data.title = "채팅 알림";
+        notificationContent.data.body = UserInfo.nickname + "님의 채팅";
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));
