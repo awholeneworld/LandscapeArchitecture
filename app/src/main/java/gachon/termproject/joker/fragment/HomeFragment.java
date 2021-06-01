@@ -32,7 +32,6 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout refresher;
     private RelativeLayout expert;
     private TextView today_expert_name;
-
     private RecyclerView freecmulist;
     private RecyclerView tiplist;
     private RecyclerView reviewlist;
@@ -110,7 +109,7 @@ public class HomeFragment extends Fragment {
                 int i = 0;
                 long length = dataSnapshot.getChildrenCount();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (length > 6 && i > length - 6) {
+                    if (length > 6 && i >= length - 6) {
                         postContent_free = snapshot.getValue(PostContent.class);
                         postContentList_free.add(0, postContent_free);
                     } else if (length <= 6) {
@@ -134,7 +133,7 @@ public class HomeFragment extends Fragment {
                 int i = 0;
                 long length = dataSnapshot.getChildrenCount();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (length > 6 && i > length - 6) {
+                    if (length > 6 && i >= length - 6) {
                         postContent_tip = snapshot.getValue(PostContent.class);
                         postContentList_tip.add(0, postContent_tip);
                     } else if (length <= 6) {
@@ -158,13 +157,14 @@ public class HomeFragment extends Fragment {
                 int i = 0;
                 long length = dataSnapshot.getChildrenCount();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (length > 6 && i > length - 6) {
+                    if (length > 6 && i >= length - 6) {
                         postContent_review = snapshot.getValue(PostContent.class);
                         postContentList_review.add(0, postContent_review);
                     } else if (length <= 6) {
                         postContent_review = snapshot.getValue(PostContent.class);
                         postContentList_review.add(0, postContent_review);
                     }
+                    i++;
                 }
                 postAdapter_review.notifyDataSetChanged();
             }

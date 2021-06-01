@@ -162,10 +162,8 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                     //표에서 뭐뭐 선택했는지 얻어내서
                     //대충 어딘가 저장ㅇ해두고
                     //지역선택 text를 만약 선택한 갯수로 나타내자,,,, "n개 지역"
-                   locationSelected = checkLocation(); //locationSelected에 지역정보가 저장되어있는상태
-
-                   if (locationSelected != null && !locationSelected.isEmpty())
-                       location_select.setText(locationSelected.size() + "개 지역");
+                    locationSelected = checkLocation(); //locationSelected에 지역정보가 저장되어있는상태
+                    location_select.setText(locationSelected.size() + "개 지역");
 
                     //그리고 숨겼던 사진등록이랑 지역선택 글씨를 보이게 하고
                     //지역선택 뷰를 다시 밑으로 내립니다.
