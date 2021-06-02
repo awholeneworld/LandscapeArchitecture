@@ -13,6 +13,9 @@ import gachon.termproject.joker.fragment.CommunityTipFragment;
 
 public class CommunityPagerAdapter extends FragmentPagerAdapter {
     int mNumOfTabs;
+    public static Fragment tab1;
+    public static Fragment tab2;
+    public static Fragment tab3;
 
     public CommunityPagerAdapter(@NonNull @NotNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -21,18 +24,17 @@ public class CommunityPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
         switch (position) {
             case 0:
-                Fragment tab1 = new CommunityFreeFragment();
+                if (tab1 == null) tab1 = new CommunityFreeFragment();
                 return tab1;
 
             case 1:
-                Fragment tab2 = new CommunityReviewFragment();
+                if (tab2 == null) tab2 = new CommunityReviewFragment();
                 return tab2;
 
             case 2:
-                Fragment tab3 = new CommunityTipFragment();
+                if (tab3 == null) tab3 = new CommunityTipFragment();
                 return tab3;
 
             default:

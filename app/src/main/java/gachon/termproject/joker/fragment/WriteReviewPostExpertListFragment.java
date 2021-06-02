@@ -62,11 +62,12 @@ public class WriteReviewPostExpertListFragment extends Fragment {
                         String userId = snapshot.getId();
                         if (!isPublic && !userId.equals(UserInfo.userId)) {
                             String nickname = snapshot.getString("nickname");
+                            String introduction = snapshot.getString("introduction");
                             String profileImg = snapshot.getString("profileImg");
                             String portfolioImg = snapshot.getString("portfolioImg");
                             String portfolioWeb = snapshot.getString("portfolioWeb");
                             String pushToken = snapshot.getString("pushToken");
-                            expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, pushToken, new ArrayList<>()));
+                            expertList.add(new ExpertListContent(userId, nickname, profileImg, portfolioImg, portfolioWeb, pushToken, introduction, new ArrayList<>()));
                         }
                     }
                     expertListAdapter.notifyDataSetChanged();

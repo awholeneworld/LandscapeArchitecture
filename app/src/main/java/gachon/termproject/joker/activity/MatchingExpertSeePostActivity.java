@@ -43,7 +43,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import gachon.termproject.joker.Content.NotificationContent;
 import gachon.termproject.joker.Content.RequestFromExpertContent;
@@ -55,7 +54,6 @@ import gachon.termproject.joker.fragment.MatchingExpertTabRequestFragment;
 public class MatchingExpertSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
     private Button matching_btn;
-    private HashMap<String, RequestFromExpertContent> requestsList;
     private RequestFromExpertContent request;
     private String category;
     private String postId;
@@ -94,7 +92,6 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         location = intent.getStringArrayListExtra("location");
         ArrayList<String> content = intent.getStringArrayListExtra("content");
         ArrayList<String> images = intent.getStringArrayListExtra("images");
-        requestsList = intent.getParcelableExtra("requests");
 
         // 레이아웃 가져오기
         ImageView profileView = findViewById(R.id.postProfile);
@@ -164,17 +161,15 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(state == 0){
                     //매칭신청
-
                     AlertDialog.Builder dlg = new AlertDialog.Builder(MatchingExpertSeePostActivity.this);
                     dlg.setTitle("매칭 신청"); //제목
                     dlg.setMessage("매칭을 신청하시겠습니까?"); // 메시지
                     dlg.setPositiveButton("신청", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int which) {
-                            if (requestsList == null) requestsList = new HashMap<>();
-                            if (request == null) request = new RequestFromExpertContent(UserInfo.nickname, UserInfo.profileImg, UserInfo.portfolioImg, UserInfo.portfolioWeb, UserInfo.pushToken, UserInfo.location, false);
-                            requestsList.put(UserInfo.userId, request);
+                            if (request == null)
+                                request = new RequestFromExpertContent(UserInfo.nickname, UserInfo.profileImg, UserInfo.portfolioImg, UserInfo.portfolioWeb, UserInfo.pushToken, UserInfo.introduction, UserInfo.location, false);
 
-                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests").setValue(requestsList).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.userId).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                     sendFCM();
@@ -191,10 +186,6 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
                         }
                     });
                     dlg.show();
-
-
-
-
                 } else if(state == 1) {
                     //취소
                     AlertDialog.Builder dlg = new AlertDialog.Builder(MatchingExpertSeePostActivity.this);
@@ -209,7 +200,6 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
                             });
                             matching_btn.setText("매칭신청");
                             state = 0;
-
                         }
                     });
 

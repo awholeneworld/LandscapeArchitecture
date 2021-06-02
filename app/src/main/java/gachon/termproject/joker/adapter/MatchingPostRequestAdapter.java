@@ -47,6 +47,8 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.activity.ChatActivity;
 import gachon.termproject.joker.activity.ExpertPortfolioActivity;
+import gachon.termproject.joker.activity.MatchingUserSeePostActivity;
+import gachon.termproject.joker.fragment.MatchingUserTabCompleteFragment;
 import gachon.termproject.joker.fragment.MatchingUserTabRequestFragment;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -77,6 +79,7 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
         String expertPortfolioImg;
         String expertPortfolioWeb;
         String expertPushToken;
+        String expertIntro;
         boolean expertIsMatched;
         ArrayList<String> expertLocation;
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId);
@@ -99,6 +102,7 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                     intent.putExtra("portfolioImg", expertPortfolioImg);
                     intent.putExtra("portfolioWeb", expertPortfolioWeb);
                     intent.putExtra("pushToken", expertPushToken);
+                    intent.putExtra("intro", expertIntro);
                     intent.putStringArrayListExtra("location", expertLocation);
                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
@@ -114,6 +118,8 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                     intent.putExtra("nickname", expertNickname);
                     intent.putExtra("profileImg", expertProfileImg);
                     intent.putExtra("pushToken", expertPushToken);
+                    intent.putExtra("intro", expertIntro);
+                    intent.putStringArrayListExtra("location", expertLocation);
                     context.startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK));
                 }
             });
@@ -122,7 +128,6 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
             matching_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     AlertDialog.Builder dlg = new AlertDialog.Builder(activity);
                     dlg.setTitle(expertNickname + "님의 매칭을 수락하시겠습니까?"); //제목
                     dlg.setMessage("수락할 경우 다른 전문가의 매칭은 수락할 수 없습니다."); // 메시지
@@ -130,14 +135,17 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                     dlg.setPositiveButton("수락", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int which) {
                             dbRef.child("isMatched").setValue(true);
-                            dbRef.child("requests").orderByChild("expertNickname").equalTo(expertNickname).addChildEventListener(new ChildEventListener() {
+                            dbRef.child("requests").orderByKey().equalTo(expertUserId).addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                     snapshot.getRef().child("isMatched").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                             sendFCM(expertPushToken);
+                                            MatchingUserSeePostActivity.afterMatched();
                                             MatchingUserTabRequestFragment.databaseReference.addValueEventListener(MatchingUserTabRequestFragment.postsListener);
+                                            if (MatchingUserPagerAdapter.tab2 != null)
+                                                MatchingUserTabCompleteFragment.databaseReference.addValueEventListener(MatchingUserTabCompleteFragment.postsListener);
                                             activity.finish();
                                         }
                                     });
@@ -184,13 +192,14 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
         String profileImg = request.getExpertProfileImg();
         String nickname = request.getExpertNickname();
 
+        holder.expertUserId = request.getExpertUserId();
         holder.expertNickname = nickname;
         holder.expertProfileImg = request.getExpertProfileImg();
         holder.expertPortfolioImg = request.getExpertPortfolioImg();
         holder.expertPortfolioWeb = request.getExpertPortfolioWeb();
         holder.expertPushToken = request.getExpertPushToken();
         holder.expertLocation = request.getExpertLocation();
-        holder.expertUserId = request.getExpertUserId();
+        holder.expertIntro = request.getExpertIntro();
         holder.expertIsMatched = request.getIsMatched();
 
         // 신청인 프로필 사진 표시
@@ -228,10 +237,10 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
 
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = expertPushToken;
-        notificationContent.notification.title = "매칭 성공";
-        notificationContent.notification.body = UserInfo.nickname + "님과의 매칭이 완료되었습니다.";
-        notificationContent.data.title = "매칭 성공";
-        notificationContent.data.body = UserInfo.nickname + "님과의 매칭이 완료되었습니다.";
+        notificationContent.notification.title = "매칭 알림";
+        notificationContent.notification.body = UserInfo.nickname + "님과의 매칭에 성공하였습니다.";
+        notificationContent.data.title = "매칭 알림";
+        notificationContent.data.body = UserInfo.nickname + "님과의 매칭에 성공하였습니다.";
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));

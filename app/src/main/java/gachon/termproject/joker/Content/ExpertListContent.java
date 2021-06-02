@@ -9,15 +9,17 @@ public class ExpertListContent {
     public String portfolioImg;
     public String portfolioWeb;
     public String pushToken;
+    public String intro;
     public ArrayList<String> location;
 
-    public ExpertListContent(String userId, String nickname, String profileImg, String portfolioImg, String portfolioWeb, String pushToken, ArrayList<String> location) {
+    public ExpertListContent(String userId, String nickname, String profileImg, String portfolioImg, String portfolioWeb, String pushToken, String intro, ArrayList<String> location) {
         this.userId = userId;
         this.nickname = nickname;
         this.profileImg = profileImg;
         this.portfolioImg = portfolioImg;
         this.portfolioWeb = portfolioWeb;
         this.pushToken = pushToken;
+        this.intro = intro;
         this.location = location;
     }
 
@@ -27,6 +29,7 @@ public class ExpertListContent {
     public String getPortfolioImg() { return portfolioImg; }
     public String getPortfolioWeb() { return portfolioWeb; }
     public String getPushToken() { return pushToken; }
+    public String getIntro() { return intro; }
     public ArrayList<String> getLocation() { return location; }
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setProfileImg(String profileImg) { this.profileImg = profileImg; }

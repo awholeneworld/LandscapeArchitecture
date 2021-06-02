@@ -329,58 +329,6 @@ public class SettingMyInfoFragment extends Fragment {
         return location;
     }
 
-    // 이미지 넣는거
-    private void updateChangesWithImg(){
-        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages/" + UserInfo.userId);
-        storageReference.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-
-                return storageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) { // URL 다운 성공 시
-                    Uri downloadUrl = task.getResult();
-                    String url = downloadUrl.toString();
-
-                    Map<String, Object> dataToUpdate = new HashMap<>();
-                    dataToUpdate.put("profileImg", url);
-                    if (flag_nickname_check == 1) dataToUpdate.put("nickname", nickname.getText().toString());
-                    if (flag_location == 1) dataToUpdate.put("location", locationSelected);
-                    if (flag_message == 1) dataToUpdate.put("introduction", messageEdited);
-
-                    // 계정 정보 저장하는 DB 업데이트
-                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull @NotNull Task<Void> task) {
-                            UserInfo.profileImg = url;
-                            MyInfoFragment.profileImg.setImageURI(downloadUrl);
-                            if (flag_nickname_check == 1) UserInfo.nickname = nicknameEdited;
-                            if (flag_location == 1) UserInfo.location = locationSelected;
-                            if (flag_message == 1 ) UserInfo.introduction = messageEdited;
-
-                            //Glide.with(getContext()).load(downloadUrl).override(1000).thumbnail(0.1f).into(MyInfoFragment.profileImg);
-                            MyInfoFragment.nickname.setText(nicknameEdited);
-                            String locationStr = "";
-                            for (String item : UserInfo.location) {
-                                locationStr += item + " ";
-                            }
-                            MyInfoFragment.location.setText(locationStr);
-                            MyInfoFragment.intro.setText(messageEdited);
-
-                            dbUpdate();
-                        }
-                    });
-                }
-            }
-        });
-    }
-
     public void saveChanges() {
         int finishCount = 0;
 
@@ -546,6 +494,63 @@ public class SettingMyInfoFragment extends Fragment {
             updateChangesWithImg();
     }
 
+    // 이미지 넣는거
+    private void updateChangesWithImg(){
+        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages/" + UserInfo.userId);
+        storageReference.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                return storageReference.getDownloadUrl(); // URL은 반드시 업로드 후 다운받아야 사용 가능
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) { // URL 다운 성공 시
+                    Uri downloadUrl = task.getResult();
+                    String url = downloadUrl.toString();
+
+                    UserInfo.profileImg = url;
+                    Glide.with(getActivity()).load(url).override(500).thumbnail(0.1f).into(MyInfoFragment.profileImg);
+                    if (flag_nickname_check == 1) {
+                        UserInfo.nickname = nicknameEdited;
+                        MyInfoFragment.nickname.setText(nicknameEdited);
+                    }
+                    if (flag_location == 1) {
+                        UserInfo.location = locationSelected;
+                        String locationStr = "";
+                        for (String item : UserInfo.location) {
+                            locationStr += item + " ";
+                        }
+                        MyInfoFragment.location.setText(locationStr);
+                    }
+                    if (flag_message == 1 ) {
+                        UserInfo.introduction = messageEdited;
+                        MyInfoFragment.intro.setText(messageEdited);
+                    }
+
+                    Map<String, Object> dataToUpdate = new HashMap<>();
+                    dataToUpdate.put("profileImg", url);
+                    if (flag_nickname_check == 1) dataToUpdate.put("nickname", nickname.getText().toString());
+                    if (flag_location == 1) dataToUpdate.put("location", locationSelected);
+                    if (flag_message == 1) dataToUpdate.put("introduction", messageEdited);
+
+                    // 계정 정보 저장하는 DB 업데이트
+                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                            dbUpdate();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    // 자신의 게시글, 댓글, 매칭글, 매칭 요청, 전문가 목록, 채팅 프사, 닉네임 등 정보 업데이트
     public void dbUpdate() {
         finishCount = 0;
         FirebaseDatabase db = FirebaseDatabase.getInstance(); // DB
@@ -562,6 +567,8 @@ public class SettingMyInfoFragment extends Fragment {
                             Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
                             if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                             if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                            if (flag_location == 1) userData.put("location", locationSelected);
+                            if (flag_message == 1) userData.put("intro", introMsg);
 
                             if (task.isSuccessful()) {
                                 DataSnapshot matchingSnapshot = task.getResult();
@@ -739,6 +746,8 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                 Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
                                                                                 if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                                                                                 if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                                                if (flag_location == 1) userData.put("location", locationSelected);
+                                                                                if (flag_message == 1) userData.put("intro", introMsg);
 
                                                                                 if (task.isSuccessful()) {
                                                                                     DataSnapshot matchingSnapshot = task.getResult();
@@ -902,6 +911,8 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                             Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
                                                                                             if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                                                                                             if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                                                            if (flag_location == 1) userData.put("location", locationSelected);
+                                                                                            if (flag_message == 1) userData.put("intro", introMsg);
 
                                                                                             if (task.isSuccessful()) {
                                                                                                 DataSnapshot matchingSnapshot = task.getResult();
@@ -1043,10 +1054,12 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                     });
                                                                                 }
                                                                             }
-                                                                        } else { // 내가 단 댓글이 있으면
+                                                                        } else if (myCommentSnapshot.child("userId").getValue().equals(UserInfo.userId)){ // 내가 단 댓글이 있으면
                                                                             Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
                                                                             if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                                                                             if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                                            if (flag_location == 1) userData.put("location", locationSelected);
+                                                                            if (flag_message == 1) userData.put("intro", introMsg);
 
                                                                             if (categorySnapshot2.getKey().equals("free")  && myCommentSnapshot.getRef().child("userId").toString().equals(UserInfo.userId)) commentSuccessFree++;
                                                                             else if (categorySnapshot2.getKey().equals("review") && myCommentSnapshot.getRef().child("userId").toString().equals(UserInfo.userId)) commentSuccessReview++;
@@ -1257,13 +1270,15 @@ public class SettingMyInfoFragment extends Fragment {
                                             });
                                         }
                                     } else { // 내가 쓴 글이 지금 카테고리에 하나라도 존재할 경우
-                                        postsSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 각 카테고리의 내가 쓴 글을 하나씩 가져오기
+                                        postsSnapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addChildEventListener(new ChildEventListener() { // 각 카테고리의 내가 쓴 글을 하나씩 가져오기
                                             @Override
                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myPostSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                 // 업데이트 할 데이터 만들기
                                                 Map<String, Object> userData = new HashMap<>();
                                                 if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                                                 if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                if (flag_location == 1) userData.put("location", locationSelected);
+                                                if (flag_message == 1) userData.put("intro", introMsg);
 
                                                 // 글 한개 업데이트하기
                                                 if (postsSnapshot.getKey().equals("free") && myPostSnapshot.child("userId").getValue().toString().equals(UserInfo.userId)) postsCountFree++;
@@ -1302,6 +1317,8 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                     Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
                                                                                                     if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                                                                                                     if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                                                                    if (flag_location == 1) userData.put("location", locationSelected);
+                                                                                                    if (flag_message == 1) userData.put("intro", introMsg);
 
                                                                                                     if (task.isSuccessful()) {
                                                                                                         DataSnapshot matchingSnapshot = task.getResult();
@@ -1445,8 +1462,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                             });
                                                                                         }
                                                                                     }
-                                                                                }
-                                                                                else { // 게시글에 댓글이 포함되어 있다면
+                                                                                } else { // 게시글에 댓글이 포함되어 있다면
                                                                                     commentsSnapshot.getRef().child("comments").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
                                                                                         @Override
                                                                                         public void onSuccess(DataSnapshot myCommentSnapshot) {
@@ -1465,6 +1481,8 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                 Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
                                                                                                                 if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                                                                                                                 if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                                                                                if (flag_location == 1) userData.put("location", locationSelected);
+                                                                                                                if (flag_message == 1) userData.put("intro", introMsg);
 
                                                                                                                 if (task.isSuccessful()) {
                                                                                                                     DataSnapshot matchingSnapshot = task.getResult();
@@ -1606,10 +1624,12 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                         });
                                                                                                     }
                                                                                                 }
-                                                                                            } else { // 내가 단 댓글이 있으면
+                                                                                            } else if (myCommentSnapshot.child("userId").getValue().equals(UserInfo.userId)) { // 내가 단 댓글이 있으면
                                                                                                 Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
                                                                                                 if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
                                                                                                 if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                                                                if (flag_location == 1) userData.put("location", locationSelected);
+                                                                                                if (flag_message == 1) userData.put("intro", introMsg);
 
                                                                                                 if (categorySnapshot2.getKey().equals("free")) commentSuccessFree++;
                                                                                                 else if (categorySnapshot2.getKey().equals("review")) commentSuccessReview++;

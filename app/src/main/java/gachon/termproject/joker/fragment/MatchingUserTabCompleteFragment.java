@@ -29,12 +29,12 @@ public class MatchingUserTabCompleteFragment extends Fragment {
     private View view;
     private SwipeRefreshLayout refresher;
     private RecyclerView contents;
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
-    ArrayList<MatchingPostContent> postContentList;
-    MatchingPostContent postContent;
-    MatchingPostAdapter matchingpostAdapter;
-    ValueEventListener postsListener;
+    private FirebaseDatabase firebaseDatabase;
+    private ArrayList<MatchingPostContent> postContentList;
+    private MatchingPostContent postContent;
+    private MatchingPostAdapter matchingpostAdapter;
+    public static DatabaseReference databaseReference;
+    public static ValueEventListener postsListener;
 
     @Nullable
     @Override

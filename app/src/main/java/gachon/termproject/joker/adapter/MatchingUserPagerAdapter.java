@@ -13,6 +13,9 @@ import gachon.termproject.joker.fragment.MatchingUserTabRequestFragment;
 
 public class MatchingUserPagerAdapter extends FragmentPagerAdapter {
     int mNumOfTabs;
+    public static Fragment tab1;
+    public static Fragment tab2;
+    public static Fragment tab3;
 
     public MatchingUserPagerAdapter(@NonNull @NotNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -23,15 +26,15 @@ public class MatchingUserPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                Fragment tab1 = new MatchingUserTabRequestFragment();
+                if (tab1 == null) tab1 = new MatchingUserTabRequestFragment();
                 return tab1;
 
             case 1:
-                Fragment  tab2 = new MatchingUserTabCompleteFragment();
+                if (tab2 == null) tab2 = new MatchingUserTabCompleteFragment();
                 return tab2;
 
             case 2:
-                Fragment  tab3 = new MatchingTabExpertListFragment();
+                if (tab3 == null) tab3 = new MatchingTabExpertListFragment();
                 return tab3;
 
             default:

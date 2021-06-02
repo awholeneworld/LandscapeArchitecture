@@ -158,6 +158,7 @@ public class ChatActivity extends AppCompatActivity {
                 intent.putExtra("nickname", opponentNickname);
                 intent.putExtra("profileImg", opponentProfileImg);
                 intent.putExtra("intro", opponentIntro);
+                intent.putExtra("pushToken", opponentPushToken);
                 intent.putStringArrayListExtra("location", opponentLocation);
                 startActivity(intent);
                 break;

@@ -62,6 +62,7 @@ public class ExpertPortfolioActivity extends AppCompatActivity {
         String expertPortfolioImg = intent.getStringExtra("portfolioImg");
         String expertPortfolioWeb = intent.getStringExtra("portfolioWeb");
         String expertPushToken = intent.getStringExtra("pushToken");
+        String expertIntro = intent.getStringExtra("intro");
         ArrayList<String> expertLocation = intent.getStringArrayListExtra("location");
 
         // 프로필 이미지 설정
@@ -99,12 +100,14 @@ public class ExpertPortfolioActivity extends AppCompatActivity {
                 intent.putExtra("userId", expertUserId);
                 intent.putExtra("nickname", expertNickname);
                 intent.putExtra("profileImg", expertProfileImg);
+                intent.putExtra("intro", expertIntro);
                 intent.putExtra("pushToken", expertPushToken);
+                intent.putStringArrayListExtra("location", expertLocation);
                 startActivity(intent);
             }
         });
 
-        // 포트폴리오 버튼 눌렀을 때
+        // 웹 포트폴리오 버튼 눌렀을 때
         portfolioWeb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

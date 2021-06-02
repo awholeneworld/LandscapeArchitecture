@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,11 +27,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -37,14 +44,19 @@ import gachon.termproject.joker.Content.RequestFromExpertContent;
 import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.adapter.MatchingPostRequestAdapter;
+import gachon.termproject.joker.adapter.MatchingUserPagerAdapter;
+import gachon.termproject.joker.fragment.MatchingUserTabCompleteFragment;
+import gachon.termproject.joker.fragment.MatchingUserTabRequestFragment;
 
 public class MatchingUserSeePostActivity extends AppCompatActivity {
     private LinearLayout container;
-    private DatabaseReference databaseReference;
-    private MatchingPostRequestAdapter adapter;
-    private ArrayList<RequestFromExpertContent> requestsList;
-    private int requestsNum = 0; //매칭 요청한 갯수(정확히는 매칭이 진행중인 갯수)
-    private String postId;
+    private static DatabaseReference databaseReference;
+    private static MatchingPostRequestAdapter adapter;
+    private static ArrayList<RequestFromExpertContent> requestsList;
+    private static TextView requestsNumView;
+    private static TextView matchingView;
+    private static String postId;
+    private static int requestsNum = 0;
     private String locationStr;
     private boolean isMatched;
     private ArrayList<String> images;
@@ -56,6 +68,14 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.matching_user_see_post);
 
+        //toolbar를 activity bar로 지정!
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
+        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
+
         // 인텐트 데이터 가져오기
         intent = getIntent();
         postId = intent.getStringExtra("postId");
@@ -65,23 +85,16 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         isMatched = intent.getBooleanExtra("isMatched", false);
         locationStr = intent.getStringExtra("locationInPost");
 
-        //toolbar를 activity bar로 지정!
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true); //자동 뒤로가기?
-        actionBar.setDisplayShowTitleEnabled(false); //기본 제목 삭제
-
         // 레이아웃 가져오기
         ImageView profile = findViewById(R.id.postProfile);
         TextView title = findViewById(R.id.title);
         TextView nickname = findViewById(R.id.postNickname);
         TextView time = findViewById(R.id.postTime);
         TextView location =  findViewById(R.id.see_post_location_name);
-        TextView requestsNumView = findViewById(R.id.see_post_request_total_num);
+        requestsNumView = findViewById(R.id.see_post_request_total_num);
+        matchingView = findViewById(R.id.see_post_matching_line);
         RecyclerView requests = findViewById(R.id.matching_see_post_request_listview);
-        TextView matchingline = findViewById(R.id.see_post_matching_line);
+        container = findViewById(R.id.see_post_content);
 
         // 제목, 닉네임, 작성시간, 지역 세팅
         title.setText(intent.getStringExtra("title"));
@@ -89,26 +102,27 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
         time.setText(intent.getStringExtra("time"));
         location.setText(locationStr);
 
-
         // 프로필 사진 세팅 (oimage 동그랗게)
         profile.setBackground(new ShapeDrawable(new OvalShape()));
         profile.setClipToOutline(true);
         if (!profileImg.equals("None"))
             Glide.with(this).load(profileImg).into(profile);
 
-        // 포스트 내용 넣을 공간 지정
-        container = findViewById(R.id.see_post_content);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
-        //TextView 생성 후 layout_width, layout_height, gravity, 내용 등 설정
+        // 글 내용 넣기 - TextView 생성 후 layout_width, layout_height, gravity, 내용 등 설정
         TextView text_content = new TextView(MatchingUserSeePostActivity.this);
-        text_content.setLayoutParams(lp);
+        text_content.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         text_content.setText(content.get(0));
         text_content.setTextSize(dpToPx(7));
         text_content.setTextColor(Color.BLACK);
-
-        // 글 넣기
         container.addView(text_content);
+
+        requestsList = new ArrayList<>();
+        adapter = new MatchingPostRequestAdapter(this, getApplicationContext(), requestsList, postId);
+        databaseReference = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests");
+
+        requests.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        requests.setHasFixedSize(true);
+        requests.setAdapter(adapter);
 
         // 이미지 있으면 넣기
         if (images != null) {
@@ -128,65 +142,11 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
             }
         }
 
-        //매칭 전이라면
-        if(!isMatched){
-            requestsList = new ArrayList<>();
-            adapter = new MatchingPostRequestAdapter(this, getApplicationContext(), requestsList, postId);
-
-            requests.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            requests.setHasFixedSize(true);
-            requests.setAdapter(adapter);
-
-            databaseReference = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests");
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    requestsList.clear();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
-                        content.setExpertUserId(snapshot.getKey());
-                        requestsList.add(content);
-                    }
-                    requestsNum = requestsList.size();
-                    requestsNumView.setText(String.valueOf(requestsNum) + "건");
-                    adapter.notifyDataSetChanged();
-                }
-                @Override
-                public void onCancelled(DatabaseError error) {
-                }
-            });
-        }
-        else{ //매칭 후라면 >> 매칭된 사람꺼만 보여줘야함
-            matchingline.setText("매칭완료");
-            requestsNumView.setVisibility(View.GONE);
-
-            requestsList = new ArrayList<>();
-            adapter = new MatchingPostRequestAdapter(this, MatchingUserSeePostActivity.this, requestsList, postId);
-
-            requests.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            requests.setHasFixedSize(true);
-            requests.setAdapter(adapter);
-
-            databaseReference = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests");
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    requestsList.clear();
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
-                        content.setExpertUserId(snapshot.getKey());
-                        requestsList.add(content);
-                    }
-                    requestsNum = requestsList.size();
-                    requestsNumView.setText(String.valueOf(requestsNum));
-                    adapter.notifyDataSetChanged();
-                }
-                @Override
-                public void onCancelled(DatabaseError error) {
-                }
-            });
-        }
+        // 매칭 전이라면 요청 모두 표시 & 매칭 후라면 매칭된 사람만 보여주기
+        if (!isMatched)
+            beforeMatched();
+        else
+            afterMatched();
     }
 
     //위에 메뉴 관련
@@ -200,6 +160,11 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
             //자기가 쓴 글이므로 - 삭제
             case R.id.delete:
                 FirebaseHelper.postDelete(this, "Matching", "userRequests", postId, images);
+                if (!isMatched)
+                    MatchingUserTabRequestFragment.databaseReference.addValueEventListener(MatchingUserTabRequestFragment.postsListener);
+                else
+                    MatchingUserTabCompleteFragment.databaseReference.addValueEventListener(MatchingUserTabCompleteFragment.postsListener);
+
                 finish();
                 break;
         }
@@ -224,6 +189,56 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+    }
+
+    public static void beforeMatched() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                requestsList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
+                    content.setExpertUserId(snapshot.getKey());
+                    requestsList.add(content);
+                }
+                requestsNum = requestsList.size();
+                requestsNumView.setText(requestsNum + "건");
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+    }
+
+    public static void afterMatched() {
+        matchingView.setText("매칭완료");
+        requestsNumView.setVisibility(View.GONE);
+        requestsList.clear();
+
+        FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests").orderByChild("isMatched").equalTo(true).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                if (snapshot.child("isMatched").getValue().equals(true)) {
+                    RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
+                    content.setExpertUserId(snapshot.getKey());
+                    requestsList.add(content);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) { }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {                                }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {                                }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {                                }
+        });
     }
 
     public static int dpToPx(int dp){

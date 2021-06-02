@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<String> task) {
                 if (task.isSuccessful()) {
                     FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("pushToken", task.getResult());
-                    return;
                 }
             }
         });
