@@ -199,7 +199,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
                 requestsList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
-                    content.setExpertUserId(snapshot.getKey());
+                    content.setUserId(snapshot.getKey());
                     requestsList.add(content);
                 }
                 requestsNum = requestsList.size();
@@ -222,7 +222,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 if (snapshot.child("isMatched").getValue().equals(true)) {
                     RequestFromExpertContent content = snapshot.getValue(RequestFromExpertContent.class);
-                    content.setExpertUserId(snapshot.getKey());
+                    content.setUserId(snapshot.getKey());
                     requestsList.add(content);
                     adapter.notifyDataSetChanged();
                 }

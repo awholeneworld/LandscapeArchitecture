@@ -32,7 +32,6 @@ import gachon.termproject.joker.fragment.MatchingUserFragment;
 import gachon.termproject.joker.fragment.MyInfoFragment;
 import gachon.termproject.joker.UserInfo;
 
-
 public class MainActivity extends AppCompatActivity {
     private ActionBar actionBar;
     private TextView action_bar_title;

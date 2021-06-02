@@ -68,26 +68,26 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
-        ImageView profileImg;
-        TextView nickname;
+        ImageView profileImgView;
+        TextView nicknameView;
         Button viewPortfolio;
         Button chatBtn;
         Button matching_btn;
-        String expertNickname;
-        String expertProfileImg;
-        String expertUserId;
-        String expertPortfolioImg;
-        String expertPortfolioWeb;
-        String expertPushToken;
-        String expertIntro;
-        boolean expertIsMatched;
-        ArrayList<String> expertLocation;
+        String nickname;
+        String profileImg;
+        String userId;
+        String portfolioImg;
+        String portfolioWeb;
+        String pushToken;
+        String intro;
+        boolean isMatched;
+        ArrayList<String> location;
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId);
 
         ViewHolder(View itemView) {
             super(itemView);
-            profileImg = itemView.findViewById(R.id.requestImg);
-            nickname = itemView.findViewById(R.id.requestNickname);
+            profileImgView = itemView.findViewById(R.id.requestImg);
+            nicknameView = itemView.findViewById(R.id.requestNickname);
             viewPortfolio = itemView.findViewById(R.id.matching_request_item_pofol);
             chatBtn = itemView.findViewById(R.id.matching_request_item_chat);
             matching_btn = itemView.findViewById(R.id.matching_request_item_accept_cancel);
@@ -96,14 +96,14 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ExpertPortfolioActivity.class);
-                    intent.putExtra("userId", expertUserId);
-                    intent.putExtra("nickname", expertNickname);
-                    intent.putExtra("profileImg", expertProfileImg);
-                    intent.putExtra("portfolioImg", expertPortfolioImg);
-                    intent.putExtra("portfolioWeb", expertPortfolioWeb);
-                    intent.putExtra("pushToken", expertPushToken);
-                    intent.putExtra("intro", expertIntro);
-                    intent.putStringArrayListExtra("location", expertLocation);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("nickname", nickname);
+                    intent.putExtra("profileImg", profileImg);
+                    intent.putExtra("portfolioImg", portfolioImg);
+                    intent.putExtra("portfolioWeb", portfolioWeb);
+                    intent.putExtra("pushToken", pushToken);
+                    intent.putExtra("intro", intro);
+                    intent.putStringArrayListExtra("location", location);
                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
@@ -114,12 +114,12 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra("userId", expertUserId);
-                    intent.putExtra("nickname", expertNickname);
-                    intent.putExtra("profileImg", expertProfileImg);
-                    intent.putExtra("pushToken", expertPushToken);
-                    intent.putExtra("intro", expertIntro);
-                    intent.putStringArrayListExtra("location", expertLocation);
+                    intent.putExtra("userId", userId);
+                    intent.putExtra("nickname", nickname);
+                    intent.putExtra("profileImg", profileImg);
+                    intent.putExtra("pushToken", pushToken);
+                    intent.putExtra("intro", intro);
+                    intent.putStringArrayListExtra("location", location);
                     context.startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK));
                 }
             });
@@ -129,19 +129,19 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder dlg = new AlertDialog.Builder(activity);
-                    dlg.setTitle(expertNickname + "님의 매칭을 수락하시겠습니까?"); //제목
+                    dlg.setTitle(nickname + "님의 매칭을 수락하시겠습니까?"); //제목
                     dlg.setMessage("수락할 경우 다른 전문가의 매칭은 수락할 수 없습니다."); // 메시지
 
                     dlg.setPositiveButton("수락", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int which) {
                             dbRef.child("isMatched").setValue(true);
-                            dbRef.child("requests").orderByKey().equalTo(expertUserId).addChildEventListener(new ChildEventListener() {
+                            dbRef.child("requests").orderByKey().equalTo(userId).addChildEventListener(new ChildEventListener() {
                                 @Override
                                 public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                     snapshot.getRef().child("isMatched").setValue(true).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                            sendFCM(expertPushToken);
+                                            sendFCM(pushToken);
                                             MatchingUserSeePostActivity.afterMatched();
                                             MatchingUserTabRequestFragment.databaseReference.addValueEventListener(MatchingUserTabRequestFragment.postsListener);
                                             if (MatchingUserPagerAdapter.tab2 != null)
@@ -189,30 +189,30 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
     public void onBindViewHolder(@NonNull MatchingPostRequestAdapter.ViewHolder holder, int position) {
         RequestFromExpertContent request = requestsList.get(position);
 
-        String profileImg = request.getExpertProfileImg();
-        String nickname = request.getExpertNickname();
+        String profileImg = request.getProfileImg();
+        String nickname = request.getNickname();
 
-        holder.expertUserId = request.getExpertUserId();
-        holder.expertNickname = nickname;
-        holder.expertProfileImg = request.getExpertProfileImg();
-        holder.expertPortfolioImg = request.getExpertPortfolioImg();
-        holder.expertPortfolioWeb = request.getExpertPortfolioWeb();
-        holder.expertPushToken = request.getExpertPushToken();
-        holder.expertLocation = request.getExpertLocation();
-        holder.expertIntro = request.getExpertIntro();
-        holder.expertIsMatched = request.getIsMatched();
+        holder.userId = request.getUserId();
+        holder.nickname = nickname;
+        holder.profileImg = request.getProfileImg();
+        holder.portfolioImg = request.getPortfolioImg();
+        holder.portfolioWeb = request.getPortfolioWeb();
+        holder.pushToken = request.getPushToken();
+        holder.location = request.getLocation();
+        holder.intro = request.getIntro();
+        holder.isMatched = request.getIsMatched();
 
         // 신청인 프로필 사진 표시
-        holder.profileImg.setBackground(new ShapeDrawable(new OvalShape()));
-        holder.profileImg.setClipToOutline(true);
+        holder.profileImgView.setBackground(new ShapeDrawable(new OvalShape()));
+        holder.profileImgView.setClipToOutline(true);
         if (!profileImg.equals("None"))
-            Glide.with(context).load(profileImg).into(holder.profileImg);
+            Glide.with(context).load(profileImg).into(holder.profileImgView);
 
         // 신청인 표시
-        holder.nickname.setText(request.getExpertNickname());
+        holder.nicknameView.setText(request.getNickname());
 
         //매칭된 상태라면 신청버튼 없애기
-        if(holder.expertIsMatched){
+        if(holder.isMatched){
             holder.matching_btn.setVisibility(View.GONE);
         }
     }
@@ -232,11 +232,11 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
         return position;
     }
 
-    public void sendFCM(String expertPushToken) {
+    public void sendFCM(String pushToken) {
         Gson gson = new Gson();
 
         NotificationContent notificationContent = new NotificationContent();
-        notificationContent.to = expertPushToken;
+        notificationContent.to = pushToken;
         notificationContent.notification.title = "매칭 알림";
         notificationContent.notification.body = UserInfo.nickname + "님과의 매칭에 성공하였습니다.";
         notificationContent.data.title = "매칭 알림";

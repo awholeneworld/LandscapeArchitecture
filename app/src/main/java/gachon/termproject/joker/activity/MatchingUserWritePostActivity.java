@@ -285,7 +285,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, UserInfo.location, contentList, imagesUrl, locationSelected, false, null);
+            postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, UserInfo.introduction, UserInfo.location, contentList, imagesUrl, locationSelected, false, null);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -331,7 +331,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                                     String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, UserInfo.location, contentList, imagesUrl, locationSelected, false, null);
+                                    postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, UserInfo.introduction, UserInfo.location, contentList, imagesUrl, locationSelected, false, null);
 
                                     // Firebase Realtime DB에 글 내용 올리기
                                     databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

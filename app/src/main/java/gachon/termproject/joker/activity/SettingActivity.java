@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import gachon.termproject.joker.R;
+import gachon.termproject.joker.fragment.MyInfoFragment;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -58,6 +59,7 @@ public class SettingActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 이전 액티비티들을 모두 kill
                 startActivity(intent);
+                MyInfoFragment.post = null;
                 finish();
             }
         });

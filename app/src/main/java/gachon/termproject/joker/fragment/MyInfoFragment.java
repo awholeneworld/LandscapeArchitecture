@@ -111,8 +111,8 @@ public class MyInfoFragment extends Fragment {
                 location.setText(locationStr);
                 intro.setText(UserInfo.introduction);
 
-                if (post != null) post.adapter.notifyDataSetChanged();
-                if (comment != null) comment.adapter.notifyDataSetChanged();
+                if (post != null) MyInfoTabPostFragment.adapter.notifyDataSetChanged();
+                if (comment != null) MyInfoTabCommentFragment.adapter.notifyDataSetChanged();
 
                 refresher.setRefreshing(false);
             }

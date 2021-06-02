@@ -12,6 +12,7 @@ public class MatchingPostContent {
     public String postTime;
     public String postId;
     public String pushToken;
+    public String intro;
     public ArrayList<String> location;
     public ArrayList<String> content;
     public ArrayList<String> images;
@@ -21,7 +22,7 @@ public class MatchingPostContent {
 
     public MatchingPostContent() {}
 
-    public MatchingPostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, String pushToken, ArrayList<String> location, ArrayList<String> content, ArrayList<String> images, ArrayList<String> locationOfPost, boolean isMatched, HashMap<String, RequestFromExpertContent> requests) {
+    public MatchingPostContent(String category, String userId, String profileImg, String title, String nickname, String postTime, String postId, String pushToken, String intro, ArrayList<String> location, ArrayList<String> content, ArrayList<String> images, ArrayList<String> locationOfPost, boolean isMatched, HashMap<String, RequestFromExpertContent> requests) {
         this.category = category;
         this.userId = userId;
         this.profileImg = profileImg;
@@ -30,6 +31,7 @@ public class MatchingPostContent {
         this.postTime = postTime;
         this.postId = postId;
         this.pushToken = pushToken;
+        this.intro = intro;
         this.location = location;
         this.content = content;
         this.images = images;
@@ -48,6 +50,7 @@ public class MatchingPostContent {
     public String getPostTime() { return postTime; }
     public String getPostId() { return postId; }
     public String getPushToken() { return pushToken; }
+    public String getIntro() { return intro; }
     public ArrayList<String> getLocation() { return location; }
     public ArrayList<String> getContent() { return content; }
     public ArrayList<String> getImages() { return images; }

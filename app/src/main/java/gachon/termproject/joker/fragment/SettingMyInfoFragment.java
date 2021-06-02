@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -49,9 +49,7 @@ import java.util.Map;
 
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
-import gachon.termproject.joker.activity.ChangePasswordActivity;
 import gachon.termproject.joker.activity.CheckPasswordActivity;
-import gachon.termproject.joker.activity.MainActivity;
 
 public class SettingMyInfoFragment extends Fragment {
     private View view;
@@ -61,7 +59,6 @@ public class SettingMyInfoFragment extends Fragment {
     private ArrayList<String> location;
     private ImageView profileImg;
     private ImageView changeProfileImageBack;
-    private ImageView changeProfileImage;
     private EditText email;
     private EditText nickname;
     private EditText introMsg;
@@ -85,6 +82,7 @@ public class SettingMyInfoFragment extends Fragment {
     private int finishCountTip = 0;
     private int finishCount = 0;
     private int matchingSuccessCount = 0;
+    private int requestsCount = 0;
     private int chatCount = 0;
     private int commentSuccessFree = 0;
     private int commentSuccessReview = 0;
@@ -95,9 +93,12 @@ public class SettingMyInfoFragment extends Fragment {
     private int commentFinishFree = 0;
     private int commentFinishReview = 0;
     private int commentFinishTip = 0;
-    private int freeNoComments = 0;
-    private int reviewNoComments = 0;
-    private int tipNoComments = 0;
+    private int commentsNumFree = 0;
+    private int commentsNumReview = 0;
+    private int commentsNumTip = 0;
+    private int noCommentsFree = 0;
+    private int noCommentsReview = 0;
+    private int noCommentsTip = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -514,7 +515,7 @@ public class SettingMyInfoFragment extends Fragment {
                     String url = downloadUrl.toString();
 
                     UserInfo.profileImg = url;
-                    Glide.with(getActivity()).load(url).override(500).thumbnail(0.1f).into(MyInfoFragment.profileImg);
+                    Glide.with(getActivity()).load(url).override(1000).thumbnail(0.5f).into(MyInfoFragment.profileImg);
                     if (flag_nickname_check == 1) {
                         UserInfo.nickname = nicknameEdited;
                         MyInfoFragment.nickname.setText(nicknameEdited);
@@ -560,42 +561,105 @@ public class SettingMyInfoFragment extends Fragment {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) { // DB에 커뮤니티 데이터가 하나도 없을 경우
-                    // 내가 작성한 매칭 게시물 찾기
-                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                            Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
-                            if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                            if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                            if (flag_location == 1) userData.put("location", locationSelected);
-                            if (flag_message == 1) userData.put("intro", introMsg);
+                    Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
+                    if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                    if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                    if (flag_location == 1) userData.put("location", locationSelected);
+                    if (flag_message == 1) userData.put("intro", introMsg);
 
-                            if (task.isSuccessful()) {
-                                DataSnapshot matchingSnapshot = task.getResult();
-                                if (!matchingSnapshot.exists()) { // 내가 쓴 매칭 게시물이 없다면 (전문가는 무조건 이곳에 해당)
-                                    // 내 채팅 찾기
-                                    db.getReference("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    // 내가 작성한 매칭 게시물 찾기
+                    db.getReference("Matching/userRequests").addChildEventListener(new ChildEventListener() { // 매칭 게시물 하나하나씩 가져오기
+                        @Override
+                        public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                            requestsCount++;
+                            if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                successCount++;
+                                matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                        if (failCount + successCount == requestsCount) {
+                                            // 내 채팅 찾기
+                                            db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DataSnapshot chatSnapshot) {
+                                                    if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
+                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                        getActivity().finish();
+                                                    } else {
+                                                        chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
+                                                            @Override
+                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                // 채팅방 정보 한개 업데이트하기
+
+                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                    chatCount++;
+                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                            if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                // 끝내기
+                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                getActivity().finish();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            } else {
+                                failCount++;
+                                if (failCount + successCount == requestsCount) {
+                                    db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                         @Override
                                         public void onSuccess(DataSnapshot chatSnapshot) {
-                                            if (!chatSnapshot.exists()) { // 나의 채팅이 존재하지 않으면
+                                            if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                 Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                 getActivity().finish();
                                             } else {
                                                 chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                     @Override
                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                        // 채팅방 한개 업데이트하기
-                                                        chatCount++;
-                                                        myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                    // 끝내기
-                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                    getActivity().finish();
+                                                        // 채팅방 정보 한개 업데이트하기
+
+                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                            chatCount++;
+                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                        // 끝내기
+                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                        getActivity().finish();
+                                                                    }
                                                                 }
-                                                            }
-                                                        });
+                                                            });
+                                                        }
                                                     }
 
                                                     @Override
@@ -621,94 +685,142 @@ public class SettingMyInfoFragment extends Fragment {
                                             }
                                         }
                                     });
-                                } else { // 내가 쓴 매칭 게시물이 있다면
-                                    matchingSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
-                                        @Override
-                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myMatchingSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                            // 글 하나 하나 정보 새로 업데이트
-                                            matchingSuccessCount++;
-                                            myMatchingSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    if (matchingSuccessCount == matchingSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
-                                                        // 나의 채팅방 업데이트 하기
-                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                            @Override
-                                                            public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
-                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                    getActivity().finish();
-                                                                } else { // 나의 채팅방이 존재하면
-                                                                    chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
-                                                                        @Override
-                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                            // 채팅방 한개 업데이트하기
-                                                                            chatCount++;
-                                                                            myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void unused) {
-                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                        // 끝내기
-                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                        getActivity().finish();
-                                                                                    }
-                                                                                }
-                                                                            });
-                                                                        }
-
-                                                                        @Override
-                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                        }
-
-                                                                        @Override
-                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                        }
-
-                                                                        @Override
-                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                        }
-
-                                                                        @Override
-                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                        }
-                                                                    });
-                                                                }
-                                                            }
-                                                        });
-                                                    }
-                                                }
-                                            });
-                                        }
-
-                                        @Override
-                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                        }
-
-                                        @Override
-                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                        }
-                                    });
                                 }
+                            }
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                        }
+                    });
+
+                    // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
+                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot matchSnapshot) {
+                            if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
+
+                            } else { // 일반인은 이곳에 해당
+                                matchSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
+                                    @Override
+                                    public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                        // 글 하나 하나 정보 새로 업데이트
+                                        matchingSuccessCount++;
+                                        snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
+                                                    // 나의 채팅방 업데이트 하기
+                                                    db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                        @Override
+                                                        public void onSuccess(DataSnapshot chatSnapshot) {
+                                                            if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                getActivity().finish();
+                                                            } else { // 나의 채팅방이 존재하면
+                                                                chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                    @Override
+                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                        // 채팅방 한개 업데이트하기
+                                                                        chatCount++;
+                                                                        myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void unused) {
+                                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                    // 끝내기
+                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                    getActivity().finish();
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                    }
+                                                                });
+
+                                                                // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
+                                                                db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                    @Override
+                                                                    public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                        if (!matchSnapshot.exists()) {
+
+                                                                        } else {
+
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                    }
+
+                                    @Override
+                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                    }
+                                });
                             }
                         }
                     });
                 } else { // DB에 커뮤니티 게시물이 하나라도 있을 경우
+                    Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
+                    if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                    if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                    if (flag_location == 1) userData.put("location", locationSelected);
+                    if (flag_message == 1) userData.put("intro", introMsg);
+
                     final long categoryNum = dataSnapshot.getChildrenCount(); // 먼저 글이 있는 게시판 카테고리 수 가져옴
 
                     dataSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 그 다음 게시물 DB에 접근해서 게시판의 각 카테고리 데이터를 하나씩 가져옴
@@ -729,54 +841,109 @@ public class SettingMyInfoFragment extends Fragment {
                                                         @Override
                                                         public void onChildAdded(@NonNull @NotNull DataSnapshot commentsSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                             if (!commentsSnapshot.hasChild("comments")) { // 게시글에 댓글이 없다면
-                                                                if (categorySnapshot2.getKey().equals("free")) freeNoComments++;
-                                                                else if (categorySnapshot2.getKey().equals("review")) reviewNoComments++;
-                                                                else if (categorySnapshot2.getKey().equals("tip")) tipNoComments++;
+                                                                if (categorySnapshot2.getKey().equals("free")) commentFailFree++;
+                                                                else if (categorySnapshot2.getKey().equals("review")) commentFailReview++;
+                                                                else if (categorySnapshot2.getKey().equals("tip")) commentFailTip++;
 
-                                                                if ((categorySnapshot2.getKey().equals("free") && freeNoComments == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("review") && reviewNoComments == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("tip") && tipNoComments == categorySnapshot2.getChildrenCount())) { // 모든 카테고리에 댓글이 없다면
+                                                                if ((categorySnapshot2.getKey().equals("free") && commentFailFree + commentSuccessFree == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("review") && commentFailReview + commentSuccessReview == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("tip") && commentFailTip + commentSuccessTip == categorySnapshot2.getChildrenCount())) { // 모든 카테고리에 댓글이 없다면
                                                                     if (categorySnapshot2.getKey().equals("free")) finishCount++;
                                                                     else if (categorySnapshot2.getKey().equals("review")) finishCount++;
                                                                     else if (categorySnapshot2.getKey().equals("tip")) finishCount++;
                                                                     if (finishCount == categoryNum) {
                                                                         finishCount = 0;
                                                                         // 내가 작성한 매칭 게시물 찾기
-                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                                                        db.getReference("Matching/userRequests").addChildEventListener(new ChildEventListener() { // 매칭 게시물 하나하나씩 가져오기
                                                                             @Override
-                                                                            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                                                                Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
-                                                                                if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                                                                                if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                                                                                if (flag_location == 1) userData.put("location", locationSelected);
-                                                                                if (flag_message == 1) userData.put("intro", introMsg);
+                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                requestsCount++;
+                                                                                if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                    successCount++;
+                                                                                    matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                            if (failCount + successCount == requestsCount) {
+                                                                                                // 내 채팅 찾기
+                                                                                                db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                    @Override
+                                                                                                    public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                        if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
+                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                            getActivity().finish();
+                                                                                                        } else {
+                                                                                                            chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
+                                                                                                                @Override
+                                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                    // 채팅방 정보 한개 업데이트하기
 
-                                                                                if (task.isSuccessful()) {
-                                                                                    DataSnapshot matchingSnapshot = task.getResult();
-                                                                                    if (!matchingSnapshot.exists()) { // 내가 쓴 매칭 게시물이 없다면 (전문가는 무조건 이곳에 해당)
-                                                                                        // 내 채팅 찾기
-                                                                                        db.getReference("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                    if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                        chatCount++;
+                                                                                                                        myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                            @Override
+                                                                                                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                    // 끝내기
+                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                    getActivity().finish();
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                                    }
+                                                                                                                }
+
+                                                                                                                @Override
+                                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                }
+
+                                                                                                                @Override
+                                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                }
+
+                                                                                                                @Override
+                                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                }
+
+                                                                                                                @Override
+                                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                }
+                                                                                                            });
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                } else {
+                                                                                    failCount++;
+                                                                                    if (failCount + successCount == requestsCount) {
+                                                                                        db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                             @Override
                                                                                             public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                if (!chatSnapshot.exists()) { // 나의 채팅이 존재하지 않으면
+                                                                                                if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                                                                     Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                                                                     getActivity().finish();
                                                                                                 } else {
                                                                                                     chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                                                                         @Override
                                                                                                         public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                            // 채팅방 한개 업데이트하기
-                                                                                                            chatCount++;
-                                                                                                            myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                @Override
-                                                                                                                public void onSuccess(Void unused) {
-                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                        // 업뎃하고 끝내기
-                                                                                                                        if (MyInfoFragment.post != null) MyInfoFragment.post.adapter.notifyDataSetChanged();
-                                                                                                                        if (MyInfoFragment.comment != null) MyInfoFragment.comment.adapter.notifyDataSetChanged();
-                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                        getActivity().finish();
+                                                                                                            // 채팅방 정보 한개 업데이트하기
+
+                                                                                                            if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                chatCount++;
+                                                                                                                myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                    @Override
+                                                                                                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                            // 끝내기
+                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                            getActivity().finish();
+                                                                                                                        }
                                                                                                                     }
-                                                                                                                }
-                                                                                                            });
+                                                                                                                });
+                                                                                                            }
                                                                                                         }
 
                                                                                                         @Override
@@ -802,39 +969,193 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                 }
                                                                                             }
                                                                                         });
-                                                                                    } else { // 내가 쓴 매칭 게시물이 있다면
-                                                                                        matchingSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
-                                                                                            @Override
-                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot myMatchingSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                // 글 하나 하나 정보 새로 업데이트
-                                                                                                matchingSuccessCount++;
-                                                                                                myMatchingSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                            }
+                                                                        });
+
+                                                                        // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
+                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                            @Override
+                                                                            public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
+
+                                                                                } else { // 일반인은 이곳에 해당
+                                                                                    matchSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
+                                                                                        @Override
+                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                            // 글 하나 하나 정보 새로 업데이트
+                                                                                            matchingSuccessCount++;
+                                                                                            snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                @Override
+                                                                                                public void onSuccess(Void unused) {
+                                                                                                    if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
+                                                                                                        // 나의 채팅방 업데이트 하기
+                                                                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                            @Override
+                                                                                                            public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                    getActivity().finish();
+                                                                                                                } else { // 나의 채팅방이 존재하면
+                                                                                                                    chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                        @Override
+                                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                            // 채팅방 한개 업데이트하기
+                                                                                                                            chatCount++;
+                                                                                                                            myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                @Override
+                                                                                                                                public void onSuccess(Void unused) {
+                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                        // 끝내기
+                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                        getActivity().finish();
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            });
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                        }
+                                                                                                                    });
+
+                                                                                                                    // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
+                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                        @Override
+                                                                                                                        public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                            if (!matchSnapshot.exists()) {
+
+                                                                                                                            } else {
+
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            }
+                                                                                                        });
+                                                                                                    }
+                                                                                                }
+                                                                                            });
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                        }
+                                                                                    });
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                }
+                                                            }
+                                                            else { // 게시글에 댓글이 포함되어 있다면
+                                                                Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
+                                                                if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                                                                if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                                                if (flag_location == 1) userData.put("location", locationSelected);
+                                                                if (flag_message == 1) userData.put("intro", introMsg);
+
+                                                                commentsSnapshot.getRef().child("comments").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
+                                                                    @Override
+                                                                    public void onSuccess(DataSnapshot myCommentSnapshot) {
+                                                                        if (!myCommentSnapshot.exists()) { // 현재 게시글에 내가 단 댓글이 없으면
+                                                                            if (categorySnapshot2.getKey().equals("free")) commentFailFree++;
+                                                                            else if (categorySnapshot2.getKey().equals("review")) commentFailReview++;
+                                                                            else if (categorySnapshot2.getKey().equals("tip")) commentFailTip++;
+
+                                                                            if ((categorySnapshot2.getKey().equals("free") && commentFailFree + commentSuccessFree == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("review") && commentFailReview + commentSuccessReview == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("tip") && commentFailTip + commentSuccessTip == categorySnapshot2.getChildrenCount())) { // 내가 단 댓글이 하나도 없다면
+                                                                                finishCount++;
+                                                                                if (finishCount == categoryNum) {
+                                                                                    // 내가 작성한 매칭 게시물 찾기
+                                                                                    db.getReference("Matching/userRequests").addChildEventListener(new ChildEventListener() { // 매칭 게시물 하나하나씩 가져오기
+                                                                                        @Override
+                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                            requestsCount++;
+                                                                                            if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                successCount++;
+                                                                                                matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                     @Override
-                                                                                                    public void onSuccess(Void unused) {
-                                                                                                        if (matchingSuccessCount == matchingSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
-                                                                                                            // 나의 채팅방 업데이트 하기
-                                                                                                            db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                        if (failCount + successCount == requestsCount) {
+                                                                                                            // 내 채팅 찾기
+                                                                                                            db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                 @Override
                                                                                                                 public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                    if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                    if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                                                                                         Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                                                                                         getActivity().finish();
-                                                                                                                    } else { // 나의 채팅방이 존재하면
-                                                                                                                        chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                    } else {
+                                                                                                                        chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                                                                                             @Override
                                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                // 채팅방 한개 업데이트하기
-                                                                                                                                chatCount++;
-                                                                                                                                myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                    @Override
-                                                                                                                                    public void onSuccess(Void unused) {
-                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                            // 끝내기
-                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                            getActivity().finish();
+                                                                                                                                // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                    chatCount++;
+                                                                                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                        @Override
+                                                                                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                            if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                // 끝내기
+                                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                getActivity().finish();
+                                                                                                                                            }
                                                                                                                                         }
-                                                                                                                                    }
-                                                                                                                                });
+                                                                                                                                    });
+                                                                                                                                }
                                                                                                                             }
 
                                                                                                                             @Override
@@ -863,83 +1184,34 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                         }
                                                                                                     }
                                                                                                 });
-                                                                                            }
-
-                                                                                            @Override
-                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                            }
-
-                                                                                            @Override
-                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                            }
-
-                                                                                            @Override
-                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                            }
-
-                                                                                            @Override
-                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                            }
-                                                                                        });
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                }
-                                                            }
-                                                            else { // 게시글에 댓글이 포함되어 있다면
-                                                                commentsSnapshot.getRef().child("comments").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
-                                                                    @Override
-                                                                    public void onSuccess(DataSnapshot myCommentSnapshot) {
-                                                                        if (!myCommentSnapshot.exists()) { // 현재 게시글에 내가 단 댓글이 없으면
-                                                                            if (categorySnapshot2.getKey().equals("free")) commentFailFree++;
-                                                                            else if (categorySnapshot2.getKey().equals("review")) commentFailReview++;
-                                                                            else if (categorySnapshot2.getKey().equals("tip")) commentFailTip++;
-
-                                                                            if ((categorySnapshot.getKey().equals("free") && commentFailFree + commentSuccessFree == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("review") && commentFailReview + commentSuccessReview == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("tip") && commentFailTip + commentSuccessTip == categorySnapshot.getChildrenCount())) { // 내가 단 댓글이 하나도 없다면
-                                                                                finishCount++;
-                                                                                if (finishCount == categoryNum) {
-                                                                                    // 내가 작성한 매칭 게시물 찾기
-                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                                                                        @Override
-                                                                                        public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                                                                            Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
-                                                                                            if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                                                                                            if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                                                                                            if (flag_location == 1) userData.put("location", locationSelected);
-                                                                                            if (flag_message == 1) userData.put("intro", introMsg);
-
-                                                                                            if (task.isSuccessful()) {
-                                                                                                DataSnapshot matchingSnapshot = task.getResult();
-                                                                                                if (!matchingSnapshot.exists()) { // 내가 쓴 매칭 게시물이 없다면 (전문가는 무조건 이곳에 해당)
-                                                                                                    // 내 채팅 찾기
-                                                                                                    db.getReference("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                            } else {
+                                                                                                failCount++;
+                                                                                                if (failCount + successCount == requestsCount) {
+                                                                                                    db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                         @Override
                                                                                                         public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                            if (!chatSnapshot.exists()) { // 나의 채팅이 존재하지 않으면
+                                                                                                            if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                                                                                 Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                                                                                 getActivity().finish();
                                                                                                             } else {
                                                                                                                 chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                                                                                     @Override
                                                                                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                        // 채팅방 한개 업데이트하기
-                                                                                                                        chatCount++;
-                                                                                                                        myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                            @Override
-                                                                                                                            public void onSuccess(Void unused) {
-                                                                                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                    // 끝내기
-                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                    getActivity().finish();
+                                                                                                                        // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                            chatCount++;
+                                                                                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                @Override
+                                                                                                                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                        // 끝내기
+                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                        getActivity().finish();
+                                                                                                                                    }
                                                                                                                                 }
-                                                                                                                            }
-                                                                                                                        });
+                                                                                                                            });
+                                                                                                                        }
                                                                                                                     }
 
                                                                                                                     @Override
@@ -965,106 +1237,138 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                             }
                                                                                                         }
                                                                                                     });
-                                                                                                } else { // 내가 쓴 매칭 게시물이 있다면
-                                                                                                    matchingSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
-                                                                                                        @Override
-                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myMatchingSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                            // 글 하나 하나 정보 새로 업데이트
-                                                                                                            matchingSuccessCount++;
-                                                                                                            myMatchingSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                @Override
-                                                                                                                public void onSuccess(Void unused) {
-                                                                                                                    if (matchingSuccessCount == matchingSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
-                                                                                                                        // 나의 채팅방 업데이트 하기
-                                                                                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                                                                                            @Override
-                                                                                                                            public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                                if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
-                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                    getActivity().finish();
-                                                                                                                                } else { // 나의 채팅방이 존재하면
-                                                                                                                                    chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
-                                                                                                                                        @Override
-                                                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                            // 채팅방 한개 업데이트하기
-                                                                                                                                            chatCount++;
-                                                                                                                                            myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                                @Override
-                                                                                                                                                public void onSuccess(Void unused) {
-                                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                                        // 끝내기
-                                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                        getActivity().finish();
-                                                                                                                                                    }
-                                                                                                                                                }
-                                                                                                                                            });
-                                                                                                                                        }
-
-                                                                                                                                        @Override
-                                                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                        }
-
-                                                                                                                                        @Override
-                                                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                                        }
-
-                                                                                                                                        @Override
-                                                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                        }
-
-                                                                                                                                        @Override
-                                                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                                        }
-                                                                                                                                    });
-                                                                                                                                }
-                                                                                                                            }
-                                                                                                                        });
-                                                                                                                    }
-                                                                                                                }
-                                                                                                            });
-                                                                                                        }
-
-                                                                                                        @Override
-                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                        }
-
-                                                                                                        @Override
-                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                        }
-
-                                                                                                        @Override
-                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                        }
-
-                                                                                                        @Override
-                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                        }
-                                                                                                    });
                                                                                                 }
+                                                                                            }
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                        }
+                                                                                    });
+
+                                                                                    // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
+                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                        @Override
+                                                                                        public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                            if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
+
+                                                                                            } else { // 일반인은 이곳에 해당
+                                                                                                matchSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
+                                                                                                    @Override
+                                                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                        // 글 하나 하나 정보 새로 업데이트
+                                                                                                        matchingSuccessCount++;
+                                                                                                        snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                            @Override
+                                                                                                            public void onSuccess(Void unused) {
+                                                                                                                if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
+                                                                                                                    // 나의 채팅방 업데이트 하기
+                                                                                                                    db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                        @Override
+                                                                                                                        public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                            if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                getActivity().finish();
+                                                                                                                            } else { // 나의 채팅방이 존재하면
+                                                                                                                                chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                        // 채팅방 한개 업데이트하기
+                                                                                                                                        chatCount++;
+                                                                                                                                        myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                            @Override
+                                                                                                                                            public void onSuccess(Void unused) {
+                                                                                                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                    // 끝내기
+                                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                    getActivity().finish();
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        });
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                    }
+                                                                                                                                });
+
+                                                                                                                                // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
+                                                                                                                                db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                    @Override
+                                                                                                                                    public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                                        if (!matchSnapshot.exists()) {
+
+                                                                                                                                        } else {
+
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                });
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            }
+                                                                                                        });
+                                                                                                    }
+
+                                                                                                    @Override
+                                                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                    }
+
+                                                                                                    @Override
+                                                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                    }
+
+                                                                                                    @Override
+                                                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                    }
+
+                                                                                                    @Override
+                                                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                    }
+                                                                                                });
                                                                                             }
                                                                                         }
                                                                                     });
                                                                                 }
                                                                             }
                                                                         } else if (myCommentSnapshot.child("userId").getValue().equals(UserInfo.userId)){ // 내가 단 댓글이 있으면
-                                                                            Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
-                                                                            if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                                                                            if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                                                                            if (flag_location == 1) userData.put("location", locationSelected);
-                                                                            if (flag_message == 1) userData.put("intro", introMsg);
-
-                                                                            if (categorySnapshot2.getKey().equals("free")  && myCommentSnapshot.getRef().child("userId").toString().equals(UserInfo.userId)) commentSuccessFree++;
-                                                                            else if (categorySnapshot2.getKey().equals("review") && myCommentSnapshot.getRef().child("userId").toString().equals(UserInfo.userId)) commentSuccessReview++;
-                                                                            else if (categorySnapshot2.getKey().equals("tip") && myCommentSnapshot.getRef().child("userId").toString().equals(UserInfo.userId)) commentSuccessTip++;
-
                                                                             // 댓글 업데이트하기
                                                                             myCommentSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                 @Override
@@ -1075,35 +1379,98 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                         else if (categorySnapshot2.getKey().equals("tip")) commentFinishTip++;
                                                                                         if (commentFinishFree + commentFinishReview + commentFinishTip == categoryNum) {
                                                                                             // 내가 작성한 매칭 게시물 찾기
-                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                                                                            db.getReference("Matching/userRequests").addChildEventListener(new ChildEventListener() { // 매칭 게시물 하나하나씩 가져오기
                                                                                                 @Override
-                                                                                                public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                                                                                    if (task.isSuccessful()) {
-                                                                                                        DataSnapshot matchingSnapshot = task.getResult();
-                                                                                                        if (!matchingSnapshot.exists()) { // 내가 쓴 매칭 게시물이 없다면 (전문가는 무조건 이곳에 해당)
-                                                                                                            // 내 채팅 찾기
-                                                                                                            db.getReference("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                    requestsCount++;
+                                                                                                    if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                        successCount++;
+                                                                                                        matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                            @Override
+                                                                                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                if (failCount + successCount == requestsCount) {
+                                                                                                                    // 내 채팅 찾기
+                                                                                                                    db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                        @Override
+                                                                                                                        public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                            if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
+                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                getActivity().finish();
+                                                                                                                            } else {
+                                                                                                                                chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                        // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                            chatCount++;
+                                                                                                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                @Override
+                                                                                                                                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                        // 끝내기
+                                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                        getActivity().finish();
+                                                                                                                                                    }
+                                                                                                                                                }
+                                                                                                                                            });
+                                                                                                                                        }
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                    }
+                                                                                                                                });
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            }
+                                                                                                        });
+                                                                                                    } else {
+                                                                                                        failCount++;
+                                                                                                        if (failCount + successCount == requestsCount) {
+                                                                                                            db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                 @Override
                                                                                                                 public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                    if (!chatSnapshot.exists()) { // 나의 채팅이 존재하지 않으면
+                                                                                                                    if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                                                                                         Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                                                                                         getActivity().finish();
                                                                                                                     } else {
                                                                                                                         chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                                                                                             @Override
                                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                // 채팅방 한개 업데이트하기
-                                                                                                                                chatCount++;
-                                                                                                                                myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                    @Override
-                                                                                                                                    public void onSuccess(Void unused) {
-                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                            // 끝내기
-                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                            getActivity().finish();
+                                                                                                                                // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                    chatCount++;
+                                                                                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                        @Override
+                                                                                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                            if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                // 끝내기
+                                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                getActivity().finish();
+                                                                                                                                            }
                                                                                                                                         }
-                                                                                                                                    }
-                                                                                                                                });
+                                                                                                                                    });
+                                                                                                                                }
                                                                                                                             }
 
                                                                                                                             @Override
@@ -1129,90 +1496,132 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                     }
                                                                                                                 }
                                                                                                             });
-                                                                                                        } else { // 내가 쓴 매칭 게시물이 있다면
-                                                                                                            matchingSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
-                                                                                                                @Override
-                                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                    // 글 하나 하나 정보 새로 업데이트
-                                                                                                                    matchingSuccessCount++;
-                                                                                                                    snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                        @Override
-                                                                                                                        public void onSuccess(Void unused) {
-                                                                                                                            if (matchingSuccessCount == matchingSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
-                                                                                                                                // 나의 채팅방 업데이트 하기
-                                                                                                                                db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                                                                                                    @Override
-                                                                                                                                    public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                                        if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
-                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                            getActivity().finish();
-                                                                                                                                        } else { // 나의 채팅방이 존재하면
-                                                                                                                                            chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                                    // 채팅방 한개 업데이트하기
-                                                                                                                                                    chatCount++;
-                                                                                                                                                    myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                                        @Override
-                                                                                                                                                        public void onSuccess(Void unused) {
-                                                                                                                                                            if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                                                // 끝내기
-                                                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                                getActivity().finish();
-                                                                                                                                                            }
-                                                                                                                                                        }
-                                                                                                                                                    });
-                                                                                                                                                }
-
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                                }
-
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                                                }
-
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                                }
-
-                                                                                                                                                @Override
-                                                                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                                                }
-                                                                                                                                            });
-                                                                                                                                        }
-                                                                                                                                    }
-                                                                                                                                });
-                                                                                                                            }
-                                                                                                                        }
-                                                                                                                    });
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                }
-                                                                                                            });
                                                                                                         }
+                                                                                                    }
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                }
+                                                                                            });
+
+                                                                                            // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
+                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                @Override
+                                                                                                public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                    if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
+
+                                                                                                    } else { // 일반인은 이곳에 해당
+                                                                                                        matchSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
+                                                                                                            @Override
+                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                // 글 하나 하나 정보 새로 업데이트
+                                                                                                                matchingSuccessCount++;
+                                                                                                                snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                    @Override
+                                                                                                                    public void onSuccess(Void unused) {
+                                                                                                                        if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
+                                                                                                                            // 나의 채팅방 업데이트 하기
+                                                                                                                            db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                @Override
+                                                                                                                                public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                                    if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                        getActivity().finish();
+                                                                                                                                    } else { // 나의 채팅방이 존재하면
+                                                                                                                                        chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                                // 채팅방 한개 업데이트하기
+                                                                                                                                                chatCount++;
+                                                                                                                                                myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                                    @Override
+                                                                                                                                                    public void onSuccess(Void unused) {
+                                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                            // 끝내기
+                                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                            getActivity().finish();
+                                                                                                                                                        }
+                                                                                                                                                    }
+                                                                                                                                                });
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                            }
+                                                                                                                                        });
+
+                                                                                                                                        // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
+                                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                            @Override
+                                                                                                                                            public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                                                if (!matchSnapshot.exists()) {
+
+                                                                                                                                                } else {
+
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        });
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            });
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                            }
+                                                                                                        });
                                                                                                     }
                                                                                                 }
                                                                                             });
@@ -1269,17 +1678,18 @@ public class SettingMyInfoFragment extends Fragment {
                                                 }
                                             });
                                         }
-                                    } else { // 내가 쓴 글이 지금 카테고리에 하나라도 존재할 경우
+                                    }
+// 경계선 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 경계선//
+                                    else { // 내가 쓴 글이 지금 카테고리에 하나라도 존재할 경우
+                                        Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
+                                        if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                                        if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
+                                        if (flag_location == 1) userData.put("location", locationSelected);
+                                        if (flag_message == 1) userData.put("intro", introMsg);
+
                                         postsSnapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addChildEventListener(new ChildEventListener() { // 각 카테고리의 내가 쓴 글을 하나씩 가져오기
                                             @Override
                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myPostSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                // 업데이트 할 데이터 만들기
-                                                Map<String, Object> userData = new HashMap<>();
-                                                if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                                                if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                                                if (flag_location == 1) userData.put("location", locationSelected);
-                                                if (flag_message == 1) userData.put("intro", introMsg);
-
                                                 // 글 한개 업데이트하기
                                                 if (postsSnapshot.getKey().equals("free") && myPostSnapshot.child("userId").getValue().toString().equals(UserInfo.userId)) postsCountFree++;
                                                 else if (postsSnapshot.getKey().equals("review") && myPostSnapshot.child("userId").getValue().toString().equals(UserInfo.userId)) postsCountReview++;
@@ -1293,61 +1703,120 @@ public class SettingMyInfoFragment extends Fragment {
                                                             else if (postsSnapshot.getKey().equals("tip")) finishCountTip++;
                                                             if (failCount + finishCountFree + finishCountReview + finishCountTip == categoryNum) {
                                                                 failCount = 0;
-                                                                postsRef.getRef().addChildEventListener(new ChildEventListener() { // 댓글 찾기
+                                                                postsRef.getRef().addChildEventListener(new ChildEventListener() { // 카테고리 데이터 각각 가져와서 댓글 찾기 시작
                                                                     @Override
                                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot categorySnapshot2, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                        categorySnapshot2.getRef().addChildEventListener(new ChildEventListener() { // 내가 작성한 댓글이 있는지 게시글 하나 하나씩 가져와서 확인
+                                                                        categorySnapshot2.getRef().addChildEventListener(new ChildEventListener() { // 댓글이 있는지 게시글 하나 하나씩 가져와서 확인
                                                                             @Override
-                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot commentsSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                if (!commentsSnapshot.hasChild("comments")) { // 게시글에 댓글이 없다면
+                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot postSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                if (categorySnapshot2.getKey().equals("free")) commentsNumFree++;
+                                                                                else if (categorySnapshot2.getKey().equals("review")) commentsNumReview++;
+                                                                                else if (categorySnapshot2.getKey().equals("tip")) commentsNumTip++;
+
+                                                                                if (!postSnapshot.hasChild("comments")) { // 게시글에 댓글이 없다면
                                                                                     if (categorySnapshot2.getKey().equals("free")) commentFailFree++;
                                                                                     else if (categorySnapshot2.getKey().equals("review")) commentFailReview++;
                                                                                     else if (categorySnapshot2.getKey().equals("tip")) commentFailTip++;
 
-                                                                                    if ((categorySnapshot2.getKey().equals("free") && commentFailFree == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("review") && commentFailReview == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("tip") && commentFailTip == categorySnapshot2.getChildrenCount())) { // 모든 카테고리에 댓글이 없다면
-                                                                                        if (categorySnapshot2.getKey().equals("free")) finishCount++;
-                                                                                        else if (categorySnapshot2.getKey().equals("review")) finishCount++;
-                                                                                        else if (categorySnapshot2.getKey().equals("tip")) finishCount++;
-                                                                                        if (finishCount == categoryNum) {
-                                                                                            finishCount = 0;
-                                                                                            // 내가 작성한 매칭 게시물 찾기
-                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                                                                                @Override
-                                                                                                public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                                                                                    Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
-                                                                                                    if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                                                                                                    if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                                                                                                    if (flag_location == 1) userData.put("location", locationSelected);
-                                                                                                    if (flag_message == 1) userData.put("intro", introMsg);
+                                                                                    if ((categorySnapshot2.getKey().equals("free") && commentFailFree + commentSuccessFree == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("review") && commentFailReview + commentSuccessReview == categorySnapshot2.getChildrenCount()) || (categorySnapshot2.getKey().equals("tip") && commentFailTip + commentSuccessTip == categorySnapshot2.getChildrenCount())) { // 모든 카테고리에 댓글이 없다면
+                                                                                        if (categorySnapshot2.getKey().equals("free")) commentFinishFree++;
+                                                                                        else if (categorySnapshot2.getKey().equals("review")) commentFinishReview++;
+                                                                                        else if (categorySnapshot2.getKey().equals("tip")) commentFinishTip++;
 
-                                                                                                    if (task.isSuccessful()) {
-                                                                                                        DataSnapshot matchingSnapshot = task.getResult();
-                                                                                                        if (!matchingSnapshot.exists()) { // 내가 쓴 매칭 게시물이 없다면 (전문가는 무조건 이곳에 해당)
-                                                                                                            // 내 채팅 찾기
-                                                                                                            db.getReference("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                        if (commentFinishFree + commentFinishReview + commentFinishTip == categoryNum) { // 확인 완료 후
+                                                                                            // 내가 작성한 매칭 게시물 찾기
+                                                                                            db.getReference("Matching/userRequests").addChildEventListener(new ChildEventListener() { // 매칭 게시물 하나하나씩 가져오기
+                                                                                                @Override
+                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                    requestsCount++;
+                                                                                                    if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                        successCount++;
+                                                                                                        matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                            @Override
+                                                                                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                if (failCount + successCount == requestsCount) {
+                                                                                                                    // 내 채팅 찾기
+                                                                                                                    db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                        @Override
+                                                                                                                        public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                            if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
+                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                getActivity().finish();
+                                                                                                                            } else {
+                                                                                                                                chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                        // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                            chatCount++;
+                                                                                                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                @Override
+                                                                                                                                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                        // 끝내기
+                                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                        getActivity().finish();
+                                                                                                                                                    }
+                                                                                                                                                }
+                                                                                                                                            });
+                                                                                                                                        }
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                    }
+
+                                                                                                                                    @Override
+                                                                                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                    }
+                                                                                                                                });
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            }
+                                                                                                        });
+                                                                                                    } else {
+                                                                                                        failCount++;
+                                                                                                        if (failCount + successCount == requestsCount) {
+                                                                                                            db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                 @Override
                                                                                                                 public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                    if (!chatSnapshot.exists()) { // 나의 채팅이 존재하지 않으면
+                                                                                                                    if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                                                                                         Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                                                                                         getActivity().finish();
                                                                                                                     } else {
                                                                                                                         chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                                                                                             @Override
                                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                // 채팅방 한개 업데이트하기
-                                                                                                                                chatCount++;
-                                                                                                                                myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                    @Override
-                                                                                                                                    public void onSuccess(Void unused) {
-                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                            // 업뎃하고 끝내기
-                                                                                                                                            if (MyInfoFragment.post != null) MyInfoFragment.post.adapter.notifyDataSetChanged();
-                                                                                                                                            if (MyInfoFragment.comment != null) MyInfoFragment.comment.adapter.notifyDataSetChanged();
-                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                            getActivity().finish();
+                                                                                                                                // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                    chatCount++;
+                                                                                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                        @Override
+                                                                                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                            if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                // 끝내기
+                                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                getActivity().finish();
+                                                                                                                                            }
                                                                                                                                         }
-                                                                                                                                    }
-                                                                                                                                });
+                                                                                                                                    });
+                                                                                                                                }
                                                                                                                             }
 
                                                                                                                             @Override
@@ -1373,39 +1842,188 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                     }
                                                                                                                 }
                                                                                                             });
-                                                                                                        } else { // 내가 쓴 매칭 게시물이 있다면
-                                                                                                            matchingSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
-                                                                                                                @Override
-                                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot myMatchingSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                    // 글 하나 하나 정보 새로 업데이트
-                                                                                                                    matchingSuccessCount++;
-                                                                                                                    myMatchingSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                }
+
+                                                                                                @Override
+                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                }
+                                                                                            });
+
+                                                                                            // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
+                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                @Override
+                                                                                                public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                    if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
+
+                                                                                                    } else { // 일반인은 이곳에 해당
+                                                                                                        matchSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
+                                                                                                            @Override
+                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                // 글 하나 하나 정보 새로 업데이트
+                                                                                                                matchingSuccessCount++;
+                                                                                                                snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                    @Override
+                                                                                                                    public void onSuccess(Void unused) {
+                                                                                                                        if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
+                                                                                                                            // 나의 채팅방 업데이트 하기
+                                                                                                                            db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                @Override
+                                                                                                                                public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                                    if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                        getActivity().finish();
+                                                                                                                                    } else { // 나의 채팅방이 존재하면
+                                                                                                                                        chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                                // 채팅방 한개 업데이트하기
+                                                                                                                                                chatCount++;
+                                                                                                                                                myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                                    @Override
+                                                                                                                                                    public void onSuccess(Void unused) {
+                                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                            // 끝내기
+                                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                            getActivity().finish();
+                                                                                                                                                        }
+                                                                                                                                                    }
+                                                                                                                                                });
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                            }
+
+                                                                                                                                            @Override
+                                                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                            }
+                                                                                                                                        });
+
+                                                                                                                                        // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
+                                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                            @Override
+                                                                                                                                            public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                                                if (!matchSnapshot.exists()) {
+
+                                                                                                                                                } else {
+
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        });
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            });
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                });
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                            }
+                                                                                                        });
+                                                                                                    }
+                                                                                                }
+                                                                                            });
+                                                                                        }
+                                                                                    }
+                                                                                } else { // 게시글에 댓글이 포함되어 있다면
+                                                                                    postSnapshot.getRef().child("comments").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
+                                                                                        @Override
+                                                                                        public void onSuccess(DataSnapshot commentSnapshot) {
+                                                                                            if (!commentSnapshot.exists()) { // 현재 게시글에 내가 단 댓글이 없으면
+                                                                                                if (categorySnapshot2.getKey().equals("free")) commentFailFree++;
+                                                                                                else if (categorySnapshot2.getKey().equals("review")) commentFailReview++;
+                                                                                                else if (categorySnapshot2.getKey().equals("tip")) commentFailTip++;
+
+                                                                                                if ((categorySnapshot2.getKey().equals("free") && commentFailFree + commentSuccessFree == commentsNumFree && commentFinishFree == 0) || (categorySnapshot2.getKey().equals("review") && commentFailReview + commentSuccessReview == commentFinishReview && noCommentsReview == 0) || (categorySnapshot2.getKey().equals("tip") && commentFailTip + commentSuccessTip == commentFinishTip && noCommentsTip == 0)) { // 내가 단 댓글이 하나도 없다면
+                                                                                                    if (categorySnapshot2.getKey().equals("free")) commentFinishFree++;
+                                                                                                    else if (categorySnapshot2.getKey().equals("review")) commentFinishReview++;
+                                                                                                    else if (categorySnapshot2.getKey().equals("tip")) commentFinishTip++;
+                                                                                                    if (commentFinishFree + commentFinishReview + commentFinishTip == categoryNum) {
+                                                                                                        // 내가 작성한 매칭 게시물 찾기
+                                                                                                        db.getReference("Matching/userRequests").addChildEventListener(new ChildEventListener() { // 매칭 게시물 하나하나씩 가져오기
+                                                                                                            @Override
+                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                requestsCount++;
+                                                                                                                if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                                    successCount++;
+                                                                                                                    matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                         @Override
-                                                                                                                        public void onSuccess(Void unused) {
-                                                                                                                            if (matchingSuccessCount == matchingSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
-                                                                                                                                // 나의 채팅방 업데이트 하기
-                                                                                                                                db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                            if (failCount + successCount == requestsCount) {
+                                                                                                                                // 내 채팅 찾기
+                                                                                                                                db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                     @Override
                                                                                                                                     public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                                        if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                                        if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                                                                                                             Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                                                                                                             getActivity().finish();
-                                                                                                                                        } else { // 나의 채팅방이 존재하면
-                                                                                                                                            chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                                        } else {
+                                                                                                                                            chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                                                                                                                 @Override
                                                                                                                                                 public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                                    // 채팅방 한개 업데이트하기
-                                                                                                                                                    chatCount++;
-                                                                                                                                                    myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                                        @Override
-                                                                                                                                                        public void onSuccess(Void unused) {
-                                                                                                                                                            if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                                                // 끝내기
-                                                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                                getActivity().finish();
+                                                                                                                                                    // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                                    if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                                        chatCount++;
+                                                                                                                                                        myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                            @Override
+                                                                                                                                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                                    // 끝내기
+                                                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                                    getActivity().finish();
+                                                                                                                                                                }
                                                                                                                                                             }
-                                                                                                                                                        }
-                                                                                                                                                    });
+                                                                                                                                                        });
+                                                                                                                                                    }
                                                                                                                                                 }
 
                                                                                                                                                 @Override
@@ -1434,79 +2052,426 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                             }
                                                                                                                         }
                                                                                                                     });
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                }
-
-                                                                                                                @Override
-                                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                }
-                                                                                                            });
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            });
-                                                                                        }
-                                                                                    }
-                                                                                } else { // 게시글에 댓글이 포함되어 있다면
-                                                                                    commentsSnapshot.getRef().child("comments").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
-                                                                                        @Override
-                                                                                        public void onSuccess(DataSnapshot myCommentSnapshot) {
-                                                                                            if (!myCommentSnapshot.exists()) { // 현재 게시글에 내가 단 댓글이 없으면
-                                                                                                if (categorySnapshot2.getKey().equals("free")) commentFailFree++;
-                                                                                                else if (categorySnapshot2.getKey().equals("review")) commentFailReview++;
-                                                                                                else if (categorySnapshot2.getKey().equals("tip")) commentFailTip++;
-
-                                                                                                if ((categorySnapshot.getKey().equals("free") && commentFailFree + commentSuccessFree == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("review") && commentFailReview + commentSuccessReview == categorySnapshot.getChildrenCount()) || (categorySnapshot.getKey().equals("tip") && commentFailTip + commentSuccessTip == categorySnapshot.getChildrenCount())) { // 내가 단 댓글이 하나도 없다면
-                                                                                                    finishCount++;
-                                                                                                    if (finishCount == categoryNum) {
-                                                                                                        // 내가 작성한 매칭 게시물 찾기
-                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                                                                                            @Override
-                                                                                                            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                                                                                                Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 미리 만들기
-                                                                                                                if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                                                                                                                if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                                                                                                                if (flag_location == 1) userData.put("location", locationSelected);
-                                                                                                                if (flag_message == 1) userData.put("intro", introMsg);
-
-                                                                                                                if (task.isSuccessful()) {
-                                                                                                                    DataSnapshot matchingSnapshot = task.getResult();
-                                                                                                                    if (!matchingSnapshot.exists()) { // 내가 쓴 매칭 게시물이 없다면 (전문가는 무조건 이곳에 해당)
-                                                                                                                        // 내 채팅 찾기
-                                                                                                                        db.getReference("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                } else {
+                                                                                                                    failCount++;
+                                                                                                                    if (failCount + successCount == requestsCount) {
+                                                                                                                        db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                             @Override
                                                                                                                             public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                                if (!chatSnapshot.exists()) { // 나의 채팅이 존재하지 않으면
+                                                                                                                                if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
                                                                                                                                     Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                                                                                                                                     getActivity().finish();
                                                                                                                                 } else {
                                                                                                                                     chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
                                                                                                                                         @Override
                                                                                                                                         public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                            // 채팅방 한개 업데이트하기
-                                                                                                                                            chatCount++;
-                                                                                                                                            myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                            // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                            if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                                chatCount++;
+                                                                                                                                                myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                    @Override
+                                                                                                                                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                            // 끝내기
+                                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                            getActivity().finish();
+                                                                                                                                                        }
+                                                                                                                                                    }
+                                                                                                                                                });
+                                                                                                                                            }
+                                                                                                                                        }
+
+                                                                                                                                        @Override
+                                                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                        }
+
+                                                                                                                                        @Override
+                                                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                        }
+
+                                                                                                                                        @Override
+                                                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                        }
+
+                                                                                                                                        @Override
+                                                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                        }
+                                                                                                                                    });
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        });
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                            }
+
+                                                                                                            @Override
+                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                            }
+                                                                                                        });
+
+                                                                                                        // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
+                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                            @Override
+                                                                                                            public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
+
+                                                                                                                } else { // 일반인은 이곳에 해당
+                                                                                                                    matchSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
+                                                                                                                        @Override
+                                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                            // 글 하나 하나 정보 새로 업데이트
+                                                                                                                            matchingSuccessCount++;
+                                                                                                                            snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                @Override
+                                                                                                                                public void onSuccess(Void unused) {
+                                                                                                                                    if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
+                                                                                                                                        // 나의 채팅방 업데이트 하기
+                                                                                                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                            @Override
+                                                                                                                                            public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                                                if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                    getActivity().finish();
+                                                                                                                                                } else { // 나의 채팅방이 존재하면
+                                                                                                                                                    chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                                            // 채팅방 한개 업데이트하기
+                                                                                                                                                            chatCount++;
+                                                                                                                                                            myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                                                @Override
+                                                                                                                                                                public void onSuccess(Void unused) {
+                                                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                                        // 끝내기
+                                                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                                        getActivity().finish();
+                                                                                                                                                                    }
+                                                                                                                                                                }
+                                                                                                                                                            });
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                                        }
+                                                                                                                                                    });
+
+                                                                                                                                                    // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
+                                                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                                                            if (!matchSnapshot.exists()) {
+
+                                                                                                                                                            } else {
+
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    });
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        });
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            });
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                        }
+
+                                                                                                                        @Override
+                                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                        }
+                                                                                                                    });
+                                                                                                                }
+                                                                                                            }
+                                                                                                        });
+                                                                                                    }
+                                                                                                }
+                                                                                            } else { // 내가 단 댓글이 있으면
+                                                                                                // 댓글 업데이트하기
+                                                                                                commentSnapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addChildEventListener(new ChildEventListener() {
+                                                                                                    @Override
+                                                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                        snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                            @Override
+                                                                                                            public void onSuccess(Void unused) {
+                                                                                                                if (categorySnapshot2.getKey().equals("free")) commentSuccessFree++;
+                                                                                                                else if (categorySnapshot2.getKey().equals("review")) commentSuccessReview++;
+                                                                                                                else if (categorySnapshot2.getKey().equals("tip")) commentSuccessTip++;
+
+                                                                                                                if ((categorySnapshot2.getKey().equals("free") && commentFailFree + commentSuccessFree == commentsNumFree && commentFinishFree == 0) || (categorySnapshot2.getKey().equals("review") && commentFailReview + commentSuccessReview == commentsNumReview && commentFinishReview == 0) || (categorySnapshot2.getKey().equals("tip") && commentFailTip + commentSuccessTip == commentsNumTip && commentFinishTip == 0)) { // 댓글이 있는 모든 게시물을 다 확인하였으면
+                                                                                                                    if (categorySnapshot2.getKey().equals("free")) commentFinishFree++;
+                                                                                                                    else if (categorySnapshot2.getKey().equals("review")) commentFinishReview++;
+                                                                                                                    else if (categorySnapshot2.getKey().equals("tip")) commentFinishTip++;
+                                                                                                                    if (commentFinishFree + commentFinishReview + commentFinishTip == categoryNum) { // 댓글 업뎃 완료하였다면
+                                                                                                                        // 내가 작성한 매칭 게시물 찾기
+                                                                                                                        db.getReference("Matching/userRequests").addChildEventListener(new ChildEventListener() { // 매칭 게시물 하나하나씩 가져오기
+                                                                                                                            @Override
+                                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                requestsCount++;
+                                                                                                                                if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                                                    successCount++;
+                                                                                                                                    matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                        @Override
+                                                                                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                            if (failCount + successCount == requestsCount) {
+                                                                                                                                                // 내 채팅 찾기
+                                                                                                                                                db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                                    @Override
+                                                                                                                                                    public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                                                        if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
+                                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                            getActivity().finish();
+                                                                                                                                                        } else {
+                                                                                                                                                            chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
+                                                                                                                                                                @Override
+                                                                                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                                                    // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                                                    if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                                                        chatCount++;
+                                                                                                                                                                        myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                                            @Override
+                                                                                                                                                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                                                    // 끝내기
+                                                                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                                                    getActivity().finish();
+                                                                                                                                                                                }
+                                                                                                                                                                            }
+                                                                                                                                                                        });
+                                                                                                                                                                    }
+                                                                                                                                                                }
+
+                                                                                                                                                                @Override
+                                                                                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                                }
+
+                                                                                                                                                                @Override
+                                                                                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                                                }
+
+                                                                                                                                                                @Override
+                                                                                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                                }
+
+                                                                                                                                                                @Override
+                                                                                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                                                }
+                                                                                                                                                            });
+                                                                                                                                                        }
+                                                                                                                                                    }
+                                                                                                                                                });
+                                                                                                                                            }
+                                                                                                                                        }
+                                                                                                                                    });
+                                                                                                                                } else {
+                                                                                                                                    failCount++;
+                                                                                                                                    if (failCount + successCount == requestsCount) {
+                                                                                                                                        db.getReference("Chat").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                            @Override
+                                                                                                                                            public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                                                if (!chatSnapshot.exists()) { // 채팅이 존재하지 않으면
+                                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                    getActivity().finish();
+                                                                                                                                                } else {
+                                                                                                                                                    chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                                            // 채팅방 정보 한개 업데이트하기
+
+                                                                                                                                                            if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                                                chatCount++;
+                                                                                                                                                                myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                                    @Override
+                                                                                                                                                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                                            // 끝내기
+                                                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                                            getActivity().finish();
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                });
+                                                                                                                                                            }
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                        }
+
+                                                                                                                                                        @Override
+                                                                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                                        }
+                                                                                                                                                    });
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        });
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            }
+
+                                                                                                                            @Override
+                                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                            }
+
+                                                                                                                            @Override
+                                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                            }
+
+                                                                                                                            @Override
+                                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                            }
+
+                                                                                                                            @Override
+                                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                            }
+                                                                                                                        });
+
+                                                                                                                        // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
+                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                            @Override
+                                                                                                                            public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                                if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
+
+                                                                                                                                } else { // 일반인은 이곳에 해당
+                                                                                                                                    matchSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
+                                                                                                                                        @Override
+                                                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                            // 글 하나 하나 정보 새로 업데이트
+                                                                                                                                            matchingSuccessCount++;
+                                                                                                                                            snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                                                                                 @Override
                                                                                                                                                 public void onSuccess(Void unused) {
-                                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                                        // 끝내기
-                                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                        getActivity().finish();
+                                                                                                                                                    if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
+                                                                                                                                                        // 나의 채팅방 업데이트 하기
+                                                                                                                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                                            @Override
+                                                                                                                                                            public void onSuccess(DataSnapshot chatSnapshot) {
+                                                                                                                                                                if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
+                                                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                                    getActivity().finish();
+                                                                                                                                                                } else { // 나의 채팅방이 존재하면
+                                                                                                                                                                    chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                                                                                            // 채팅방 한개 업데이트하기
+                                                                                                                                                                            chatCount++;
+                                                                                                                                                                            myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                                                                                                @Override
+                                                                                                                                                                                public void onSuccess(Void unused) {
+                                                                                                                                                                                    if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
+                                                                                                                                                                                        // 끝내기
+                                                                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
+                                                                                                                                                                                        getActivity().finish();
+                                                                                                                                                                                    }
+                                                                                                                                                                                }
+                                                                                                                                                                            });
+                                                                                                                                                                        }
+
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                                        }
+
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+                                                                                                                                                                        }
+
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                                                                                                                                                                        }
+
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                                                                                                                                                        }
+                                                                                                                                                                    });
+
+                                                                                                                                                                    // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
+                                                                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                                                        @Override
+                                                                                                                                                                        public void onSuccess(DataSnapshot matchSnapshot) {
+                                                                                                                                                                            if (!matchSnapshot.exists()) {
+
+                                                                                                                                                                            } else {
+
+                                                                                                                                                                            }
+                                                                                                                                                                        }
+                                                                                                                                                                    });
+                                                                                                                                                                }
+                                                                                                                                                            }
+                                                                                                                                                        });
                                                                                                                                                     }
                                                                                                                                                 }
                                                                                                                                             });
@@ -1535,259 +2500,30 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                 }
                                                                                                                             }
                                                                                                                         });
-                                                                                                                    } else { // 내가 쓴 매칭 게시물이 있다면
-                                                                                                                        matchingSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
-                                                                                                                            @Override
-                                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot myMatchingSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                // 글 하나 하나 정보 새로 업데이트
-                                                                                                                                matchingSuccessCount++;
-                                                                                                                                myMatchingSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                    @Override
-                                                                                                                                    public void onSuccess(Void unused) {
-                                                                                                                                        if (matchingSuccessCount == matchingSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
-                                                                                                                                            // 나의 채팅방 업데이트 하기
-                                                                                                                                            db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                                                                                                                @Override
-                                                                                                                                                public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                                                    if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
-                                                                                                                                                        Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                        getActivity().finish();
-                                                                                                                                                    } else { // 나의 채팅방이 존재하면
-                                                                                                                                                        chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                                                // 채팅방 한개 업데이트하기
-                                                                                                                                                                chatCount++;
-                                                                                                                                                                myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                                                    @Override
-                                                                                                                                                                    public void onSuccess(Void unused) {
-                                                                                                                                                                        if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                                                            // 끝내기
-                                                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                                            getActivity().finish();
-                                                                                                                                                                        }
-                                                                                                                                                                    }
-                                                                                                                                                                });
-                                                                                                                                                            }
-
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                                            }
-
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                                                            }
-
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                                            }
-
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                                                            }
-                                                                                                                                                        });
-                                                                                                                                                    }
-                                                                                                                                                }
-                                                                                                                                            });
-                                                                                                                                        }
-                                                                                                                                    }
-                                                                                                                                });
-                                                                                                                            }
-
-                                                                                                                            @Override
-                                                                                                                            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                            }
-
-                                                                                                                            @Override
-                                                                                                                            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                            }
-
-                                                                                                                            @Override
-                                                                                                                            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                            }
-
-                                                                                                                            @Override
-                                                                                                                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                            }
-                                                                                                                        });
                                                                                                                     }
                                                                                                                 }
                                                                                                             }
                                                                                                         });
                                                                                                     }
-                                                                                                }
-                                                                                            } else if (myCommentSnapshot.child("userId").getValue().equals(UserInfo.userId)) { // 내가 단 댓글이 있으면
-                                                                                                Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
-                                                                                                if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
-                                                                                                if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
-                                                                                                if (flag_location == 1) userData.put("location", locationSelected);
-                                                                                                if (flag_message == 1) userData.put("intro", introMsg);
 
-                                                                                                if (categorySnapshot2.getKey().equals("free")) commentSuccessFree++;
-                                                                                                else if (categorySnapshot2.getKey().equals("review")) commentSuccessReview++;
-                                                                                                else if (categorySnapshot2.getKey().equals("tip")) commentSuccessTip++;
-
-                                                                                                // 댓글 업데이트하기
-                                                                                                myCommentSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                                     @Override
-                                                                                                    public void onSuccess(Void unused) {
-                                                                                                        if ((categorySnapshot2.getKey().equals("free") && (commentFailFree + commentSuccessFree) == categorySnapshot2.getChildrenCount() && commentFinishFree == 0) || (categorySnapshot2.getKey().equals("review") && (commentFailReview + commentSuccessReview) == categorySnapshot2.getChildrenCount() && commentFinishReview == 0) || (categorySnapshot2.getKey().equals("tip") && (commentFailTip + commentSuccessTip) == categorySnapshot2.getChildrenCount() && commentFinishTip == 0)) { // 댓글이 있는 모든 게시물을 다 확인하였으면
-                                                                                                            if (categorySnapshot2.getKey().equals("free")) commentFinishFree++;
-                                                                                                            else if (categorySnapshot2.getKey().equals("review")) commentFinishReview++;
-                                                                                                            else if (categorySnapshot2.getKey().equals("tip")) commentFinishTip++;
-                                                                                                            if (commentFinishFree + commentFinishReview + commentFinishTip == categoryNum) {
-                                                                                                                // 내가 작성한 매칭 게시물 찾기
-                                                                                                                db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                                                                                                    @Override
-                                                                                                                    public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                                                                                                        if (task.isSuccessful()) {
-                                                                                                                            DataSnapshot matchingSnapshot = task.getResult();
-                                                                                                                            if (!matchingSnapshot.exists()) { // 내가 쓴 매칭 게시물이 없다면 (전문가는 무조건 이곳에 해당)
-                                                                                                                                // 내 채팅 찾기
-                                                                                                                                db.getReference("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                                                                                                    @Override
-                                                                                                                                    public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                                        if (!chatSnapshot.exists()) { // 나의 채팅이 존재하지 않으면
-                                                                                                                                            Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                            getActivity().finish();
-                                                                                                                                        } else {
-                                                                                                                                            chatSnapshot.getRef().addChildEventListener(new ChildEventListener() {
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                                    // 채팅방 한개 업데이트하기
-                                                                                                                                                    chatCount++;
-                                                                                                                                                    myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                                        @Override
-                                                                                                                                                        public void onSuccess(Void unused) {
-                                                                                                                                                            if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                                                // 끝내기
-                                                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                                getActivity().finish();
-                                                                                                                                                            }
-                                                                                                                                                        }
-                                                                                                                                                    });
-                                                                                                                                                }
+                                                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
 
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                    }
 
-                                                                                                                                                }
+                                                                                                    @Override
+                                                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
 
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+                                                                                                    }
 
-                                                                                                                                                }
+                                                                                                    @Override
+                                                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
 
-                                                                                                                                                @Override
-                                                                                                                                                public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                                                                                                    }
 
-                                                                                                                                                }
+                                                                                                    @Override
+                                                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-                                                                                                                                                @Override
-                                                                                                                                                public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                                                }
-                                                                                                                                            });
-                                                                                                                                        }
-                                                                                                                                    }
-                                                                                                                                });
-                                                                                                                            } else { // 내가 쓴 매칭 게시물이 있다면
-                                                                                                                                matchingSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 내가 쓴 매칭 게시물 하나씩 가져오기
-                                                                                                                                    @Override
-                                                                                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                        // 글 하나 하나 정보 새로 업데이트
-                                                                                                                                        matchingSuccessCount++;
-                                                                                                                                        snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                            @Override
-                                                                                                                                            public void onSuccess(Void unused) {
-                                                                                                                                                if (matchingSuccessCount == matchingSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
-                                                                                                                                                    // 나의 채팅방 업데이트 하기
-                                                                                                                                                    db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                                                                                                                        @Override
-                                                                                                                                                        public void onSuccess(DataSnapshot chatSnapshot) {
-                                                                                                                                                            if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
-                                                                                                                                                                Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                                getActivity().finish();
-                                                                                                                                                            } else { // 나의 채팅방이 존재하면
-                                                                                                                                                                chatSnapshot.getRef().addChildEventListener(new ChildEventListener() { // 채팅방 하나 하나 가져오기
-                                                                                                                                                                    @Override
-                                                                                                                                                                    public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                                                                                                                                                                        // 채팅방 한개 업데이트하기
-                                                                                                                                                                        chatCount++;
-                                                                                                                                                                        myChatSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                                                                                                            @Override
-                                                                                                                                                                            public void onSuccess(Void unused) {
-                                                                                                                                                                                if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
-                                                                                                                                                                                    // 끝내기
-                                                                                                                                                                                    Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
-                                                                                                                                                                                    getActivity().finish();
-                                                                                                                                                                                }
-                                                                                                                                                                            }
-                                                                                                                                                                        });
-                                                                                                                                                                    }
-
-                                                                                                                                                                    @Override
-                                                                                                                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                                                    }
-
-                                                                                                                                                                    @Override
-                                                                                                                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                                                                    }
-
-                                                                                                                                                                    @Override
-                                                                                                                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                                                    }
-
-                                                                                                                                                                    @Override
-                                                                                                                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                                                                    }
-                                                                                                                                                                });
-                                                                                                                                                            }
-                                                                                                                                                        }
-                                                                                                                                                    });
-                                                                                                                                                }
-                                                                                                                                            }
-                                                                                                                                        });
-                                                                                                                                    }
-
-                                                                                                                                    @Override
-                                                                                                                                    public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                    }
-
-                                                                                                                                    @Override
-                                                                                                                                    public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-
-                                                                                                                                    }
-
-                                                                                                                                    @Override
-                                                                                                                                    public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-                                                                                                                                    }
-
-                                                                                                                                    @Override
-                                                                                                                                    public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-                                                                                                                                    }
-                                                                                                                                });
-                                                                                                                            }
-                                                                                                                        }
-                                                                                                                    }
-                                                                                                                });
-                                                                                                            }
-                                                                                                        }
                                                                                                     }
                                                                                                 });
                                                                                             }

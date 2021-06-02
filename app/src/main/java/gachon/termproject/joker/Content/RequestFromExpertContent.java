@@ -3,58 +3,58 @@ package gachon.termproject.joker.Content;
 import java.util.ArrayList;
 
 public class RequestFromExpertContent {
-    String expertUserId;
-    String expertNickname;
-    String expertProfileImg;
-    String expertPortfolioImg;
-    String expertPortfolioWeb;
-    String expertPushToken;
-    String expertIntro;
-    ArrayList<String> expertLocation;
+    String userId;
+    String nickname;
+    String profileImg;
+    String portfolioImg;
+    String portfolioWeb;
+    String pushToken;
+    String intro;
+    ArrayList<String> location;
     boolean isMatched;
     
     public RequestFromExpertContent() {}
     
-    public RequestFromExpertContent(String expertNickname, String expertProfileImg, String expertPortfolioImg, String expertPortfolioWeb, String expertPushToken, String expertIntro, ArrayList<String> expertLocation, boolean isMatched) {
-        this.expertNickname = expertNickname;
-        this.expertProfileImg = expertProfileImg;
-        this.expertPortfolioImg = expertPortfolioImg;
-        this.expertPortfolioWeb = expertPortfolioWeb;
-        this.expertPushToken = expertPushToken;
-        this.expertIntro = expertIntro;
-        this.expertLocation = expertLocation;
+    public RequestFromExpertContent(String nickname, String profileImg, String portfolioImg, String portfolioWeb, String pushToken, String intro, ArrayList<String> location, boolean isMatched) {
+        this.nickname = nickname;
+        this.profileImg = profileImg;
+        this.portfolioImg = portfolioImg;
+        this.portfolioWeb = portfolioWeb;
+        this.pushToken = pushToken;
+        this.intro = intro;
+        this.location = location;
         this.isMatched = isMatched;
     }
 
-    public String getExpertUserId() { return expertUserId; }
-    public String getExpertNickname() {
-        return expertNickname;
+    public String getUserId() { return userId; }
+    public String getNickname() {
+        return nickname;
     }
-    public String getExpertProfileImg() {
-        return expertProfileImg;
+    public String getProfileImg() {
+        return profileImg;
     }
-    public String getExpertPortfolioImg() {
-        return expertPortfolioImg;
+    public String getPortfolioImg() {
+        return portfolioImg;
     }
-    public String getExpertPortfolioWeb() {
-        return expertPortfolioWeb;
+    public String getPortfolioWeb() {
+        return portfolioWeb;
     }
-    public String getExpertPushToken() { return expertPushToken; }
-    public String getExpertIntro() { return expertIntro; }
-    public ArrayList<String> getExpertLocation() {
-        return expertLocation;
+    public String getPushToken() { return pushToken; }
+    public String getIntro() { return intro; }
+    public ArrayList<String> getLocation() {
+        return location;
     }
     public boolean getIsMatched() {
         return isMatched;
     }
-    public void setExpertUserId(String expertUserId) { this.expertUserId = expertUserId; }
-    public void setExpertNickname(String expertNickname) {
-        this.expertNickname = expertNickname;
+    public void setUserId(String userId) { this.userId = userId; }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
-    public void setExpertProfileImg(String expertProfileImg) { this.expertProfileImg = expertProfileImg; }
-    public void setExpertPortfolioImg(String expertPortfolioImg) { this.expertPortfolioImg = expertPortfolioImg; }
-    public void setExpertPortfolioWeb(String expertPortfolioWeb) { this.expertPortfolioWeb = expertPortfolioWeb; }
-    public void setExpertLocation(ArrayList<String> expertLocation) { this.expertLocation = expertLocation; }
+    public void setProfileImg(String profileImg) { this.profileImg = profileImg; }
+    public void setPortfolioImg(String portfolioImg) { this.portfolioImg = portfolioImg; }
+    public void setPortfolioWeb(String portfolioWeb) { this.portfolioWeb = portfolioWeb; }
+    public void setLocation(ArrayList<String> location) { this.location = location; }
     public void setIsMatched(boolean isMatched) {
         this.isMatched = isMatched;
     }
