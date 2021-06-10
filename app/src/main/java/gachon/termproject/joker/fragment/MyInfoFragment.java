@@ -66,28 +66,29 @@ public class MyInfoFragment extends Fragment {
         tabs = view.findViewById(R.id.myinfo_tabs);
 
         // 포트폴리오 버튼 설정
-        if (UserInfo.isPublic)
+        if (UserInfo.getIsPublic())
             portfolioLayout.setVisibility(View.GONE);
 
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         profileImg.setClipToOutline(true);
-        if (UserInfo.portfolioImg != null && !UserInfo.profileImg.equals("None"))
-            Glide.with(getActivity()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImg);
+        String profileImgUrl = UserInfo.getProfileImg();
+        if (profileImgUrl != null && !profileImgUrl.equals("None"))
+            Glide.with(getActivity()).load(profileImgUrl).override(1000).thumbnail(0.1f).into(profileImg);
 
         // 닉네임 설정
-        nickname.setText(UserInfo.nickname);
+        nickname.setText(UserInfo.getNickname());
 
         // 지역 설정
         locationStr = "";
-        for (String item : UserInfo.location) {
+        for (String item : UserInfo.getLocation()) {
             locationStr += item + " ";
         }
 
         location.setText(locationStr);
 
         // 한줄 소개 설정
-        intro.setText(UserInfo.introduction);
+        intro.setText(UserInfo.getIntroduction());
 
         // 포트폴리오 버튼 누르면
         portfolioButton.setOnClickListener(new View.OnClickListener() {
@@ -101,15 +102,15 @@ public class MyInfoFragment extends Fragment {
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!UserInfo.profileImg.equals("None"))
-                    Glide.with(getActivity()).load(UserInfo.profileImg).into(profileImg);
-                nickname.setText(UserInfo.nickname);
+                if (!profileImgUrl.equals("None"))
+                    Glide.with(getActivity()).load(profileImgUrl).into(profileImg);
+                nickname.setText(UserInfo.getNickname());
                 locationStr = "";
-                for (String item : UserInfo.location) {
+                for (String item : UserInfo.getLocation()) {
                     locationStr += item + " ";
                 }
                 location.setText(locationStr);
-                intro.setText(UserInfo.introduction);
+                intro.setText(UserInfo.getIntroduction());
 
                 if (post != null) MyInfoTabPostFragment.adapter.notifyDataSetChanged();
                 if (comment != null) MyInfoTabCommentFragment.adapter.notifyDataSetChanged();

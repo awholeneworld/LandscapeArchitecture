@@ -85,7 +85,7 @@ public class ChatAreaAdapter extends RecyclerView.Adapter<ChatAreaAdapter.ViewHo
         params.gravity = Gravity.RIGHT;
 
         //나의 uid 이면
-        if (messageList.get(position).userId.equals(UserInfo.userId)) {
+        if (messageList.get(position).userId.equals(UserInfo.getUserId())) {
             //나의 말풍선 오른쪽으로
             holder.sender.setVisibility(View.INVISIBLE);
             holder.message.setText(messageList.get(position).message);

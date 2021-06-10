@@ -58,7 +58,9 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
+                    intent.putExtra("expertId", expertIdOfPost);
                     intent.putExtra("pushToken", pushToken);
+                    intent.putExtra("intro", intro);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putStringArrayListExtra("location", locationOfUser);
@@ -95,10 +97,10 @@ public class MyInfoTabPostAdapter extends RecyclerView.Adapter<MyInfoTabPostAdap
         holder.nicknameInPost = contentNickname;
         holder.timeInPost = contentTime;
         holder.postIdInPost = content.getPostId();
+        holder.expertIdOfPost = content.getExpertId();
         holder.pushToken = content.getPushToken();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
-        holder.expertIdOfPost = content.getExpertId();
         holder.intro = content.getIntro();
         holder.locationOfUser = content.getLocation();
         holder.postContent = content;

@@ -69,9 +69,9 @@ public class MatchingExpertTabCompleteFragment extends Fragment { //매칭완료
                     //글 상태가 매칭 완료인뎅
                     if (postContent.getIsMatched()){
                         //매칭 대기 목록에 앗 내가 잇네?
-                        if(snapshot.child("requests/" + UserInfo.userId).exists()){
+                        if(snapshot.child("requests/" + UserInfo.getUserId()).exists()){
                             //그럼 내가 match = true인지 확인하기
-                            RequestFromExpertContent a = snapshot.child("requests/" + UserInfo.userId).getValue(RequestFromExpertContent.class);
+                            RequestFromExpertContent a = snapshot.child("requests/" + UserInfo.getUserId()).getValue(RequestFromExpertContent.class);
                             if(a.getIsMatched()){
                                 postContentList.add(0, postContent);
                             }

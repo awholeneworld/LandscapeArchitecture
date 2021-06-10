@@ -238,9 +238,9 @@ public class MatchingPostRequestAdapter extends RecyclerView.Adapter<MatchingPos
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = pushToken;
         notificationContent.notification.title = "매칭 알림";
-        notificationContent.notification.body = UserInfo.nickname + "님과의 매칭에 성공하였습니다.";
+        notificationContent.notification.body = UserInfo.getNickname() + "님과의 매칭에 성공하였습니다.";
         notificationContent.data.title = "매칭 알림";
-        notificationContent.data.body = UserInfo.nickname + "님과의 매칭에 성공하였습니다.";
+        notificationContent.data.body = UserInfo.getNickname() + "님과의 매칭에 성공하였습니다.";
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));

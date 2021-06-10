@@ -40,7 +40,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import gachon.termproject.joker.Content.MatchingPostContent;
-import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.PostImage;
@@ -52,8 +51,8 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
     private Uri image; // 이미지 저장 변수
     private ArrayList<String> contentList = new ArrayList<>();
     private ArrayList<Uri> imagesList = new ArrayList<>();
-    private String userId = UserInfo.userId; // 누가 업로드 했는지 알기 위함
-    private String nickname = UserInfo.nickname;
+    private String userId = UserInfo.getUserId(); // 누가 업로드 했는지 알기 위함
+    private String nickname = UserInfo.getNickname();
     private String postId;
     private LinearLayout layout;
     private EditText title, content;
@@ -285,7 +284,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, UserInfo.introduction, UserInfo.location, contentList, imagesUrl, locationSelected, false, null);
+            postContent = new MatchingPostContent("userRequests", userId, UserInfo.getProfileImg(), title.getText().toString(), nickname, updateTime, postId, UserInfo.getPushToken(), UserInfo.getIntroduction(), UserInfo.getLocation(), contentList, imagesUrl, locationSelected, false, null);
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -331,7 +330,7 @@ public class MatchingUserWritePostActivity extends AppCompatActivity {
                                     String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new MatchingPostContent("userRequests", userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, UserInfo.introduction, UserInfo.location, contentList, imagesUrl, locationSelected, false, null);
+                                    postContent = new MatchingPostContent("userRequests", userId, UserInfo.getProfileImg(), title.getText().toString(), nickname, updateTime, postId, UserInfo.getPushToken(), UserInfo.getIntroduction(), UserInfo.getLocation(), contentList, imagesUrl, locationSelected, false, null);
 
                                     // Firebase Realtime DB에 글 내용 올리기
                                     databaseReference.child("Matching/userRequests/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

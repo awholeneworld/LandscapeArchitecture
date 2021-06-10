@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
 
-import gachon.termproject.joker.FirebaseHelper;
+import gachon.termproject.joker.FirebaseDeleter;
 import gachon.termproject.joker.Content.PostCommentContent;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
@@ -36,7 +36,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 {
     private Context context;
     ViewGroup parent;
-    private FirebaseHelper firebaseHelper;
+    private FirebaseDeleter firebaseDeleter;
     ArrayList<PostCommentContent> postCommentList;
     private DatabaseReference databaseReference;
 
@@ -61,6 +61,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         String timeInComment;
         String comment;
         String intro;
+        String pushToken;
         ArrayList<String> location;
         Button btn;
 
@@ -80,7 +81,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                     PopupMenu popup= new PopupMenu(parent.getContext(), view);//v는 클릭된 뷰를 의미
 
                     //inflating menu from xml resource
-                    if (UserInfo.userId.equals(userIdInComment))
+                    if (UserInfo.getUserId().equals(userIdInComment))
                         popup.inflate(R.menu.my_post_menu);
                     else
                         popup.inflate(R.menu.others_post_menu);
@@ -96,6 +97,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                                     intent.putExtra("nickname", nicknameInComment);
                                     intent.putExtra("profileImg", profileImgInComment);
                                     intent.putExtra("intro", intro);
+                                    intent.putExtra("pushToken", pushToken);
                                     intent.putStringArrayListExtra("location", location);
                                     intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
                                     context.startActivity(intent);
@@ -104,7 +106,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                                     Toast.makeText(context.getApplicationContext(), nicknameInComment + "(이)가 신고되었습니다.", Toast.LENGTH_SHORT).show();
                                     break;
                                 case R.id.delete:
-                                    firebaseHelper.commentDelete(databaseReference, commentId);
+                                    firebaseDeleter.commentDelete(databaseReference, commentId);
                                     break;
                                 default:
                                     break;
@@ -114,7 +116,6 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                     });
                     //displaying the popup
                     popup.show();
-
                 }
             });
         }
@@ -147,6 +148,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         holder.timeInComment = commentTime;
         holder.commentId = commentId;
         holder.comment = comment;
+        holder.pushToken = commentContent.getPushToken();
         holder.intro = commentContent.getIntro();
         holder.location = commentContent.getLocation();
 

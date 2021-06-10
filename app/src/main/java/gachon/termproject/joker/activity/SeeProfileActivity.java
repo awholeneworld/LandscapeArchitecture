@@ -82,7 +82,7 @@ public class SeeProfileActivity extends AppCompatActivity {
         // 프사 설정
         profileImgView.setBackground(new ShapeDrawable(new OvalShape()));
         profileImgView.setClipToOutline(true);
-        if (UserInfo.portfolioImg != null && !UserInfo.profileImg.equals("None"))
+        if (profileImg != null && !profileImg.equals("None"))
             Glide.with(getApplicationContext()).load(profileImg).override(1000).thumbnail(0.1f).into(profileImgView);
 
         // 닉네임 설정

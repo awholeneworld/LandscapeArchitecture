@@ -61,8 +61,8 @@ public class ExpertPortfolioLinkActivity extends AppCompatActivity {
 
 
         //기존 링크 넣어주기
-        if (!UserInfo.portfolioWeb.equals("None")) {
-            original_link_text.setText(UserInfo.portfolioWeb);
+        if (!UserInfo.getPortfolioWeb().equals("None")) {
+            original_link_text.setText(UserInfo.getPortfolioWeb());
             orilink = true;
         }
         else
@@ -103,10 +103,10 @@ public class ExpertPortfolioLinkActivity extends AppCompatActivity {
 
                 if(link_http_check) {
                     String finalNewLink = newLink;
-                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("portfolioWeb", newLink).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.getUserId()).update("portfolioWeb", newLink).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull @NotNull Task<Void> task) {
-                            UserInfo.portfolioWeb = finalNewLink;
+                            UserInfo.setPortfolioWeb(finalNewLink);
                             Toast.makeText(getApplicationContext(), "포트폴리오 링크 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                             finish();
                         }

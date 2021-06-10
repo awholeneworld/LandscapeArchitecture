@@ -254,7 +254,7 @@ public class MatchingTabExpertListFragment extends Fragment {
                         String userId = snapshot.getId();
                         boolean isPublic = snapshot.getBoolean("isPublic");
 
-                        if (!userId.equals(UserInfo.userId) && !isPublic) {
+                        if (!userId.equals(UserInfo.getUserId()) && !isPublic) {
                             String nickname = snapshot.getString("nickname");
                             String introduction = snapshot.getString("introduction");
                             String profileImg = snapshot.getString("profileImg");
@@ -288,7 +288,7 @@ public class MatchingTabExpertListFragment extends Fragment {
                     boolean isPublic = snapshot.getBoolean("isPublic");
                     String userId = snapshot.getId();
 
-                    if (!userId.equals(UserInfo.userId) && !isPublic) {
+                    if (!userId.equals(UserInfo.getUserId()) && !isPublic) {
                         ArrayList<String> location = (ArrayList<String>) snapshot.get("location");
 
                         // 위치 정보 비교

@@ -65,9 +65,15 @@ public class SettingMyInfoFragment extends Fragment {
     private Button checkNickname;
     private Button save;
     private Button resetPwd;
+    private Uri file;
     private String nicknameEdited;
     private String messageEdited;
-    private Uri file;
+    private String userId = UserInfo.getUserId();
+    private String userEmail = UserInfo.getEmail();
+    private String userNickname = UserInfo.getNickname();
+    private String userProfileImg = UserInfo.getProfileImg();
+    private String userIntro = UserInfo.getIntroduction();
+    private ArrayList<String> userLocation = UserInfo.getLocation();
     private int flag_profileImg_change = 0;
     private int flag_nickname_check = 0;
     private int flag_location = 0;
@@ -96,15 +102,13 @@ public class SettingMyInfoFragment extends Fragment {
     private int commentsNumFree = 0;
     private int commentsNumReview = 0;
     private int commentsNumTip = 0;
-    private int noCommentsFree = 0;
-    private int noCommentsReview = 0;
-    private int noCommentsTip = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_myinfo_setting, container, false);
+        
         // 레이아웃 가져오기
         profileImg = view.findViewById(R.id.profileImage);
         changeProfileImageBack = view.findViewById(R.id.changeProfileImageBack);
@@ -135,22 +139,22 @@ public class SettingMyInfoFragment extends Fragment {
         // 프사 설정
         profileImg.setBackground(new ShapeDrawable(new OvalShape()));
         profileImg.setClipToOutline(true);
-        if (!UserInfo.profileImg.equals("None"))
-            Glide.with(getContext()).load(UserInfo.profileImg).into(profileImg);
+        if (!userProfileImg.equals("None"))
+            Glide.with(getContext()).load(userProfileImg).into(profileImg);
 
         changeProfileImageBack.setBackground(new ShapeDrawable(new OvalShape()));
         changeProfileImageBack.setClipToOutline(true);
 
         // 이메일 설정
-        email.setText(UserInfo.email);
+        email.setText(userEmail);
         email.setTextColor(Color.parseColor("#000000"));
 
         // 닉네임 설정
-        nickname.setText(UserInfo.nickname);
-        nicknameEdited = UserInfo.nickname;
+        nicknameEdited = userNickname;
+        nickname.setText(nicknameEdited);
 
         // 한줄 메시지 설정
-        introMsg.setText(UserInfo.introduction);
+        introMsg.setText(userIntro);
 
         // 지역 설정
         setLocation();
@@ -239,18 +243,18 @@ public class SettingMyInfoFragment extends Fragment {
         String temp = nickname.getText().toString();
 
         if (temp.length() == 0) {
-            nickname.setText(UserInfo.nickname);
+            nickname.setText(userNickname);
             nickname.setEnabled(false);
             checkNickname.setEnabled(false);
             Toast.makeText(getContext(), "변경할 닉네임을 입력해주세요.", Toast.LENGTH_SHORT).show();
         }
         else if (temp.length() > 6) {
-            nickname.setText(UserInfo.nickname);
+            nickname.setText(userNickname);
             nickname.setEnabled(false);
             checkNickname.setEnabled(false);
             Toast.makeText(getContext(), "닉네임은 6자 이하로 설정해주세요.", Toast.LENGTH_SHORT).show();
         }
-        else if (temp.equals(UserInfo.nickname)) {
+        else if (temp.equals(userNickname)) {
             nickname.setEnabled(false);
             checkNickname.setEnabled(false);
             Toast.makeText(getContext(), "본인의 닉네임입니다.", Toast.LENGTH_SHORT).show();
@@ -284,7 +288,7 @@ public class SettingMyInfoFragment extends Fragment {
     }
 
     public void setLocation() {
-        location = UserInfo.location;
+        location = userLocation;
 
         if (location.contains("서울")) SU.setChecked(true);
         if (location.contains("인천")) IC.setChecked(true);
@@ -337,7 +341,7 @@ public class SettingMyInfoFragment extends Fragment {
         if (flag_profileImg_change == 1) finishCount++;
 
         // 닉네임 변경 시도함?
-        if (flag_nickname_check == 0  && nicknameEdited.equals(UserInfo.nickname)) {
+        if (flag_nickname_check == 0  && nicknameEdited.equals(userNickname)) {
             flag_nickname_check = 0;
         } else if (flag_nickname_check == 0) {
             save.setEnabled(true);
@@ -365,7 +369,7 @@ public class SettingMyInfoFragment extends Fragment {
             save.setEnabled(true);
             Toast.makeText(getContext(), "한줄 메시지는 30자 이하로 작성해주세요.", Toast.LENGTH_SHORT).show();
             return;
-        } else if (!messageEdited.equals(UserInfo.introduction))
+        } else if (!messageEdited.equals(userIntro))
             flag_message++;
 
         finishCount++;
@@ -375,20 +379,20 @@ public class SettingMyInfoFragment extends Fragment {
             Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
             getActivity().finish();
         } else if (finishCount == 3 && flag_nickname_check == 0 && flag_location == 0 && flag_message == 1) { // 한줄 메시지 소개만 변경한 경우
-            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("introduction", messageEdited).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseFirestore.getInstance().collection("users").document(userId).update("introduction", messageEdited).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<Void> task) {
-                    UserInfo.introduction = messageEdited;
+                    UserInfo.setIntroduction(messageEdited);
                     MyInfoFragment.intro.setText(messageEdited);
                     Toast.makeText(getContext(), "변경사항이 저장되었습니다", Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 }
             });
         } else if (finishCount == 3 && flag_nickname_check == 0 && flag_location == 1 && flag_message == 0) { // 지역만 변경한 경우
-            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("location", locationSelected).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseFirestore.getInstance().collection("users").document(userId).update("location", locationSelected).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<Void> task) {
-                    UserInfo.location = locationSelected;
+                    UserInfo.setLocation(locationSelected);
 
                     String locationStr = "";
                     for (String item : locationSelected) {
@@ -401,10 +405,10 @@ public class SettingMyInfoFragment extends Fragment {
                 }
             });
         } else if (finishCount == 3 && flag_nickname_check == 1 && flag_location == 0 && flag_message == 0) { // 닉네임만 변경한 경우
-            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("nickname", nicknameEdited).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseFirestore.getInstance().collection("users").document(userId).update("nickname", nicknameEdited).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<Void> task) {
-                    UserInfo.nickname = nicknameEdited;
+                    UserInfo.setNickname(nicknameEdited);
                     MyInfoFragment.nickname.setText(nicknameEdited);
                     dbUpdate();
                 }
@@ -414,11 +418,11 @@ public class SettingMyInfoFragment extends Fragment {
             dataToUpdate.put("location", locationSelected);
             dataToUpdate.put("introduction", messageEdited);
 
-            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseFirestore.getInstance().collection("users").document(userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<Void> task) {
-                    UserInfo.location = locationSelected;
-                    UserInfo.introduction = messageEdited;
+                    UserInfo.setLocation(locationSelected);
+                    UserInfo.setIntroduction(messageEdited);
 
                     String locationStr = "";
                     for (String item : locationSelected) {
@@ -436,11 +440,11 @@ public class SettingMyInfoFragment extends Fragment {
             dataToUpdate.put("nickname", nicknameEdited);
             dataToUpdate.put("introduction", messageEdited);
 
-            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseFirestore.getInstance().collection("users").document(userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<Void> task) {
-                    UserInfo.nickname = nicknameEdited;
-                    UserInfo.introduction = messageEdited;
+                    UserInfo.setNickname(nicknameEdited);
+                    UserInfo.setIntroduction(messageEdited);
                     MyInfoFragment.nickname.setText(nicknameEdited);
                     MyInfoFragment.intro.setText(messageEdited);
                     dbUpdate();
@@ -451,11 +455,11 @@ public class SettingMyInfoFragment extends Fragment {
             dataToUpdate.put("nickname", nicknameEdited);
             dataToUpdate.put("location", locationSelected);
 
-            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseFirestore.getInstance().collection("users").document(userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<Void> task) {
-                    UserInfo.nickname = nicknameEdited;
-                    UserInfo.location = locationSelected;
+                    UserInfo.setNickname(nicknameEdited);
+                    UserInfo.setLocation(locationSelected);
 
                     String locationStr = "";
                     for (String item : locationSelected) {
@@ -473,12 +477,12 @@ public class SettingMyInfoFragment extends Fragment {
             dataToUpdate.put("location", locationSelected);
             dataToUpdate.put("introduction", messageEdited);
 
-            FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            FirebaseFirestore.getInstance().collection("users").document(userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<Void> task) {
-                    UserInfo.nickname = nicknameEdited;
-                    UserInfo.location = locationSelected;
-                    UserInfo.introduction = messageEdited;
+                    UserInfo.setNickname(nicknameEdited);
+                    UserInfo.setLocation(locationSelected);
+                    UserInfo.setIntroduction(messageEdited);
 
                     String locationStr = "";
                     for (String item : locationSelected) {
@@ -497,7 +501,7 @@ public class SettingMyInfoFragment extends Fragment {
 
     // 이미지 넣는거
     private void updateChangesWithImg(){
-        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages/" + UserInfo.userId);
+        storageReference = FirebaseStorage.getInstance().getReference().child("profileImages/" + userId);
         storageReference.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -514,22 +518,22 @@ public class SettingMyInfoFragment extends Fragment {
                     Uri downloadUrl = task.getResult();
                     String url = downloadUrl.toString();
 
-                    UserInfo.profileImg = url;
+                    UserInfo.setProfileImg(url);
                     Glide.with(getActivity()).load(url).override(1000).thumbnail(0.5f).into(MyInfoFragment.profileImg);
                     if (flag_nickname_check == 1) {
-                        UserInfo.nickname = nicknameEdited;
+                        UserInfo.setNickname(nicknameEdited);
                         MyInfoFragment.nickname.setText(nicknameEdited);
                     }
                     if (flag_location == 1) {
-                        UserInfo.location = locationSelected;
+                        UserInfo.setLocation(locationSelected);
                         String locationStr = "";
-                        for (String item : UserInfo.location) {
+                        for (String item : UserInfo.getLocation()) {
                             locationStr += item + " ";
                         }
                         MyInfoFragment.location.setText(locationStr);
                     }
                     if (flag_message == 1 ) {
-                        UserInfo.introduction = messageEdited;
+                        UserInfo.setIntroduction(messageEdited);
                         MyInfoFragment.intro.setText(messageEdited);
                     }
 
@@ -540,7 +544,7 @@ public class SettingMyInfoFragment extends Fragment {
                     if (flag_message == 1) dataToUpdate.put("introduction", messageEdited);
 
                     // 계정 정보 저장하는 DB 업데이트
-                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    FirebaseFirestore.getInstance().collection("users").document(userId).update(dataToUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                             dbUpdate();
@@ -562,7 +566,7 @@ public class SettingMyInfoFragment extends Fragment {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) { // DB에 커뮤니티 데이터가 하나도 없을 경우
                     Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
-                    if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                    if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.getProfileImg());
                     if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
                     if (flag_location == 1) userData.put("location", locationSelected);
                     if (flag_message == 1) userData.put("intro", introMsg);
@@ -572,9 +576,9 @@ public class SettingMyInfoFragment extends Fragment {
                         @Override
                         public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                             requestsCount++;
-                            if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                            if (matchSnapshot.hasChild("requests/" + userId)) {
                                 successCount++;
-                                matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                matchSnapshot.child("requests/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull @NotNull Task<Void> task) {
                                         if (failCount + successCount == requestsCount) {
@@ -591,9 +595,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                 // 채팅방 정보 한개 업데이트하기
 
-                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                     chatCount++;
-                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                         @Override
                                                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                             if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -647,9 +651,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                         // 채팅방 정보 한개 업데이트하기
 
-                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                        if (myChatSnapshot.hasChild("users/" + userId)) {
                                                             chatCount++;
-                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                     if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -711,7 +715,7 @@ public class SettingMyInfoFragment extends Fragment {
                     });
 
                     // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
-                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot matchSnapshot) {
                             if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
@@ -727,7 +731,7 @@ public class SettingMyInfoFragment extends Fragment {
                                             public void onSuccess(Void unused) {
                                                 if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
                                                     // 나의 채팅방 업데이트 하기
-                                                    db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                    db.getReference().child("Chat").orderByChild("users/" + userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                         @Override
                                                         public void onSuccess(DataSnapshot chatSnapshot) {
                                                             if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
@@ -773,7 +777,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                 });
 
                                                                 // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
-                                                                db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                     @Override
                                                                     public void onSuccess(DataSnapshot matchSnapshot) {
                                                                         if (!matchSnapshot.exists()) {
@@ -816,7 +820,7 @@ public class SettingMyInfoFragment extends Fragment {
                     });
                 } else { // DB에 커뮤니티 게시물이 하나라도 있을 경우
                     Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
-                    if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                    if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.getProfileImg());
                     if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
                     if (flag_location == 1) userData.put("location", locationSelected);
                     if (flag_message == 1) userData.put("intro", introMsg);
@@ -827,7 +831,7 @@ public class SettingMyInfoFragment extends Fragment {
                         @Override
                         public void onChildAdded(@NonNull @NotNull DataSnapshot categorySnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                             // 내가 쓴 게시물이 있는지 확인하고 업데이트. 다 완료되면 댓글->매칭->채팅 순으로 업데이트.
-                            categorySnapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 각 카테고리에서 내가 쓴 글이 있는지 확인
+                            categorySnapshot.getRef().orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 각 카테고리에서 내가 쓴 글이 있는지 확인
                                 @Override
                                 public void onSuccess(DataSnapshot postsSnapshot) {
                                     if (!postsSnapshot.exists()) { // 내가 쓴 글이 지금 카테고리에 하나도 존재하지 않으면 fail count 하나 추가
@@ -856,9 +860,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                             @Override
                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                 requestsCount++;
-                                                                                if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                if (matchSnapshot.hasChild("requests/" + userId)) {
                                                                                     successCount++;
-                                                                                    matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                    matchSnapshot.child("requests/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                         @Override
                                                                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                             if (failCount + successCount == requestsCount) {
@@ -875,9 +879,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                 public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                     // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                    if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                    if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                         chatCount++;
-                                                                                                                        myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                        myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                             @Override
                                                                                                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                 if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -931,9 +935,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                         public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                             // 채팅방 정보 한개 업데이트하기
 
-                                                                                                            if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                            if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                 chatCount++;
-                                                                                                                myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                     @Override
                                                                                                                     public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                         if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -995,7 +999,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                         });
 
                                                                         // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
-                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                             @Override
                                                                             public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                 if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
@@ -1011,7 +1015,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                 public void onSuccess(Void unused) {
                                                                                                     if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
                                                                                                         // 나의 채팅방 업데이트 하기
-                                                                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                        db.getReference().child("Chat").orderByChild("users/" + userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                             @Override
                                                                                                             public void onSuccess(DataSnapshot chatSnapshot) {
                                                                                                                 if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
@@ -1057,7 +1061,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                     });
 
                                                                                                                     // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
-                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                         @Override
                                                                                                                         public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                             if (!matchSnapshot.exists()) {
@@ -1103,12 +1107,12 @@ public class SettingMyInfoFragment extends Fragment {
                                                             }
                                                             else { // 게시글에 댓글이 포함되어 있다면
                                                                 Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
-                                                                if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                                                                if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.getProfileImg());
                                                                 if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
                                                                 if (flag_location == 1) userData.put("location", locationSelected);
                                                                 if (flag_message == 1) userData.put("intro", introMsg);
 
-                                                                commentsSnapshot.getRef().child("comments").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
+                                                                commentsSnapshot.getRef().child("comments").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
                                                                     @Override
                                                                     public void onSuccess(DataSnapshot myCommentSnapshot) {
                                                                         if (!myCommentSnapshot.exists()) { // 현재 게시글에 내가 단 댓글이 없으면
@@ -1124,9 +1128,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                         @Override
                                                                                         public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                             requestsCount++;
-                                                                                            if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                            if (matchSnapshot.hasChild("requests/" + userId)) {
                                                                                                 successCount++;
-                                                                                                matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                matchSnapshot.child("requests/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                     @Override
                                                                                                     public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                         if (failCount + successCount == requestsCount) {
@@ -1143,9 +1147,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                 // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                     chatCount++;
-                                                                                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                         @Override
                                                                                                                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                             if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -1199,9 +1203,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                         // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                        if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                             chatCount++;
-                                                                                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                            myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                 @Override
                                                                                                                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                     if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -1263,7 +1267,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                     });
 
                                                                                     // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
-                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                         @Override
                                                                                         public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                             if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
@@ -1279,7 +1283,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                             public void onSuccess(Void unused) {
                                                                                                                 if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
                                                                                                                     // 나의 채팅방 업데이트 하기
-                                                                                                                    db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                    db.getReference().child("Chat").orderByChild("users/" + userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                         @Override
                                                                                                                         public void onSuccess(DataSnapshot chatSnapshot) {
                                                                                                                             if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
@@ -1325,7 +1329,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                 });
 
                                                                                                                                 // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
-                                                                                                                                db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                     @Override
                                                                                                                                     public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                                         if (!matchSnapshot.exists()) {
@@ -1368,7 +1372,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                     });
                                                                                 }
                                                                             }
-                                                                        } else if (myCommentSnapshot.child("userId").getValue().equals(UserInfo.userId)){ // 내가 단 댓글이 있으면
+                                                                        } else if (myCommentSnapshot.child("userId").getValue().equals(userId)){ // 내가 단 댓글이 있으면
                                                                             // 댓글 업데이트하기
                                                                             myCommentSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                 @Override
@@ -1383,9 +1387,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                 @Override
                                                                                                 public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                     requestsCount++;
-                                                                                                    if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                    if (matchSnapshot.hasChild("requests/" + userId)) {
                                                                                                         successCount++;
-                                                                                                        matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                        matchSnapshot.child("requests/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                             @Override
                                                                                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                 if (failCount + successCount == requestsCount) {
@@ -1402,9 +1406,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                         // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                        if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                             chatCount++;
-                                                                                                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                            myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                                 @Override
                                                                                                                                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                                     if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -1458,9 +1462,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                 // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                     chatCount++;
-                                                                                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                         @Override
                                                                                                                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                             if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -1522,7 +1526,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                             });
 
                                                                                             // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
-                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                 @Override
                                                                                                 public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                     if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
@@ -1538,7 +1542,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                     public void onSuccess(Void unused) {
                                                                                                                         if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
                                                                                                                             // 나의 채팅방 업데이트 하기
-                                                                                                                            db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                            db.getReference().child("Chat").orderByChild("users/" + userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                 @Override
                                                                                                                                 public void onSuccess(DataSnapshot chatSnapshot) {
                                                                                                                                     if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
@@ -1584,7 +1588,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                         });
 
                                                                                                                                         // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
-                                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                             @Override
                                                                                                                                             public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                                                 if (!matchSnapshot.exists()) {
@@ -1682,18 +1686,18 @@ public class SettingMyInfoFragment extends Fragment {
 // 경계선 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 경계선//
                                     else { // 내가 쓴 글이 지금 카테고리에 하나라도 존재할 경우
                                         Map<String, Object> userData = new HashMap<>(); // 업데이트 할 데이터 만들기
-                                        if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.profileImg);
+                                        if (flag_profileImg_change == 1) userData.put("profileImg", UserInfo.getProfileImg());
                                         if (flag_nickname_check == 1) userData.put("nickname", nicknameEdited);
                                         if (flag_location == 1) userData.put("location", locationSelected);
                                         if (flag_message == 1) userData.put("intro", introMsg);
 
-                                        postsSnapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addChildEventListener(new ChildEventListener() { // 각 카테고리의 내가 쓴 글을 하나씩 가져오기
+                                        postsSnapshot.getRef().orderByChild("userId").equalTo(userId).addChildEventListener(new ChildEventListener() { // 각 카테고리의 내가 쓴 글을 하나씩 가져오기
                                             @Override
                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myPostSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                 // 글 한개 업데이트하기
-                                                if (postsSnapshot.getKey().equals("free") && myPostSnapshot.child("userId").getValue().toString().equals(UserInfo.userId)) postsCountFree++;
-                                                else if (postsSnapshot.getKey().equals("review") && myPostSnapshot.child("userId").getValue().toString().equals(UserInfo.userId)) postsCountReview++;
-                                                else if (postsSnapshot.getKey().equals("tip") && myPostSnapshot.child("userId").getValue().toString().equals(UserInfo.userId)) postsCountTip++;
+                                                if (postsSnapshot.getKey().equals("free") && myPostSnapshot.child("userId").getValue().toString().equals(userId)) postsCountFree++;
+                                                else if (postsSnapshot.getKey().equals("review") && myPostSnapshot.child("userId").getValue().toString().equals(userId)) postsCountReview++;
+                                                else if (postsSnapshot.getKey().equals("tip") && myPostSnapshot.child("userId").getValue().toString().equals(userId)) postsCountTip++;
                                                 myPostSnapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
@@ -1729,9 +1733,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                 @Override
                                                                                                 public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                     requestsCount++;
-                                                                                                    if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                    if (matchSnapshot.hasChild("requests/" + userId)) {
                                                                                                         successCount++;
-                                                                                                        matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                        matchSnapshot.child("requests/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                             @Override
                                                                                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                 if (failCount + successCount == requestsCount) {
@@ -1748,9 +1752,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                         // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                        if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                        if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                             chatCount++;
-                                                                                                                                            myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                            myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                                 @Override
                                                                                                                                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                                     if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -1804,9 +1808,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                 // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                     chatCount++;
-                                                                                                                                    myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                         @Override
                                                                                                                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                             if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -1868,7 +1872,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                             });
 
                                                                                             // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
-                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                            db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                 @Override
                                                                                                 public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                     if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
@@ -1884,7 +1888,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                     public void onSuccess(Void unused) {
                                                                                                                         if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
                                                                                                                             // 나의 채팅방 업데이트 하기
-                                                                                                                            db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                            db.getReference().child("Chat").orderByChild("users/" + userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                 @Override
                                                                                                                                 public void onSuccess(DataSnapshot chatSnapshot) {
                                                                                                                                     if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
@@ -1930,7 +1934,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                         });
 
                                                                                                                                         // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
-                                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                             @Override
                                                                                                                                             public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                                                 if (!matchSnapshot.exists()) {
@@ -1974,7 +1978,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                         }
                                                                                     }
                                                                                 } else { // 게시글에 댓글이 포함되어 있다면
-                                                                                    postSnapshot.getRef().child("comments").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
+                                                                                    postSnapshot.getRef().child("comments").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() { // 내가 쓴게 있는지 확인
                                                                                         @Override
                                                                                         public void onSuccess(DataSnapshot commentSnapshot) {
                                                                                             if (!commentSnapshot.exists()) { // 현재 게시글에 내가 단 댓글이 없으면
@@ -1982,7 +1986,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                 else if (categorySnapshot2.getKey().equals("review")) commentFailReview++;
                                                                                                 else if (categorySnapshot2.getKey().equals("tip")) commentFailTip++;
 
-                                                                                                if ((categorySnapshot2.getKey().equals("free") && commentFailFree + commentSuccessFree == commentsNumFree && commentFinishFree == 0) || (categorySnapshot2.getKey().equals("review") && commentFailReview + commentSuccessReview == commentFinishReview && noCommentsReview == 0) || (categorySnapshot2.getKey().equals("tip") && commentFailTip + commentSuccessTip == commentFinishTip && noCommentsTip == 0)) { // 내가 단 댓글이 하나도 없다면
+                                                                                                if ((categorySnapshot2.getKey().equals("free") && commentFailFree + commentSuccessFree == commentsNumFree && commentFinishFree == 0) || (categorySnapshot2.getKey().equals("review") && commentFailReview + commentSuccessReview == commentsNumReview && commentFinishReview == 0) || (categorySnapshot2.getKey().equals("tip") && commentFailTip + commentSuccessTip == commentsNumTip && commentFinishTip == 0)) { // 내가 단 댓글이 하나도 없다면
                                                                                                     if (categorySnapshot2.getKey().equals("free")) commentFinishFree++;
                                                                                                     else if (categorySnapshot2.getKey().equals("review")) commentFinishReview++;
                                                                                                     else if (categorySnapshot2.getKey().equals("tip")) commentFinishTip++;
@@ -1992,9 +1996,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                             @Override
                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                 requestsCount++;
-                                                                                                                if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                                if (matchSnapshot.hasChild("requests/" + userId)) {
                                                                                                                     successCount++;
-                                                                                                                    matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                    matchSnapshot.child("requests/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                         @Override
                                                                                                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                             if (failCount + successCount == requestsCount) {
@@ -2011,9 +2015,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                                 public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                                     // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                                    if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                                    if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                                         chatCount++;
-                                                                                                                                                        myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                        myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                                             @Override
                                                                                                                                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                                                 if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -2067,9 +2071,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                         public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                             // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                            if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                            if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                                 chatCount++;
-                                                                                                                                                myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                                     @Override
                                                                                                                                                     public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                                         if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -2131,7 +2135,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                         });
 
                                                                                                         // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
-                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                             @Override
                                                                                                             public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                 if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
@@ -2147,7 +2151,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                 public void onSuccess(Void unused) {
                                                                                                                                     if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
                                                                                                                                         // 나의 채팅방 업데이트 하기
-                                                                                                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                        db.getReference().child("Chat").orderByChild("users/" + userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                             @Override
                                                                                                                                             public void onSuccess(DataSnapshot chatSnapshot) {
                                                                                                                                                 if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
@@ -2193,7 +2197,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                                     });
 
                                                                                                                                                     // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
-                                                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                                         @Override
                                                                                                                                                         public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                                                             if (!matchSnapshot.exists()) {
@@ -2238,7 +2242,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                 }
                                                                                             } else { // 내가 단 댓글이 있으면
                                                                                                 // 댓글 업데이트하기
-                                                                                                commentSnapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).addChildEventListener(new ChildEventListener() {
+                                                                                                commentSnapshot.getRef().orderByChild("userId").equalTo(userId).addChildEventListener(new ChildEventListener() {
                                                                                                     @Override
                                                                                                     public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                         snapshot.getRef().updateChildren(userData).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -2258,9 +2262,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                             @Override
                                                                                                                             public void onChildAdded(@NonNull @NotNull DataSnapshot matchSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                 requestsCount++;
-                                                                                                                                if (matchSnapshot.hasChild("requests/" + UserInfo.userId)) {
+                                                                                                                                if (matchSnapshot.hasChild("requests/" + userId)) {
                                                                                                                                     successCount++;
-                                                                                                                                    matchSnapshot.child("requests/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                    matchSnapshot.child("requests/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                         @Override
                                                                                                                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                             if (failCount + successCount == requestsCount) {
@@ -2277,9 +2281,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                                                 public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                                                     // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                                                    if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                                                    if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                                                         chatCount++;
-                                                                                                                                                                        myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                                        myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                                                             @Override
                                                                                                                                                                             public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                                                                 if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -2333,9 +2337,9 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                                         public void onChildAdded(@NonNull @NotNull DataSnapshot myChatSnapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                                                                                                                                                             // 채팅방 정보 한개 업데이트하기
 
-                                                                                                                                                            if (myChatSnapshot.hasChild("users/" + UserInfo.userId)) {
+                                                                                                                                                            if (myChatSnapshot.hasChild("users/" + userId)) {
                                                                                                                                                                 chatCount++;
-                                                                                                                                                                myChatSnapshot.child("users/" + UserInfo.userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                                                myChatSnapshot.child("users/" + userId).getRef().updateChildren(userData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                                                                                     @Override
                                                                                                                                                                     public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                                                                                                                                         if (chatCount == chatSnapshot.getChildrenCount()) { // 업데이트 다 하였다면
@@ -2397,7 +2401,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                         });
 
                                                                                                                         // 마지막 비동기 메소드 동작하게 하기 위해 이렇게 나누었음
-                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                        db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                             @Override
                                                                                                                             public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                                 if (!matchSnapshot.exists()) { // 전문가는 이곳에 해당
@@ -2413,7 +2417,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                                 public void onSuccess(Void unused) {
                                                                                                                                                     if (matchingSuccessCount == matchSnapshot.getChildrenCount()) { // 매칭 글 다 업데이트하였다면
                                                                                                                                                         // 나의 채팅방 업데이트 하기
-                                                                                                                                                        db.getReference().child("Chat").orderByChild("users/" + UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                                        db.getReference().child("Chat").orderByChild("users/" + userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                                             @Override
                                                                                                                                                             public void onSuccess(DataSnapshot chatSnapshot) {
                                                                                                                                                                 if (!chatSnapshot.exists()) { // 나의 채팅방이 존재하지 않으면
@@ -2459,7 +2463,7 @@ public class SettingMyInfoFragment extends Fragment {
                                                                                                                                                                     });
 
                                                                                                                                                                     // 마지막 비동기 메소드 동작하게 하기 위해 넣어둠
-                                                                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                                                                                                    db.getReference("Matching/userRequests").orderByChild("userId").equalTo(userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                                                                                                         @Override
                                                                                                                                                                         public void onSuccess(DataSnapshot matchSnapshot) {
                                                                                                                                                                             if (!matchSnapshot.exists()) {

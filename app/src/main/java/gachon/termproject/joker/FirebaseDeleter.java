@@ -25,13 +25,10 @@ import gachon.termproject.joker.fragment.CommunityReviewFragment;
 import gachon.termproject.joker.fragment.CommunityTipFragment;
 import gachon.termproject.joker.fragment.MatchingUserTabRequestFragment;
 
-public class FirebaseHelper {
-
+public class FirebaseDeleter {
     public static void postDelete(Activity activity, final String Bigcategory,  final String category, final String id, final ArrayList<String> imgs) {
         //Bigcategory => Matching, Posts
         //category => free, review, tip, userRequests...
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
 
         if(imgs != null){
             String uri = imgs.get(0);
@@ -39,9 +36,7 @@ public class FirebaseHelper {
             String uripath = uri.substring(uri.indexOf("/o/") + 3, uri.indexOf("%2Fimage"));
             uripath = uripath.replace("%2F", "/");
 
-            StorageReference storageRef = storage.getReference().child(uripath);
-
-            storageRef.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            FirebaseStorage.getInstance().getReference().child(uripath).listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
                 @Override
                 public void onSuccess(ListResult listResult) {
                     for (StorageReference item : listResult.getItems()) {

@@ -67,7 +67,7 @@ public class MyInfoTabPostFragment extends Fragment {
                         @Override
                         public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
 
-                            snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            snapshot.getRef().orderByChild("userId").equalTo(UserInfo.getUserId()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                 @Override
                                 public void onSuccess(DataSnapshot dataSnapshot) {
                                     if (!dataSnapshot.exists()) { // 내가 쓴 글이 존재하지 않는다면

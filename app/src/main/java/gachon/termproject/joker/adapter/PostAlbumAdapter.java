@@ -39,6 +39,8 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
         String timeInPost;
         String postIdInPost;
         String expertIdOfPost;
+        String pushToken;
+        String intro;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationOfUser;
@@ -61,6 +63,8 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
                     intent.putExtra("expertId", expertIdOfPost);
+                    intent.putExtra("pushToken", pushToken);
+                    intent.putExtra("intro", intro);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putStringArrayListExtra("location", locationOfUser);
@@ -98,6 +102,8 @@ public class PostAlbumAdapter extends RecyclerView.Adapter<PostAlbumAdapter.View
         holder.postIdInPost = content.getPostId();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
+        holder.pushToken = content.getPushToken();
+        holder.intro = content.getIntro();
         holder.expertIdOfPost = content.getExpertId();
         holder.locationOfUser = content.getLocation();
         holder.postContent = content;

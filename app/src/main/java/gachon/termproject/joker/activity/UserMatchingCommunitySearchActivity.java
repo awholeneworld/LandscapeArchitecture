@@ -134,7 +134,7 @@ public class UserMatchingCommunitySearchActivity extends AppCompatActivity {
                 }
             };
 
-            databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
+            databaseReference.orderByChild("userId").equalTo(UserInfo.getUserId()).addListenerForSingleValueEvent(postsListener);
 
             if (postContentList.isEmpty()) {
                 contents.setVisibility(View.GONE);

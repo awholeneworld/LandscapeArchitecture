@@ -86,7 +86,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         ChatMessageContent content = chatList.get(position);
 
         for (String user : content.users.keySet())
-            if (!user.equals(UserInfo.userId)) {
+            if (!user.equals(UserInfo.getUserId())) {
                 holder.opponentUid = user;
                 holder.opponentNickname = content.users.get(user).nickname;
                 holder.opponentProfileImg = content.users.get(user).profileImg;

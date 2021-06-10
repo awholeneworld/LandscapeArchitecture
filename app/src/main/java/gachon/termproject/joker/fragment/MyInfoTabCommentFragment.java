@@ -82,7 +82,7 @@ public class MyInfoTabCommentFragment extends Fragment {
                                             }
                                         }
                                     } else {
-                                        snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                        snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.getUserId()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                             @Override
                                             public void onSuccess(DataSnapshot dataSnapshot) {
                                                 if (!dataSnapshot.exists()) { // 현재 게시글에 내가 쓴 댓글이 없으면
@@ -91,7 +91,7 @@ public class MyInfoTabCommentFragment extends Fragment {
                                                     else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
                                                 } else { // 내가 단 댓글이 있으면
                                                     for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) { // 정보 담기
-                                                        if (snapshot2.child("userId").getValue().equals(UserInfo.userId)) {
+                                                        if (snapshot2.child("userId").getValue().equals(UserInfo.getUserId())) {
                                                             MainActivity.postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
                                                         }
                                                     }

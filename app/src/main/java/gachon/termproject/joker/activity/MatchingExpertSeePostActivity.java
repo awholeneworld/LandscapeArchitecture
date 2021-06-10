@@ -167,9 +167,9 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
                     dlg.setPositiveButton("신청", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int which) {
                             if (request == null)
-                                request = new RequestFromExpertContent(UserInfo.nickname, UserInfo.profileImg, UserInfo.portfolioImg, UserInfo.portfolioWeb, UserInfo.pushToken, UserInfo.introduction, UserInfo.location, false);
+                                request = new RequestFromExpertContent(UserInfo.getNickname(), UserInfo.getProfileImg(), UserInfo.getPortfolioImg(), UserInfo.getPortfolioWeb(), UserInfo.getPushToken(), UserInfo.getIntroduction(), UserInfo.getLocation(), false);
 
-                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.userId).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.getUserId()).setValue(request).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                     sendFCM();
@@ -193,7 +193,7 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
                     dlg.setMessage("매칭신청을 취소하시겠습니까?"); // 메시지
                     dlg.setPositiveButton("신청 취소", new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int which) {
-                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.userId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            FirebaseDatabase.getInstance().getReference("Matching/userRequests/" + postId + "/requests/" + UserInfo.getUserId()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                 }
@@ -272,9 +272,9 @@ public class MatchingExpertSeePostActivity extends AppCompatActivity {
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = pushToken;
         notificationContent.notification.title = "매칭 알림";
-        notificationContent.notification.body = UserInfo.nickname + "님의 매칭 신청";
+        notificationContent.notification.body = UserInfo.getNickname() + "님의 매칭 신청";
         notificationContent.data.title = "매칭 알림";
-        notificationContent.data.body = UserInfo.nickname + "님의 매칭 신청";
+        notificationContent.data.body = UserInfo.getNickname() + "님의 매칭 신청";
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));

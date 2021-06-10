@@ -27,8 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,10 +39,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import gachon.termproject.joker.Content.RequestFromExpertContent;
-import gachon.termproject.joker.FirebaseHelper;
+import gachon.termproject.joker.FirebaseDeleter;
 import gachon.termproject.joker.R;
 import gachon.termproject.joker.adapter.MatchingPostRequestAdapter;
-import gachon.termproject.joker.adapter.MatchingUserPagerAdapter;
 import gachon.termproject.joker.fragment.MatchingUserTabCompleteFragment;
 import gachon.termproject.joker.fragment.MatchingUserTabRequestFragment;
 
@@ -159,7 +156,7 @@ public class MatchingUserSeePostActivity extends AppCompatActivity {
 
             //자기가 쓴 글이므로 - 삭제
             case R.id.delete:
-                FirebaseHelper.postDelete(this, "Matching", "userRequests", postId, images);
+                FirebaseDeleter.postDelete(this, "Matching", "userRequests", postId, images);
                 if (!isMatched)
                     MatchingUserTabRequestFragment.databaseReference.addValueEventListener(MatchingUserTabRequestFragment.postsListener);
                 else

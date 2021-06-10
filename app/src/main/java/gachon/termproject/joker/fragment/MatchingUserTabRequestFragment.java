@@ -80,12 +80,12 @@ public class MatchingUserTabRequestFragment extends Fragment {
             }
         };
 
-        databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
+        databaseReference.orderByChild("userId").equalTo(UserInfo.getUserId()).addListenerForSingleValueEvent(postsListener);
 
         refresher.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.getUserId()).addListenerForSingleValueEvent(postsListener);
                 refresher.setRefreshing(false);
             }
         });
@@ -106,7 +106,7 @@ public class MatchingUserTabRequestFragment extends Fragment {
 
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                databaseReference.orderByChild("userId").equalTo(UserInfo.userId).addListenerForSingleValueEvent(postsListener);
+                databaseReference.orderByChild("userId").equalTo(UserInfo.getUserId()).addListenerForSingleValueEvent(postsListener);
             }
         }
     }

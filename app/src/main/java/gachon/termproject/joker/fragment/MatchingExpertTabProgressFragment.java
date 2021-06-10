@@ -69,7 +69,7 @@ public class MatchingExpertTabProgressFragment extends Fragment { //매칭중
                         //아직 게시글은 매칭이 안되었는데
 
                         //매칭 대기 목록에 앗 내가 잇네? => 그럼 매칭중 탭에
-                        if(snapshot.child("requests/" + UserInfo.userId).exists()){
+                        if(snapshot.child("requests/" + UserInfo.getUserId()).exists()){
                             postContentList.add(0, postContent);
                         }
                     }

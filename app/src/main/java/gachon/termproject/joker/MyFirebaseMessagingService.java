@@ -91,6 +91,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(String token) {
-        FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("pushToken", token);
+        FirebaseFirestore.getInstance().collection("users").document(UserInfo.getUserId()).update("pushToken", token);
     }
 }

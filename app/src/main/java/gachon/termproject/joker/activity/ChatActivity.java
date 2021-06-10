@@ -105,12 +105,12 @@ public class ChatActivity extends AppCompatActivity {
                         ChatMessageContent.User user = new ChatMessageContent.User();
                         ChatMessageContent.User opponent = new ChatMessageContent.User();
                         // 나의 정보
-                        user.nickname = UserInfo.nickname;
-                        user.profileImg = UserInfo.profileImg;
-                        user.introduction = UserInfo.introduction;
-                        user.pushToken = UserInfo.pushToken;
-                        user.location = UserInfo.location;
-                        chatMessageContent.users.put(UserInfo.userId, user);
+                        user.nickname = UserInfo.getNickname();
+                        user.profileImg = UserInfo.getProfileImg();
+                        user.introduction = UserInfo.getIntroduction();
+                        user.pushToken = UserInfo.getPushToken();
+                        user.location = UserInfo.getLocation();
+                        chatMessageContent.users.put(UserInfo.getUserId(), user);
 
                         // 상대방 정보
                         opponent.nickname = opponentNickname;
@@ -176,12 +176,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void checkChatRoom() {
-        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     ChatMessageContent chatMessageContent = dataSnapshot.getValue(ChatMessageContent.class);
-                    if (chatMessageContent.users.containsKey(UserInfo.userId) && chatMessageContent.users.containsKey(opponentUserId)) {
+                    if (chatMessageContent.users.containsKey(UserInfo.getUserId()) && chatMessageContent.users.containsKey(opponentUserId)) {
                         chatRoomId = dataSnapshot.getKey();
                         if (send) {
                             send = false;
@@ -204,7 +204,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void sendMsgToDB() {
         ChatMessageContent.Message messageToSend = new ChatMessageContent.Message();
-        messageToSend.userId = UserInfo.userId;
+        messageToSend.userId = UserInfo.getUserId();
         messageToSend.message = message;
         messageToSend.timestamp = ServerValue.TIMESTAMP;
         FirebaseDatabase.getInstance().getReference().child("Chat").child(chatRoomId).child("messages").push().setValue(messageToSend).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -231,9 +231,9 @@ public class ChatActivity extends AppCompatActivity {
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = opponentPushToken;
         notificationContent.notification.title = "채팅 알림";
-        notificationContent.notification.body = UserInfo.nickname + "님의 채팅";
+        notificationContent.notification.body = UserInfo.getNickname() + "님의 채팅";
         notificationContent.data.title = "채팅 알림";
-        notificationContent.data.body = UserInfo.nickname + "님의 채팅";
+        notificationContent.data.body = UserInfo.getNickname() + "님의 채팅";
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));

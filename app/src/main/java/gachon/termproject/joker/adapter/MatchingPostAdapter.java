@@ -66,7 +66,7 @@ public class MatchingPostAdapter extends RecyclerView.Adapter<MatchingPostAdapte
                 public void onClick(View v) {
                     Intent intent;
 
-                    if (UserInfo.isPublic)
+                    if (UserInfo.getIsPublic())
                         intent = new Intent(context, MatchingUserSeePostActivity.class);
                     else
                         intent = new Intent(context, MatchingExpertSeePostActivity.class);

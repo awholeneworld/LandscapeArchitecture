@@ -53,13 +53,13 @@ public class ChatFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(chatListAdapter);
 
-        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.userId).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Chat").orderByChild("users/" + UserInfo.getUserId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 chatList.clear();
                 for (DataSnapshot item : snapshot.getChildren()) {
                     ChatMessageContent chatMessageContent = item.getValue(ChatMessageContent.class);
-                    if (chatMessageContent.users.containsKey(UserInfo.userId))
+                    if (chatMessageContent.users.containsKey(UserInfo.getUserId()))
                         chatList.add(0, chatMessageContent);
                 }
                 if (chatList.size() == 0) {

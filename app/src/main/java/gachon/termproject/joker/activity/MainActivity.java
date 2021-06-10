@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<String> task) {
                 if (task.isSuccessful()) {
-                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("pushToken", task.getResult());
+                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.getUserId()).update("pushToken", task.getResult());
                 }
             }
         });
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 일반인인지 전문가인지에 따라 매칭 화면 다르게 설정
         FragmentManager fm = getSupportFragmentManager();
-        if (UserInfo.isPublic) { //user라면
+        if (UserInfo.getIsPublic()) { //user라면
             if (matchingUser == null) {
                 matchingUser = new MatchingUserFragment();
                 fm.beginTransaction().add(R.id.main_frame, matchingUser).commit();

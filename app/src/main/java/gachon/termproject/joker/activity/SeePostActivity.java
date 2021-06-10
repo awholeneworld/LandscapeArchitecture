@@ -62,7 +62,7 @@ import gachon.termproject.joker.R;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.adapter.PostCommentAdapter;
 import gachon.termproject.joker.Content.PostCommentContent;
-import gachon.termproject.joker.FirebaseHelper;
+import gachon.termproject.joker.FirebaseDeleter;
 import gachon.termproject.joker.fragment.MyInfoFragment;
 
 public class SeePostActivity extends AppCompatActivity {
@@ -86,10 +86,11 @@ public class SeePostActivity extends AppCompatActivity {
     private String expertName;
     private String intro;
     private String comment;
+    private String expertId;
     private ArrayList<String> content;
     private ArrayList<String> images;
     public ArrayList<String> location;
-    private List<ImageView> iv = new ArrayList<ImageView>();
+    private List<ImageView> iv = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -157,9 +158,9 @@ public class SeePostActivity extends AppCompatActivity {
             line2.setVisibility(View.VISIBLE);
             margin.setVisibility(View.GONE);
 
-            String expertid = intent.getStringExtra("expertId");
+            expertId = intent.getStringExtra("expertId");
 
-            DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(expertid);
+            DocumentReference documentReference = FirebaseFirestore.getInstance().collection("users").document(expertId);
 
             documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -281,7 +282,7 @@ public class SeePostActivity extends AppCompatActivity {
                 Date currentTime = new Date();
                 String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
                 String commentId = String.valueOf(System.currentTimeMillis());
-                PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.userId, UserInfo.nickname, UserInfo.profileImg, updateTime, commentId, comment, UserInfo.introduction, UserInfo.location);
+                PostCommentContent postCommentContent = new PostCommentContent(category, UserInfo.getUserId(), UserInfo.getNickname(), UserInfo.getProfileImg(), updateTime, commentId, comment, UserInfo.getIntroduction(), UserInfo.getPushToken(), UserInfo.getLocation());
 
                 //키보드 내리기
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -333,7 +334,7 @@ public class SeePostActivity extends AppCompatActivity {
 
             //자기가 쓴 글일때 - 삭제
             case R.id.delete:
-                FirebaseHelper.postDelete(this, "Posts", category, postId, images);
+                FirebaseDeleter.postDelete(this, "Posts", category, postId, images);
                 finish();
                 break;
 
@@ -344,6 +345,8 @@ public class SeePostActivity extends AppCompatActivity {
                 intent2.putExtra("nickname", nickname);
                 intent2.putExtra("profileImg", profileImg);
                 intent2.putExtra("intro", intro);
+                intent2.putExtra("pushToken", pushToken);
+                intent2.putExtra("expertId", expertId);
                 intent2.putStringArrayListExtra("location", location);
                 intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent2);
@@ -387,9 +390,9 @@ public class SeePostActivity extends AppCompatActivity {
         NotificationContent notificationContent = new NotificationContent();
         notificationContent.to = pushToken;
         notificationContent.notification.title = "댓글 알림";
-        notificationContent.notification.body = UserInfo.nickname + "님이 댓글을 남겼습니다.";
+        notificationContent.notification.body = UserInfo.getNickname() + "님이 댓글을 남겼습니다.";
         notificationContent.data.title = "댓글 알림";
-        notificationContent.data.body = UserInfo.nickname + "님이 댓글을 남겼습니다.";
+        notificationContent.data.body = UserInfo.getNickname() + "님이 댓글을 남겼습니다.";
 
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), gson.toJson(notificationContent));

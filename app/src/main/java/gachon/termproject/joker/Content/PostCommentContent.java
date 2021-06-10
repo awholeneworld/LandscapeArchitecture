@@ -11,13 +11,14 @@ public class PostCommentContent {
     public String commentId;
     public String content;
     public String intro;
+    public String pushToken;
     public ArrayList<String> location;
 
     // SeePostActivity 에서 snapshot.getValue(PostCommentContent.class) 사용할 때 Default Constructor 꼭 있어야함
     public PostCommentContent() {
     }
 
-    public PostCommentContent(String category, String userId, String nickname, String profileImg, String commentTime, String commentId, String content, String intro, ArrayList<String> location) {
+    public PostCommentContent(String category, String userId, String nickname, String profileImg, String commentTime, String commentId, String content, String intro, String pushToken, ArrayList<String> location) {
         this.category = category;
         this.userId = userId;
         this.nickname = nickname;
@@ -26,6 +27,7 @@ public class PostCommentContent {
         this.commentId = commentId;
         this.content = content;
         this.intro = intro;
+        this.pushToken = pushToken;
         this.location = location;
     }
 
@@ -37,6 +39,7 @@ public class PostCommentContent {
     public String getCommentId() { return commentId; }
     public String getContent() { return content; }
     public String getIntro() { return intro; }
+    public String getPushToken() { return pushToken; }
     public ArrayList<String> getLocation(){ return location; }
     public void setCategory() { this.category = category; }
     public void setUserId(String userId) { this.userId = userId; }

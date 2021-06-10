@@ -3,32 +3,35 @@ package gachon.termproject.joker;
 import java.util.ArrayList;
 
 public class UserInfo {
-    public static String userId;
-    public static String email;
-    public static String nickname;
-    public static String profileImg;
-    public static String introduction;
-    public static String portfolioImg;
-    public static String portfolioWeb;
-    public static String pushToken;
-    public static boolean isPublic;
-    public static ArrayList<String> location;
+    private static String userId;
+    private static String email;
+    private static String nickname;
+    private static String profileImg;
+    private static String introduction;
+    private static String portfolioImg;
+    private static String portfolioWeb;
+    private static String pushToken;
+    private static boolean isPublic;
+    private static ArrayList<String> location;
 
-    public String getUserId() { return this.userId; }
-    public String getEmail() { return this.email; }
-    public String getNickname() { return this.nickname; }
-    public String getProfileImg() { return this.profileImg; }
-    public String getIntroduction() { return this.introduction; }
-    public String getPortfolioImg() { return this.portfolioImg; }
-    public String getPortfolioWeb() { return this.portfolioWeb; }
-    public boolean getIsPublic() { return this.isPublic; }
-    public ArrayList<String> getLocation() { return this.location; }
-    public void setUserId(String userId) { this.userId = userId; }
-    public void setNickname(String nickname) { this.nickname = nickname; }
-    public void setProfileImg(String profileImg) { this.profileImg = profileImg; }
-    public void setPortfolioImg(String portfolioImg) { this.portfolioImg = portfolioImg; }
-    public void setPortfolioWeb(String portfolioWeb) { this.portfolioWeb = portfolioWeb; }
-    public void setIntroduction(String introduction) { this.introduction = introduction; }
-    public void setIsPublic(boolean isPublic) { this.isPublic = isPublic; }
-    public void setLocation(ArrayList<String> location) { this.location = location; }
+    public static String getUserId() { return userId; }
+    public static String getEmail() { return email; }
+    public static String getNickname() { return nickname; }
+    public static String getProfileImg() { return profileImg; }
+    public static String getIntroduction() { return introduction; }
+    public static String getPortfolioImg() { return portfolioImg; }
+    public static String getPortfolioWeb() { return portfolioWeb; }
+    public static String getPushToken() { return pushToken; }
+    public static boolean getIsPublic() { return isPublic; }
+    public static ArrayList<String> getLocation() { return location; }
+    public static void setUserId(String newUserId) { userId = newUserId; }
+    public static void setEmail(String newEmail) { email = newEmail; }
+    public static void setNickname(String newNickname) { nickname = newNickname; }
+    public static void setPushToken(String newPushToken) { pushToken = newPushToken; }
+    public static void setProfileImg(String newProfileImg) { profileImg = newProfileImg; }
+    public static void setPortfolioImg(String newPortfolioImg) { portfolioImg = newPortfolioImg; }
+    public static void setPortfolioWeb(String newPortfolioWeb) { portfolioWeb = newPortfolioWeb; }
+    public static void setIntroduction(String newIntroduction) { introduction = newIntroduction; }
+    public static void setIsPublic(boolean newIsPublic) { isPublic = newIsPublic; }
+    public static void setLocation(ArrayList<String> newLocation) { location = newLocation; }
 }

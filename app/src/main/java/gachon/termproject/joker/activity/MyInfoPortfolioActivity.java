@@ -71,14 +71,14 @@ public class MyInfoPortfolioActivity extends AppCompatActivity {
         profileImage.setBackground(new ShapeDrawable(new OvalShape()));
         profileImage.setClipToOutline(true);
 
-        if (!UserInfo.profileImg.equals("None"))
-            Glide.with(getApplicationContext()).load(UserInfo.profileImg).override(1000).thumbnail(0.1f).into(profileImage);
+        if (!UserInfo.getProfileImg().equals("None"))
+            Glide.with(getApplicationContext()).load(UserInfo.getProfileImg()).override(1000).thumbnail(0.1f).into(profileImage);
 
-        if (!UserInfo.portfolioImg.equals("None"))
-            Glide.with(getApplicationContext()).load(UserInfo.portfolioImg).override(1000).thumbnail(0.1f).into(mainImg);
+        if (!UserInfo.getPortfolioImg().equals("None"))
+            Glide.with(getApplicationContext()).load(UserInfo.getPortfolioImg()).override(1000).thumbnail(0.1f).into(mainImg);
 
 
-        nickname.setText(UserInfo.nickname);
+        nickname.setText(UserInfo.getNickname());
         location.setText(locationStr);
 
         change_main_image = findViewById(R.id.change_main_image);
@@ -120,7 +120,7 @@ public class MyInfoPortfolioActivity extends AppCompatActivity {
 
     // 이미지 넣는거
     private void uploadPortfolioImage(){
-        storageReference = FirebaseStorage.getInstance().getReference().child("portfolioImages/" + UserInfo.userId);
+        storageReference = FirebaseStorage.getInstance().getReference().child("portfolioImages/" + UserInfo.getUserId());
         storageReference.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -138,10 +138,10 @@ public class MyInfoPortfolioActivity extends AppCompatActivity {
                     Uri downloadUrl = task.getResult();
                     String url = downloadUrl.toString();
 
-                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId).update("portfolioImg", url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    FirebaseFirestore.getInstance().collection("users").document(UserInfo.getUserId()).update("portfolioImg", url).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull @NotNull Task<Void> task) {
-                            UserInfo.portfolioImg = url;
+                            UserInfo.setPortfolioImg(url);
                             Glide.with(getApplicationContext()).load(url).into(mainImg);
                             Toast.makeText(getApplicationContext(), "포트폴리오 이미지가 설정/변경되었습니다.", Toast.LENGTH_SHORT).show();
                         }

@@ -43,7 +43,6 @@ import java.util.Locale;
 import gachon.termproject.joker.PostImage;
 import gachon.termproject.joker.Content.PostContent;
 import gachon.termproject.joker.R;
-import gachon.termproject.joker.FirebaseHelper;
 import gachon.termproject.joker.UserInfo;
 import gachon.termproject.joker.fragment.CommunityFreeFragment;
 import gachon.termproject.joker.fragment.CommunityReviewFragment;
@@ -57,8 +56,8 @@ public class WritePostActivity extends AppCompatActivity {
     private Uri image;
     private ArrayList<String> contentList = new ArrayList<>();
     private ArrayList<Uri> imagesList = new ArrayList<>();
-    private String userId = UserInfo.userId;
-    private String nickname = UserInfo.nickname;
+    private String userId = UserInfo.getUserId();
+    private String nickname = UserInfo.getNickname();
     private String postId;
     private String expertId;
     private LinearLayout layout;
@@ -236,7 +235,7 @@ public class WritePostActivity extends AppCompatActivity {
             String updateTime = new SimpleDateFormat("yyyy-MM-dd k:mm", Locale.getDefault()).format(currentTime);
 
             // 포스트할 내용
-            postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, contentList, null, expertId, UserInfo.introduction, UserInfo.location);
+            postContent = new PostContent(category, userId, UserInfo.getProfileImg(), title.getText().toString(), nickname, updateTime, postId, UserInfo.getPushToken(), contentList, null, expertId, UserInfo.getIntroduction(), UserInfo.getLocation());
 
             // Firebase Realtime DB에 글 내용 올리기
             databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -291,7 +290,7 @@ public class WritePostActivity extends AppCompatActivity {
                                     String updateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault()).format(currentTime);
 
                                     // 포스트할 내용
-                                    postContent = new PostContent(category, userId, UserInfo.profileImg, title.getText().toString(), nickname, updateTime, postId, UserInfo.pushToken, contentList, imagesUrl, expertId, UserInfo.introduction, UserInfo.location);
+                                    postContent = new PostContent(category, userId, UserInfo.getProfileImg(), title.getText().toString(), nickname, updateTime, postId, UserInfo.getPushToken(), contentList, imagesUrl, expertId, UserInfo.getIntroduction(), UserInfo.getLocation());
 
                                     // Firebase Realtime DB에 글 내용 올리기
                                     databaseReference.child("Posts/" + category + "/" + postId).setValue(postContent).addOnCompleteListener(new OnCompleteListener<Void>() {

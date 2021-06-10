@@ -36,7 +36,7 @@ public class MyInfoPortfolioReviewAdapter extends RecyclerView.Adapter<MyInfoPor
         this.context = context;
         contentList = new ArrayList<>();
 
-        FirebaseDatabase.getInstance().getReference().child("Posts/review").orderByChild("expertId").equalTo(UserInfo.userId).addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("Posts/review").orderByChild("expertId").equalTo(UserInfo.getUserId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 contentList.clear();

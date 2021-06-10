@@ -36,9 +36,13 @@ public class MyInfoTabCommentAdapter extends RecyclerView.Adapter<MyInfoTabComme
         String nicknameInPost;
         String timeInPost;
         String postIdInPost;
+        String expertIdOfPost;
+        String pushToken;
+        String intro;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
-        ArrayList<Integer> orderInPost;
+        ArrayList<String> locationOfUser;
+        PostContent postContent;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -54,9 +58,14 @@ public class MyInfoTabCommentAdapter extends RecyclerView.Adapter<MyInfoTabComme
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
+                    intent.putExtra("expertId", expertIdOfPost);
+                    intent.putExtra("pushToken", pushToken);
+                    intent.putExtra("intro", intro);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
-                    intent.putIntegerArrayListExtra("order", orderInPost);
+                    intent.putStringArrayListExtra("location", locationOfUser);
+                    intent.putExtra("postContent", postContent);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             });
@@ -88,8 +97,13 @@ public class MyInfoTabCommentAdapter extends RecyclerView.Adapter<MyInfoTabComme
         holder.nicknameInPost = contentNickname;
         holder.timeInPost = contentTime;
         holder.postIdInPost = content.getPostId();
+        holder.expertIdOfPost = content.getExpertId();
+        holder.pushToken = content.getPushToken();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
+        holder.intro = content.getIntro();
+        holder.locationOfUser = content.getLocation();
+        holder.postContent = content;
 
         if (imagesList != null)
             Glide.with(context).load(imagesList.get(0)).override(1000).thumbnail(0.1f).into(holder.imageView);

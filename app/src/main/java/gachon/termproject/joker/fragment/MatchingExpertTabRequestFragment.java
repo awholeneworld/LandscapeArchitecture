@@ -138,7 +138,7 @@ public class MatchingExpertTabRequestFragment extends Fragment { //매칭요청
                     if (!postContent.getIsMatched()){
                         //아직 게시글은 매칭이 안되었는데
                         //매칭 대기 목록에 앗 내가 없네 => 그럼 매칭 신청 탭에
-                        if(!snapshot.child("requests/" + UserInfo.userId).exists()){
+                        if(!snapshot.child("requests/" + UserInfo.getUserId()).exists()){
 
                             //근데 혹시 지역조건이 있다면 넣어주거라
                             if(locationSelected.isEmpty()){

@@ -60,7 +60,7 @@ public class WriteReviewPostExpertListFragment extends Fragment {
                         DocumentSnapshot snapshot = list.get(i);
                         Boolean isPublic = snapshot.getBoolean("isPublic");
                         String userId = snapshot.getId();
-                        if (!isPublic && !userId.equals(UserInfo.userId)) {
+                        if (!isPublic && !userId.equals(UserInfo.getUserId())) {
                             String nickname = snapshot.getString("nickname");
                             String introduction = snapshot.getString("introduction");
                             String profileImg = snapshot.getString("profileImg");

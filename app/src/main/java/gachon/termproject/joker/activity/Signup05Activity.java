@@ -83,8 +83,8 @@ public class Signup05Activity extends AppCompatActivity {
 
     // 나중에 쓸 일 많은 유저 고유 아이디, 닉네임, 프로필 사진 Url 정보 등 미리 저장 후 로그인
     public void logIn() {
-        UserInfo.userId = fAuth.getCurrentUser().getUid();
-        documentReference = FirebaseFirestore.getInstance().collection("users").document(UserInfo.userId);
+        UserInfo.setUserId(fAuth.getCurrentUser().getUid());
+        documentReference = FirebaseFirestore.getInstance().collection("users").document(UserInfo.getUserId());
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -92,17 +92,17 @@ public class Signup05Activity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         // 사용자 닉네임, 프로필 사진 Url 등 가져오기
-                        UserInfo.email = document.getString("ID");
-                        UserInfo.nickname = document.getString("nickname");
-                        UserInfo.profileImg = document.getString("profileImg");
-                        UserInfo.introduction = document.getString("introduction");
-                        UserInfo.isPublic = document.getBoolean("isPublic");
-                        UserInfo.location = (ArrayList<String>) document.get("location");
-                        UserInfo.pushToken = document.getString("pushToken");
+                        UserInfo.setEmail(document.getString("ID"));
+                        UserInfo.setNickname(document.getString("nickname"));
+                        UserInfo.setProfileImg(document.getString("profileImg"));
+                        UserInfo.setIntroduction(document.getString("introduction"));
+                        UserInfo.setIsPublic(document.getBoolean("isPublic"));
+                        UserInfo.setLocation((ArrayList<String>) document.get("location"));
+                        UserInfo.setPushToken(document.getString("pushToken"));
 
-                        if (!UserInfo.isPublic) {
-                            UserInfo.portfolioImg = document.getString("portfolioImg");
-                            UserInfo.portfolioWeb = document.getString("portfolioWeb");
+                        if (!UserInfo.getIsPublic()) {
+                            UserInfo.setPortfolioImg(document.getString("portfolioImg"));
+                            UserInfo.setPortfolioWeb(document.getString("portfolioWeb"));
                         }
 
                         DatabaseReference postsRef = FirebaseDatabase.getInstance().getReference("Posts");
@@ -119,7 +119,7 @@ public class Signup05Activity extends AppCompatActivity {
                                         @Override
                                         public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
 
-                                            snapshot.getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                            snapshot.getRef().orderByChild("userId").equalTo(UserInfo.getUserId()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                 @Override
                                                 public void onSuccess(DataSnapshot dataSnapshot) {
                                                     if (!dataSnapshot.exists()) { // 내가 쓴 글이 존재하지 않는다면
@@ -151,7 +151,7 @@ public class Signup05Activity extends AppCompatActivity {
                                                                                     }
                                                                                 }
                                                                             } else {
-                                                                                snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.getUserId()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                     @Override
                                                                                     public void onSuccess(DataSnapshot dataSnapshot) {
                                                                                         if (!dataSnapshot.exists()) { // 현재 게시글에 내가 쓴 댓글이 없으면
@@ -160,7 +160,7 @@ public class Signup05Activity extends AppCompatActivity {
                                                                                             else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
                                                                                         } else { // 내가 단 댓글이 있으면
                                                                                             for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) { // 정보 담기
-                                                                                                if (snapshot2.child("userId").getValue().equals(UserInfo.userId)) {
+                                                                                                if (snapshot2.child("userId").getValue().equals(UserInfo.getUserId())) {
                                                                                                     userCommentsIdList.add(0, snapshot2.getKey());
                                                                                                     postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
                                                                                                 }
@@ -236,7 +236,7 @@ public class Signup05Activity extends AppCompatActivity {
                                                             @Override
                                                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                                                                 for (DataSnapshot shot : snapshot.getChildren()) {
-                                                                    if (shot.child("userId").getValue().equals(UserInfo.userId)) {
+                                                                    if (shot.child("userId").getValue().equals(UserInfo.getUserId())) {
                                                                         PostContent content = shot.getValue(PostContent.class);
                                                                         userPostsIdList.add(0, content.getPostId());
                                                                         userPostsList.add(0, content);
@@ -269,7 +269,7 @@ public class Signup05Activity extends AppCompatActivity {
                                                                                             }
                                                                                         }
                                                                                     } else {
-                                                                                        snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.userId).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                                        snapshot.child("comments").getRef().orderByChild("userId").equalTo(UserInfo.getUserId()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                                                             @Override
                                                                                             public void onSuccess(DataSnapshot dataSnapshot) {
                                                                                                 if (!dataSnapshot.exists()) { // 현재 게시글에 내가 쓴 댓글이 없으면
@@ -278,7 +278,7 @@ public class Signup05Activity extends AppCompatActivity {
                                                                                                     else if (categorySnapshot.getKey().equals("tip")) failCountTip++;
                                                                                                 } else { // 내가 단 댓글이 있으면
                                                                                                     for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) { // 정보 담기
-                                                                                                        if (snapshot2.child("userId").getValue().equals(UserInfo.userId)) {
+                                                                                                        if (snapshot2.child("userId").getValue().equals(UserInfo.getUserId())) {
                                                                                                             userCommentsIdList.add(0, snapshot2.getKey());
                                                                                                             postsOfCommentsList.add(0, snapshot.getValue(PostContent.class));
                                                                                                         }

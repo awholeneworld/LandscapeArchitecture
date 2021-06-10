@@ -41,12 +41,12 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
         String nicknameInPost;
         String timeInPost;
         String postIdInPost;
-        String expertIdOfPost;
         String pushToken;
+        String intro;
         ArrayList<String> contentInPost;
         ArrayList<String> imagesInPost;
         ArrayList<String> locationOfUser;
-
+        PostContent postContent;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -68,12 +68,12 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
                     intent.putExtra("nickname", nicknameInPost);
                     intent.putExtra("time", timeInPost);
                     intent.putExtra("postId", postIdInPost);
-                    intent.putExtra("expertId", expertIdOfPost);
                     intent.putExtra("pushToken", pushToken);
+                    intent.putExtra("intro", intro);
                     intent.putStringArrayListExtra("content", contentInPost);
                     intent.putStringArrayListExtra("images", imagesInPost);
                     intent.putStringArrayListExtra("location", locationOfUser);
-
+                    intent.putExtra("postContent", postContent);
                     context.startActivity(intent);
                 }
             });
@@ -105,10 +105,11 @@ public class HomePostAdapter extends RecyclerView.Adapter<HomePostAdapter.ViewHo
         holder.timeInPost = contentTime;
         holder.postIdInPost = content.getPostId();
         holder.pushToken = content.getPushToken();
+        holder.intro = content.getIntro();
         holder.contentInPost = contentsList;
         holder.imagesInPost = imagesList;
-        holder.expertIdOfPost = content.getExpertId();
         holder.locationOfUser = content.getLocation();
+        holder.postContent = content;
 
         // 목록에 나타나는 글의 제목, 작성자, 작성 시간 표시
         if (contentTitle.length() > 15)

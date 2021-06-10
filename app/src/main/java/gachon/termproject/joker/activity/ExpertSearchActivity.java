@@ -113,7 +113,7 @@ public class ExpertSearchActivity extends AppCompatActivity {
                             String userId = snapshot.getId();
                             boolean isPublic = snapshot.getBoolean("isPublic");
 
-                            if (!userId.equals(UserInfo.userId) && !isPublic) {
+                            if (!userId.equals(UserInfo.getUserId()) && !isPublic) {
                                 if (snapshot.getString("nickname").contains(query)){
                                     String nickname = snapshot.getString("nickname");
                                     String introduction = snapshot.getString("introduction");
